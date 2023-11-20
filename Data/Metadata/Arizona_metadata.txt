@@ -1,0 +1,27 @@
+Phoenix, Arizona, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00023183/detail 
+
+Station Details
+Name: PHOENIX AIRPORT, AZ US
+Network:ID GHCND:USW00023183
+Latitude/Longitude: 33.4278°, -112.00365°
+Elevation: 339.2 m
+
+Period of Record
+Start Date: 1933-06-01
+End Date: 2023-11-14
+Data Coverage: 94%
+
+Fountain Hills, Arizona, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00023190/detail
+
+Station Details
+Name: FOUNTAIN HILLS, AZ US
+Network:ID GHCND:USC00023190
+Latitude/Longitude: 33.60106°, -111.71285°
+Elevation: 481.6 m
+
+Period of Record
+Start Date: 1979-10-01
+End Date: 2023-11-13
+Data Coverage: 94%

@@ -1,0 +1,28 @@
+Las Vegas, Nevada, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00023169/detail
+
+Station Details
+Name: MCCARRAN INTERNATIONAL AIRPORT, NV US
+Network:ID GHCND:USW00023169
+Latitude/Longitude: 36.0719°, -115.16343°
+Elevation: 662.8 m
+
+Period of Record
+Start Date: 1948-09-06
+End Date: 2023-11-14
+Data Coverage: 100%
+
+
+Pahurump, Nevada, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USC00265890/detail
+
+Station Details
+Name: PAHRUMP 4 NW, NV US
+Network:ID GHCND:USC00265890
+Latitude/Longitude: 36.2615°, -116.0563°
+Elevation: 784.3 m
+
+Period of Record
+Start Date: 1914-03-01
+End Date: 2023-11-14
+Data Coverage: 66%

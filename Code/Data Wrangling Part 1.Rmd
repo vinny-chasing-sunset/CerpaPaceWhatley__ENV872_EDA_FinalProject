@@ -1,0 +1,91 @@
+---
+title: "Data Wrangling Part 1"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-11-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+
+getwd()
+setwd("/home/guest/R/CerpaPaceWhatley__ENV872_EDA_FinalProject")
+getwd()
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+
+```{r data wrangling}
+PhoenixAZ_processed <- read.csv("./Data/Raw/phoenix_fountainhills_raw.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "PHOENIX AIRPORT, AZ US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = ymd(DATE))
+
+FountainHillsAZ_processed <- read.csv("./Data/Raw/phoenix_fountainhills_raw.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = ymd(DATE))
+
+LasVegasNV_processed <- read.csv("./Data/Raw/Nevada_data_raw.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "MCCARRAN INTERNATIONAL AIRPORT, NV US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = ymd(DATE))
+
+PahrumpNV_processed <- read.csv("./Data/Raw/Nevada_data_raw.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "PAHRUMP 4 NW, NV US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = ymd(DATE))
+
+SanDiegoCA_processed <- read.csv("./Data/Raw/SanDiego_Ramona_Raw_Data.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "SAN DIEGO INTERNATIONAL AIRPORT, CA US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = mdy(DATE))
+
+RamonaCA_processed <- read.csv("./Data/Raw/SanDiego_Ramona_Raw_Data.csv", stringsAsFactors = TRUE) %>% 
+  filter(NAME == "RAMONA AIRPORT, CA US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  mutate(DATE = mdy(DATE))
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r data wrangling, echo=FALSE}
+```
+
+
+```{r data saving, echo=FALSE}
+
+write.csv(PhoenixAZ_processed, 
+          file = "./Data/Processed/PhoenixAZ_processed")
+
+write.csv(FountainHillsAZ_processed, 
+          file = "./Data/Processed/FountainHillsAZ_processed")
+
+write.csv(LasVegasNV_processed, 
+          file = "./Data/Processed/LasVegasNV_processed")
+
+write.csv(PahrumpNV_processed, 
+          file = "./Data/Processed/PahrumpNV_processed")
+
+write.csv(SanDiegoCA_processed, 
+          file = "./Data/Processed/SanDiegoCA_processed")
+
+write.csv(RamonaCA_processed, 
+          file = "./Data/Processed/RamonaCA_processed")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
