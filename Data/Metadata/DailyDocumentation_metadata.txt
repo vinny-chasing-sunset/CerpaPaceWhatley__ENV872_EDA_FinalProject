@@ -1,0 +1,55 @@
+Menne, M.J., I. Durre, B. Korzeniewski, S. McNeill, K. Thomas, X. Yin, S. Anthony, R. Ray,  R.S. Vose, B.E.Gleason, and T.G. Houston, 2012: Global Historical Climatology Network - 
+Daily (GHCN-Daily), Version 3.30. NOAA National Climatic Data Center. http://doi.org/10.7289/V5D21VHZ, accessed November 13, 2023.
+
+GHCN (Global Historical Climatology Network) - Daily Documentation
+Document source: https://www.ncei.noaa.gov/pub/data/cdo/documentation/GHCND_documentation.pdf
+
+Dates are in standard ISO format (yyyy-mm-dd)
+Data Coverage is an approximation of total completeness based on the most complete data element, and the overall data range.
+
+Format of Data Files
+STATION = station identification code
+NAME = station nanme
+DATE = recor date
+DAPR = Number of days included in the multiday precipitation total (MDPR)
+DWPR = Number of days with non-zero precipitation included in multiday precipitation total (MDPR)
+PRCP = Precipitation (inches)
+PSUN = Daily percent of possible sunshine (percent)
+SNOW = Snowfall (inches)
+SNWD = Snow depth (inches)
+TAVG = Average daily temperature (Fahrenheight)
+TMAX = Maximum temperature (Fahrenheit)
+TMIN = Minimum temperature (Fahrenheit)
+TOBS = Temperature at the time of observation (Fahrenheit)
+TSUN = Daily total sunshine (minutes)
+WESD = Water equivalent of snow on the ground (inches)
+WT** = Weather Type where ** has one of the following values:
+	01 = Fog, ice fog, or freezing fog (may include heavy fog)
+	02 = Heavy fog or heaving freezing fog (not always distinguished from fog)
+	03 = Thunder
+	04 = Ice pellets, sleet, snow pellets, or small hail
+	05 = Hail (may include small hail)
+	06 = Glaze or rime
+	07 = Dust, volcanic ash, blowing dust, blowing sand, or blowing obstruction
+	08 = Smoke or haze
+	09 = Blowing or drifting snow
+	10 = Tornado, waterspout, or funnel cloud
+	11 = High or damaging winds
+	12 = Blowing spray
+	13 = Mist
+	14 = Drizzle
+	15 = Freezing drizzle
+	16 = Rain (may include freezing rain, drizzle, and freezing drizzle)
+	17 = Freezing rain
+	18 = Snow, snow pellets, snow grains, or ice crystals
+	19 = Unknown source of precipitation
+	21 = Ground fog
+	22 = Ice fog or freezing fog
+WVxx = Weather in the Vicinity where “xx” has one of the following values
+	01 = Fog, ice fog, or freezing fog (may include heavy fog)
+	03 = Thunder
+	07 = Ash, dust, sand, or other blowing obstruction
+	18 = Snow or ice crystals
+	20 = Rain or snow shower
+
+For additional information, please send an e-mail to ncdc.ghcnd@noaa.gov.

@@ -1,0 +1,27 @@
+San Diego, California, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00023188/detail
+
+Station Details
+Name: SAN DIEGO INTERNATIONAL AIRPORT, CA US
+Network:ID GHCND:USW00023188
+Latitude/Longitude: 32.7336°, -117.1831°
+Elevation: 4.6 m
+
+Period of Record
+Start Date: 1939-07-01
+End Date: 2023-11-14
+Data Coverage: 100%
+
+Ramona, California, U.S.
+Data source: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00053120/detail
+
+Station Details
+Name: RAMONA AIRPORT, CA US
+Network:ID GHCND:USW00053120
+Latitude/Longitude: 33.03801°, -116.915979°
+Elevation: 422 m
+
+Period of Record
+Start Date: 1998-04-16
+End Date: 2023-11-13
+Data Coverage: 99%
