@@ -1,0 +1,33 @@
+---
+title: "Data Exploration"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-11-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+
+# Working Directory with the here() command
+here()
+```
+
+## Exploratory Visualizations 
+
+```{r visualizations}
+
+```
+
+
+```{r pressure, echo=FALSE}
+
+```
+

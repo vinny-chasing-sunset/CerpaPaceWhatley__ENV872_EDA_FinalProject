@@ -16,9 +16,7 @@ library(tidyverse)
 library(lubridate)
 library(here)
 
-getwd()
-setwd("/home/guest/R/CerpaPaceWhatley__ENV872_EDA_FinalProject")
-getwd()
+here()
 ```
 
 ## R Markdown
@@ -28,42 +26,57 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 
 ```{r data wrangling}
-PhoenixAZ_processed <- read.csv("./Data/Raw/phoenix_fountainhills_raw.csv", stringsAsFactors = TRUE) %>% 
+PhoenixAZ_processed <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "PHOENIX AIRPORT, AZ US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = ymd(DATE))
 
-FountainHillsAZ_processed <- read.csv("./Data/Raw/phoenix_fountainhills_raw.csv", stringsAsFactors = TRUE) %>% 
+FountainHillsAZ_processed <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = ymd(DATE))
 
-LasVegasNV_processed <- read.csv("./Data/Raw/Nevada_data_raw.csv", stringsAsFactors = TRUE) %>% 
+LasVegasNV_processed <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "MCCARRAN INTERNATIONAL AIRPORT, NV US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = ymd(DATE))
 
-PahrumpNV_processed <- read.csv("./Data/Raw/Nevada_data_raw.csv", stringsAsFactors = TRUE) %>% 
+PahrumpNV_processed <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "PAHRUMP 4 NW, NV US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = ymd(DATE))
 
-SanDiegoCA_processed <- read.csv("./Data/Raw/SanDiego_Ramona_Raw_Data.csv", stringsAsFactors = TRUE) %>% 
+SanDiegoCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "SAN DIEGO INTERNATIONAL AIRPORT, CA US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = mdy(DATE))
 
-RamonaCA_processed <- read.csv("./Data/Raw/SanDiego_Ramona_Raw_Data.csv", stringsAsFactors = TRUE) %>% 
+RamonaCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "RAMONA AIRPORT, CA US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TSUN) %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = mdy(DATE))
 ```
 
-## Including Plots
+## Editting the Column Names
 
-You can also embed plots, for example:
+```{r update column names, echo=FALSE}
+colnames(PhoenixAZ_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
 
-```{r data wrangling, echo=FALSE}
+colnames(FountainHillsAZ_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+
+colnames(LasVegasNV_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+
+colnames(PahrumpNV_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+
+colnames(SanDiegoCA_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+
+colnames(RamonaCA_processed) <-
+  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
 ```
 
 
@@ -88,4 +101,4 @@ write.csv(RamonaCA_processed,
           file = "./Data/Processed/RamonaCA_processed")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
