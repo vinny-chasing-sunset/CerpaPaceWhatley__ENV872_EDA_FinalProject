@@ -3,6 +3,8 @@ title: "Data Exploration"
 author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
 date: "2023-11-20"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +25,19 @@ here()
 ## Exploratory Visualizations 
 
 ```{r visualizations}
+ggplot(PhoenixAZ_processed, 
+       aes(x = Date, y = Daily_Temp_Max)) +
+         geom_line() + 
+  geom_smooth (method = lm)+
+  labs( title = "Phoenix Daily Maximum Temperatures 1980-2022")
 
+Three_cities <- rbind(LasVegasNV_processed, 
+                      PhoenixAZ_processed, 
+                      SanDiegoCA_processed)
+
+ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location)) +
+  geom_line() +
+  geom_smooth(method=lm)
 ```
 
 

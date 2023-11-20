@@ -61,22 +61,22 @@ RamonaCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), 
 
 ```{r update column names, echo=FALSE}
 colnames(PhoenixAZ_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 
 colnames(FountainHillsAZ_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 
 colnames(LasVegasNV_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 
 colnames(PahrumpNV_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 
 colnames(SanDiegoCA_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 
 colnames(RamonaCA_processed) <-
-  c("Location", "Date", "Precipitation", "% Sunshine Possible", "Daily Temp Max", "Daily Temp Min", "Total Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
 ```
 
 
