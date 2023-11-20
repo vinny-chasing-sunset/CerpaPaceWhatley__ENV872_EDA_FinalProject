@@ -1,4 +1,4 @@
-"","NAME","DATE","PRCP","PSUN","TMAX","TMIN","TAVG","TSUN"
+"","Location","Date","Precipitation","%_Sunshine_Possible","Daily_Temp_Max","Daily_Temp_Min","Total_Sunshine","NA"
 "1","FOUNTAIN HILLS, AZ US",1980-01-01,0,NA,69,43,NA,NA
 "2","FOUNTAIN HILLS, AZ US",1980-01-02,0,NA,70,45,NA,NA
 "3","FOUNTAIN HILLS, AZ US",1980-01-03,0,NA,72,40,NA,NA

@@ -1,4 +1,4 @@
-"","NAME","DATE","PRCP","PSUN","TMAX","TMIN","TAVG","TSUN"
+"","Location","Date","Precipitation","%_Sunshine_Possible","Daily_Temp_Max","Daily_Temp_Min","Total_Sunshine","NA"
 "1","PAHRUMP 4 NW, NV US",1972-01-01,0,NA,52,23,NA,NA
 "2","PAHRUMP 4 NW, NV US",1972-01-02,0,NA,55,24,NA,NA
 "3","PAHRUMP 4 NW, NV US",1972-01-03,0,NA,42,29,NA,NA

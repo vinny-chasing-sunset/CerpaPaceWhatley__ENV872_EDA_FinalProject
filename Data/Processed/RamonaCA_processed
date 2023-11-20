@@ -1,4 +1,4 @@
-"","NAME","DATE","PRCP","PSUN","TMAX","TMIN","TAVG","TSUN"
+"","Location","Date","Precipitation","%_Sunshine_Possible","Daily_Temp_Max","Daily_Temp_Min","Total_Sunshine","NA"
 "1","RAMONA AIRPORT, CA US",2023-01-01,2.07,NA,56,49,NA,NA
 "2","RAMONA AIRPORT, CA US",2022-12-31,0.1,NA,58,53,NA,NA
 "3","RAMONA AIRPORT, CA US",2022-12-30,0.02,NA,59,50,NA,NA

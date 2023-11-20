@@ -1,4 +1,4 @@
-"","NAME","DATE","PRCP","PSUN","TMAX","TMIN","TAVG","TSUN"
+"","Location","Date","Precipitation","%_Sunshine_Possible","Daily_Temp_Max","Daily_Temp_Min","Total_Sunshine","NA"
 "1","PHOENIX AIRPORT, AZ US",1980-01-01,0,74,68,45,NA,444
 "2","PHOENIX AIRPORT, AZ US",1980-01-02,0,100,70,42,NA,600
 "3","PHOENIX AIRPORT, AZ US",1980-01-03,0,83,67,45,NA,498
