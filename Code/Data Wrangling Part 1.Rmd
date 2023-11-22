@@ -10,11 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("tidyverse") # This code chunk installs the tidyverse package.
 #install.packages("lubridate") # This code chunk install lubridate package.
 #install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
 # they are all now comments so it will knit.
 
 library(tidyverse)
 library(lubridate)
 library(here)
+library(zoo)
 
 here()
 ```
@@ -61,22 +63,85 @@ RamonaCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), 
 
 ```{r update column names, echo=FALSE}
 colnames(PhoenixAZ_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
 
 colnames(FountainHillsAZ_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
 
 colnames(LasVegasNV_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
 
 colnames(PahrumpNV_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
 
 colnames(SanDiegoCA_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
 
 colnames(RamonaCA_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Total_Sunshine")
+  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+```
+
+```{r data summaries}
+# Determining which locations and columns have the most NA's for max and min daily temperatures, therefore determining which to interpolate
+summary(PhoenixAZ_processed)
+summary(FountainHillsAZ_processed)
+summary(LasVegasNV_processed)
+summary(PahrumpNV_processed)
+summary(SanDiegoCA_processed)
+summary(RamonaCA_processed)
+```
+
+```{r linear interpolation}
+# FountainHills, Pahrump, Ramona requires interpolation for the min and max temps.
+
+# Linear interpolation for FountainHillsAZ
+FountainHillsAZ_processed <-
+  FountainHillsAZ_processed %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(PhoenixAZ_processed$Daily_Temp_Max)
+summary(PhoenixAZ_processed$Daily_Temp_Min)
+
+# Linear interpolation for Pahrump
+PahrumpNV_processed <-
+  PahrumpNV_processed %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(PahrumpNV_processed$Daily_Temp_Max)
+summary(PahrumpNV_processed$Daily_Temp_Min)
+
+# Linear interpolation for Ramona
+RamonaCA_processed <-
+  RamonaCA_processed %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(RamonaCA_processed$Daily_Temp_Max)
+summary(RamonaCA_processed$Daily_Temp_Min)
+```
+```{r updating the average columns}
+PhoenixAZ_processed$Temp_Avg <- 
+  rowMeans(PhoenixAZ_processed [, c(5, 6)], na.rm = T)
+
+FountainHillsAZ_processed$Temp_Avg <- 
+  rowMeans(FountainHillsAZ_processed [, c(5, 6)], na.rm = T)
+
+PahrumpNV_processed$Temp_Avg <- 
+  rowMeans(PahrumpNV_processed [, c(5, 6)], na.rm = T)
+
+LasVegasNV_processed$Temp_Avg <- 
+  rowMeans(LasVegasNV_processed [, c(5, 6)], na.rm = T)
+
+SanDiegoCA_processed$Temp_Avg <- 
+  rowMeans(SanDiegoCA_processed [, c(5, 6)], na.rm = T)
+
+RamonaCA_processed$Temp_Avg <- 
+  rowMeans(RamonaCA_processed [, c(5, 6)], na.rm = T)
 ```
 
 

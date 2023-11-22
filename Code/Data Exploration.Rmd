@@ -22,14 +22,32 @@ library(here)
 here()
 ```
 
+
+```{r Calculating the Degree Days}
+PhoenixAZ_processed <-
+if(PhoenixAZ_processed$Temp_Avg > 65) {
+  mutate("Cooling_Degrees" = PhoenixAZ_processed$Temp_Avg - 65)
+}
+
+  
+  
+  x <- -5
+if(x > 0){
+print("Non-negative number")
+} else {
+print("Negative number")
+}
+```
+
 ## Exploratory Visualizations 
 
 ```{r visualizations}
 ggplot(PhoenixAZ_processed, 
-       aes(x = Date, y = Daily_Temp_Max)) +
+       aes(x = Date, y = Daily_Temp_Min)) +
          geom_line() + 
   geom_smooth (method = lm)+
-  labs( title = "Phoenix Daily Maximum Temperatures 1980-2022")
+  labs( title = "Phoenix Daily Maximum Temperatures 1980-2022")+
+  geom_hline(yintercept = 65)
 
 Three_cities <- rbind(LasVegasNV_processed, 
                       PhoenixAZ_processed, 
