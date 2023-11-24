@@ -9,10 +9,16 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#install.packages(ggplot2)
+#install.packages(ggpthemes)
+#install.cowplot
 
 library(tidyverse)
 library(lubridate)
 library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
 
 # Working Directory with the here() command
 here()
@@ -96,6 +102,23 @@ Ramona$Cool_Degrees [Ramona$Temp_Avg > 65] <-
   Ramona$Temp_Avg [Ramona$Temp_Avg > 65] - 65
 ```
 
+``` {r create plot template}
+theme_EDA <- theme_base() +
+  theme(
+      axis.ticks = element_line(
+      color = "black"
+    ),
+    plot.background = element_rect(
+      color = "black",
+      fill = "gray"
+    ),
+    legend.position = "right",
+    complete = TRUE
+  )
+theme_set(theme_EDA)
+```
+
+
 ## Exploratory Visualizations 
 
 ```{r visualizations}
@@ -117,22 +140,37 @@ ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location)) +
 
 
 ```{r plot heating days and cooling days, echo=FALSE}
-Phoenix_Monthly_Heat <- Phoenix %>%
+Phoenix_Heat_1980 <- Phoenix %>%
   group_by(Heat_Degrees) %>%
   filter(Year == "1980", Heat_Degrees != 0) %>%
   select(Date, Month, Heat_Degrees)
 
-Phoenix_Monthly_Cool <- Phoenix %>%
+Phoenix_Cool_1980 <- Phoenix %>%
   group_by(Cool_Degrees) %>%
   filter(Year == "1980", Cool_Degrees != 0) %>%
   select(Date, Month, Cool_Degrees)
 
-ggplot(Phoenix_Monthly_Heat, aes(x = Month)) +
-  geom_histogram(color = "white", fill = "red", bins = 12) +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb)
+plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
+  geom_bar(fill = "red") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Days when Heating is Needed in Phoenix, 1980", x = "Month", y = "Heating Days")
 
-ggplot(Phoenix_Monthly_Cool, aes(x = Month)) +
-  geom_histogram(color = "white", fill = "blue", bins = 12) +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb)
+plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
+  geom_bar(fill = "blue") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Days when Cooling is Needed in Phoenix, 1980", x = "Month", y = "Cooling Days")
+
+grid_Phoenix_1980_HeatCoolDays <- plot_grid(plot_Phoenix_1980_Cool, plot_Phoenix_1980_Heat)
+print(grid_Phoenix_1980_HeatCoolDays)
+
+#instead of count do percentage
+
+plot_Phoenix_1980_HeatCoolDays <- ggplot() +
+  geom_bar(data = Phoenix_Cool_1980, aes(x = Month, fill = "Cooling Days")) +
+  geom_bar(data = Phoenix_Heat_1980, aes(x = Month, fill = "Heating Days")) +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Days when Cooling or Heating is Needed in Phoenix, 1980", x = "Month", y = "Cooling or Heating Days") + 
+  scale_fill_manual(values = c("blue", "red"))
+print(plot_Phoenix_1980_HeatCoolDays)
 ```
 
