@@ -25,145 +25,164 @@ here()
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-
-
 ```{r data wrangling}
-PhoenixAZ_processed <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
+Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
+                    stringsAsFactors = TRUE) %>% 
   filter(NAME == "PHOENIX AIRPORT, AZ US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = ymd(DATE))
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Phoenix") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 
-FountainHillsAZ_processed <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
+FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
   filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = ymd(DATE))
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Fountain Hills") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 
-LasVegasNV_processed <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"), stringsAsFactors = TRUE) %>% 
+LasVegas <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
+                     stringsAsFactors = TRUE) %>% 
   filter(NAME == "MCCARRAN INTERNATIONAL AIRPORT, NV US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = ymd(DATE))
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Las Vegas") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 
-PahrumpNV_processed <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"), stringsAsFactors = TRUE) %>% 
+Pahrump <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
+                    stringsAsFactors = TRUE) %>% 
   filter(NAME == "PAHRUMP 4 NW, NV US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = ymd(DATE))
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Pahrump") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 
-SanDiegoCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), stringsAsFactors = TRUE) %>% 
+SanDiego <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
+                     stringsAsFactors = TRUE) %>% 
   filter(NAME == "SAN DIEGO INTERNATIONAL AIRPORT, CA US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = mdy(DATE))
+  mutate(DATE = mdy(DATE)) %>%
+  mutate(NAME = "San Diego") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 
-RamonaCA_processed <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"), stringsAsFactors = TRUE) %>% 
+Ramona <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
+                   stringsAsFactors = TRUE) %>% 
   filter(NAME == "RAMONA AIRPORT, CA US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
-  mutate(DATE = mdy(DATE))
+  mutate(DATE = mdy(DATE)) %>%
+  mutate(NAME = "Ramona") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE))
 ```
 
 ## Editting the Column Names
 
 ```{r update column names, echo=FALSE}
-colnames(PhoenixAZ_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(Phoenix) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 
-colnames(FountainHillsAZ_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(FountainHills) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 
-colnames(LasVegasNV_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(LasVegas) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 
-colnames(PahrumpNV_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(Pahrump) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 
-colnames(SanDiegoCA_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(SanDiego) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 
-colnames(RamonaCA_processed) <-
-  c("Location", "Date", "Precipitation", "%_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine")
+colnames(Ramona) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year")
 ```
 
 ```{r data summaries}
-# Determining which locations and columns have the most NA's for max and min daily temperatures, therefore determining which to interpolate
-summary(PhoenixAZ_processed)
-summary(FountainHillsAZ_processed)
-summary(LasVegasNV_processed)
-summary(PahrumpNV_processed)
-summary(SanDiegoCA_processed)
-summary(RamonaCA_processed)
+# Determining which locations and columns have the most NA's for max and min
+#daily temperatures, therefore determining which to interpolate
+summary(Phoenix)
+summary(FountainHills)
+summary(LasVegas)
+summary(Pahrump)
+summary(SanDiego)
+summary(Ramona)
 ```
 
 ```{r linear interpolation}
-# FountainHills, Pahrump, Ramona requires interpolation for the min and max temps.
+# FountainHills, Pahrump, Ramona requires interpolation for the min and max temps
 
-# Linear interpolation for FountainHillsAZ
-FountainHillsAZ_processed <-
-  FountainHillsAZ_processed %>% 
+# Linear interpolation for FountainHills
+FountainHills <-
+  FountainHills %>% 
   mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
          Daily_Temp_Min = na.approx(Daily_Temp_Min))
 
 # Showing that there are no longer NA's in either of these columns.
-summary(PhoenixAZ_processed$Daily_Temp_Max)
-summary(PhoenixAZ_processed$Daily_Temp_Min)
+summary(Phoenix$Daily_Temp_Max)
+summary(Phoenix$Daily_Temp_Min)
 
 # Linear interpolation for Pahrump
-PahrumpNV_processed <-
-  PahrumpNV_processed %>% 
+Pahrump <-
+  Pahrump %>% 
   mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
          Daily_Temp_Min = na.approx(Daily_Temp_Min))
 
 # Showing that there are no longer NA's in either of these columns.
-summary(PahrumpNV_processed$Daily_Temp_Max)
-summary(PahrumpNV_processed$Daily_Temp_Min)
+summary(Pahrump$Daily_Temp_Max)
+summary(Pahrump$Daily_Temp_Min)
 
 # Linear interpolation for Ramona
-RamonaCA_processed <-
-  RamonaCA_processed %>% 
+Ramona <-
+  Ramona %>% 
   mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
          Daily_Temp_Min = na.approx(Daily_Temp_Min))
 
 # Showing that there are no longer NA's in either of these columns.
-summary(RamonaCA_processed$Daily_Temp_Max)
-summary(RamonaCA_processed$Daily_Temp_Min)
+summary(Ramona$Daily_Temp_Max)
+summary(Ramona$Daily_Temp_Min)
 ```
 ```{r updating the average columns}
-PhoenixAZ_processed$Temp_Avg <- 
-  rowMeans(PhoenixAZ_processed [, c(5, 6)], na.rm = T)
+Phoenix$Temp_Avg <- 
+  rowMeans(Phoenix [, c(5, 6)], na.rm = T)
 
-FountainHillsAZ_processed$Temp_Avg <- 
-  rowMeans(FountainHillsAZ_processed [, c(5, 6)], na.rm = T)
+FountainHills$Temp_Avg <- 
+  rowMeans(FountainHills [, c(5, 6)], na.rm = T)
 
-PahrumpNV_processed$Temp_Avg <- 
-  rowMeans(PahrumpNV_processed [, c(5, 6)], na.rm = T)
+Pahrump$Temp_Avg <- 
+  rowMeans(Pahrump [, c(5, 6)], na.rm = T)
 
-LasVegasNV_processed$Temp_Avg <- 
-  rowMeans(LasVegasNV_processed [, c(5, 6)], na.rm = T)
+LasVegas$Temp_Avg <- 
+  rowMeans(LasVegas [, c(5, 6)], na.rm = T)
 
-SanDiegoCA_processed$Temp_Avg <- 
-  rowMeans(SanDiegoCA_processed [, c(5, 6)], na.rm = T)
+SanDiego$Temp_Avg <- 
+  rowMeans(SanDiego [, c(5, 6)], na.rm = T)
 
-RamonaCA_processed$Temp_Avg <- 
-  rowMeans(RamonaCA_processed [, c(5, 6)], na.rm = T)
+Ramona$Temp_Avg <- 
+  rowMeans(Ramona [, c(5, 6)], na.rm = T)
 ```
 
 
-```{r data saving, echo=FALSE}
+```{r save processed data, echo=FALSE}
+write.csv(Phoenix, 
+          file = "./Data/Processed/PhoenixAZ_processed.csv")
 
-write.csv(PhoenixAZ_processed, 
-          file = "./Data/Processed/PhoenixAZ_processed")
+write.csv(FountainHills, 
+          file = "./Data/Processed/FountainHillsAZ_processed.csv")
 
-write.csv(FountainHillsAZ_processed, 
-          file = "./Data/Processed/FountainHillsAZ_processed")
+write.csv(LasVegas, 
+          file = "./Data/Processed/LasVegasNV_processed.csv")
 
-write.csv(LasVegasNV_processed, 
-          file = "./Data/Processed/LasVegasNV_processed")
+write.csv(Pahrump,
+          file = "./Data/Processed/PahrumpNV_processed.csv")
 
-write.csv(PahrumpNV_processed, 
-          file = "./Data/Processed/PahrumpNV_processed")
+write.csv(SanDiego,
+          file = "./Data/Processed/SanDiegoCA_processed.csv")
 
-write.csv(SanDiegoCA_processed, 
-          file = "./Data/Processed/SanDiegoCA_processed")
-
-write.csv(RamonaCA_processed, 
-          file = "./Data/Processed/RamonaCA_processed")
+write.csv(Ramona,
+          file = "./Data/Processed/RamonaCA_processed.csv")
 ```
-
-
