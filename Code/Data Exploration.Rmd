@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 #install.packages(ggplot2)
 #install.packages(ggpthemes)
-#install.cowplot
+#install.packages(cowplot)
 
 library(tidyverse)
 library(lubridate)
@@ -154,6 +154,7 @@ plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
   geom_bar(fill = "red") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Days when Heating is Needed in Phoenix, 1980", x = "Month", y = "Heating Days")
+print(plot_Phoenix_1980_Heat)
 
 plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
   geom_bar(fill = "blue") +
