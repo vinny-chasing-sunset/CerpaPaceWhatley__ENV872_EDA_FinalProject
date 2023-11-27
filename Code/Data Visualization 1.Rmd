@@ -25,6 +25,9 @@ library(cowplot)
 here()
 ```
 
+```{r import data}
+```
+
 ```{r set theme}
 theme_EDA <- theme_base() +
   theme(
@@ -41,67 +44,61 @@ theme_set(theme_EDA)
 
 
 ```{r heating days 1980 and 2022}
-Phoenix <-
-  Phoenix %>% 
-  mutate(Day = day(Date))
+Phoenix$DayofYear <- yday(Phoenix$Date)
 
-
-Phoenix$MonthDay <- as.Date(paste(Phoenix$Month, Phoenix$Day, sep = "-"),
-                            "%m-%d")
-
-#Phoenix$MonthDay <- format(Phoenix$MonthDay, "%m%d", sep = )
-#NSW_2010$DATE_MONTH <- format(NSW_2010$DATE, "%m/%d")
-#FountainHills$Heat_Degrees <- rep(0)
-#df$Date <- as.Date(paste(df$year, df$month, sep="-"), "%Y-%M")
+Phoenix$Year <- as.factor(format(Phoenix$Date,'%Y'))
 
 Phoenix_Heat_2022 <- Phoenix %>%
   group_by(Month) %>%
   filter(Year == "2022") %>%
-  select(Date, Month, MonthDay, Heat_Degrees)
+  select(Date, Year, Month, DayofYear, Heat_Degrees)
 
 Phoenix_Heat_1980 <- Phoenix %>%
   group_by(Month) %>%
   filter(Year == "1980") %>%
-  select(Date, Month, MonthDay, Heat_Degrees)
+  select(Date, Year, Month, DayofYear, Heat_Degrees)
 
+#seasonal labels https://scottishsnow.wordpress.com/2020/04/24/lubridate-ggplot-date-helpers/
+season_lab = tibble(jul = yday(as.Date(c("1980-03-01", "1980-06-01",
+                                         "1980-09-01", "1980-12-01"))),
+                 lab = c("Spring", "Summer", "Fall", "Winter"))
+
+#monthly labels  https://scottishsnow.wordpress.com/2020/04/24/lubridate-ggplot-date-helpers/
+month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
+                                          "1980-06-15", "1980-08-15",
+                                          "1980-10-15", "1980-12-15"))),
+                     lab = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec"))
 
 plot_Phoenix_1980_2022_Heat <- ggplot() +
   geom_line(data = Phoenix_Heat_1980, 
-            aes(x = MonthDay, y = Heat_Degrees), 
-            color='darkorange') +
+            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
   geom_line(data = Phoenix_Heat_2022, 
-            aes(x = MonthDay, y = Heat_Degrees),
-            color = 'purple') +
+            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
   labs(title = "Intensity of Heating Degrees in Phoenix, 1980 and 2022",
-       x = "Date") 
+       x = "Season") +
+  #scale_x_continuous(breaks = season_lab$jul, labels = season_lab$lab) +
+  #scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
 print(plot_Phoenix_1980_2022_Heat)
 
-
-Phoenix_Heat_1980_Lineplot <- 
-  ggplot(Phoenix_Heat_1980, 
-         aes(x = Date, y = Heat_Degrees)) +
-  geom_line(color = "darkorange")+
+Phoenix_Heat_1980_Lineplot <-
+  ggplot(Phoenix_Heat_1980, aes(x = DayofYear, y = Heat_Degrees)) +
+  geom_line(color = "darkorange") +
   labs(title = "Intensity of Heating Days (below 65 F) in Phoenix, 1980",
-       x = "Date", y = "Number of Degrees F below 65 F")
+       x = "Date", y = "Number of Degrees F below 65 F") +
+  ylim(0, 40)
 print(Phoenix_Heat_1980_Lineplot)
 
 Phoenix_Heat_2022_Lineplot <- 
   ggplot(Phoenix_Heat_2022, 
-         aes(x = Date, y = Heat_Degrees)) +
+         aes(x = DayofYear, y = Heat_Degrees)) +
   geom_line(color = "purple")+
   labs(title = "Intensity of Heating Days (below 65 F) in Phoenix, 2022",
-       x = "Date", y = "Number of Degrees F below 65 F")
+       x = "Date", y = "Number of Degrees F below 65 F") +
+  ylim(0, 40)
 print(Phoenix_Heat_2022_Lineplot)
 
 grid_Phoenix_1980_2022_heat <-
   plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
-
 print(grid_Phoenix_1980_2022_heat)
 ```
-
-
-```{r}
-
-```
-
-
