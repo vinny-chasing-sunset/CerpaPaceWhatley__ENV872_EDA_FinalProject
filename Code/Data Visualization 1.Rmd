@@ -102,3 +102,7 @@ grid_Phoenix_1980_2022_heat <-
   plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
 print(grid_Phoenix_1980_2022_heat)
 ```
+
+``` {r write CSV}
+write.csv <-
+```
