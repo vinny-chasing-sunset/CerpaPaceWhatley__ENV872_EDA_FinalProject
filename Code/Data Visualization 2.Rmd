@@ -40,12 +40,10 @@ theme_set(theme_EDA)
 
 
 ```{r}
-# Sample temperature data (replace this with your own data)
 # Assume temperature_data contains columns 'Date' (in YYYY-MM-DD format) and 'Temperature'
 # Read your data from a CSV or a data source
 # temperature_data <- read.csv("your_temperature_data.csv")
 
-# Example data (replace this with your actual data)
 ###Phoenix_data <- Phoenix(
  ## Date = rep(seq(as.Date("1980-01-01"), as.Date("1980-12-31"), by = "days"), each = 1),
  ## Temperature = Phoenix(26:122, 365, replace = TRUE)
@@ -55,7 +53,7 @@ theme_set(theme_EDA)
 ###Phoenix_data_2022 <- subset(temperature_data, format(Date, "%Y") == "2022")
 
 # Set the cooling threshold (you can adjust this as needed)
-#cooling_threshold <- 65  # Example threshold in degrees Celsius
+#cooling_threshold <- 65  
 
 # Function to calculate cooling days
 #calculate_cooling_days <- function(data, threshold) {
