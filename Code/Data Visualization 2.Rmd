@@ -38,40 +38,7 @@ theme_EDA <- theme_base() +
 theme_set(theme_EDA)
 ```
 
-
-```{r}
-# Assume temperature_data contains columns 'Date' (in YYYY-MM-DD format) and 'Temperature'
-# Read your data from a CSV or a data source
-# temperature_data <- read.csv("your_temperature_data.csv")
-
-###Phoenix_data <- Phoenix(
- ## Date = rep(seq(as.Date("1980-01-01"), as.Date("1980-12-31"), by = "days"), each = 1),
- ## Temperature = Phoenix(26:122, 365, replace = TRUE)
-#)
-
-# Filter data for the years 1980 and 2022
-###Phoenix_data_2022 <- subset(temperature_data, format(Date, "%Y") == "2022")
-
-# Set the cooling threshold (you can adjust this as needed)
-#cooling_threshold <- 65  
-
-# Function to calculate cooling days
-#calculate_cooling_days <- function(data, threshold) {
-  #cooling_days <- aggregate(Temperature ~ format(Date, "%m-%d"), data = data, function(x) sum(x < threshold))
- # names(cooling_days)[2] <- "Cooling_Days"
-  #return(cooling_days)
-#}
-
-# Calculate cooling days for 1980 and 2022
-#cooling_days_1980 <- calculate_cooling_days(temperature_data_1980, cooling_threshold)
-#cooling_days_2022 <- calculate_cooling_days(temperature_data_2022, cooling_threshold)
-
-# Print cooling days for each month and day in 1980 and 2022
-#print("Cooling days for 1980:")
-#print(cooling_days_1980)
-
-#print("Cooling days for 2022:")
-#print(cooling_days_2022)
+```{r import data}
 
 ```
 
@@ -84,11 +51,6 @@ Phoenix <-
 Phoenix$MonthDay <- as.Date(paste(Phoenix$Month, Phoenix$Day, sep = "-"),
                             "%m-%d")
 
-#Phoenix$MonthDay <- format(Phoenix$MonthDay, "%m%d", sep = )
-#NSW_2010$DATE_MONTH <- format(NSW_2010$DATE, "%m/%d")
-#FountainHills$Heat_Degrees <- rep(0)
-#df$Date <- as.Date(paste(df$year, df$month, sep="-"), "%Y-%M")
-
 Phoenix_Cooling_2022 <- Phoenix %>%
   group_by(Month) %>%
   filter(Year == "2022") %>%
@@ -99,7 +61,6 @@ Phoenix_Cooling_1980 <- Phoenix %>%
   filter(Year == "1980") %>%
   select(Date, Month, MonthDay, Cool_Degrees)
 
-
 plot_Phoenix_1980_2022_Cool <- ggplot() +
   geom_line(data = Phoenix_Cooling_1980, 
             aes(x = MonthDay, y = Cool_Degrees), 
@@ -108,24 +69,26 @@ plot_Phoenix_1980_2022_Cool <- ggplot() +
             aes(x = MonthDay, y = Cool_Degrees),
             color = 'purple') +
   labs(title = "Intensity of Cooling Degrees in Phoenix, 1980 and 2022",
-       x = "Date") 
+       x = "Date") +
+  ylim(0, 40)
 print(plot_Phoenix_1980_2022_Cool)
-
 
 Phoenix_Cool_1980_Lineplot <- 
   ggplot(Phoenix_Cooling_1980, 
          aes(x = Date, y = Cool_Degrees)) +
   geom_line(color = "darkorange")+
   labs(title = "Intensity of Cooling Days (Above 65 F) in Phoenix, 1980",
-       x = "Date", y = "Number of Degrees F Above 65 F")
+       x = "Date", y = "Number of Degrees F Above 65 F") +
+  ylim(0, 40)
 print(Phoenix_Cool_1980_Lineplot)
 
 Phoenix_Cool_2022_Lineplot <- 
-  ggplot(Phoenix_Cool_2022, 
+  ggplot(Phoenix_Cooling_2022, 
          aes(x = Date, y = Cool_Degrees)) +
   geom_line(color = "purple")+
   labs(title = "Intensity of Cooling Days (Above 65 F) in Phoenix, 2022",
-       x = "Date", y = "Number of Degrees F Above 65 F")
+       x = "Date", y = "Number of Degrees F Above 65 F") +
+  ylim(0, 40)
 print(Phoenix_Cool_2022_Lineplot)
 
 grid_Phoenix_1980_2022_Cool <-
@@ -134,3 +97,6 @@ grid_Phoenix_1980_2022_Cool <-
 print(grid_Phoenix_1980_2022_Cool)
 ```
 
+```{r write CSVs}
+write.csv <- 
+```
