@@ -1,0 +1,138 @@
+---
+title: "Data Visualization 1"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-11-26"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
+
+here()
+```
+
+```{r}
+theme_EDA <- theme_base() +
+  theme(
+    
+   plot.background = element_rect(
+      color = "black",
+      fill = "gray"
+    ),
+    legend.position = "right",
+    complete = TRUE
+  )
+theme_set(theme_EDA)
+```
+
+
+```{r}
+# Sample temperature data (replace this with your own data)
+# Assume temperature_data contains columns 'Date' (in YYYY-MM-DD format) and 'Temperature'
+# Read your data from a CSV or a data source
+# temperature_data <- read.csv("your_temperature_data.csv")
+
+# Example data (replace this with your actual data)
+###Phoenix_data <- Phoenix(
+ ## Date = rep(seq(as.Date("1980-01-01"), as.Date("1980-12-31"), by = "days"), each = 1),
+ ## Temperature = Phoenix(26:122, 365, replace = TRUE)
+#)
+
+# Filter data for the years 1980 and 2022
+###Phoenix_data_2022 <- subset(temperature_data, format(Date, "%Y") == "2022")
+
+# Set the cooling threshold (you can adjust this as needed)
+#cooling_threshold <- 65  # Example threshold in degrees Celsius
+
+# Function to calculate cooling days
+#calculate_cooling_days <- function(data, threshold) {
+  #cooling_days <- aggregate(Temperature ~ format(Date, "%m-%d"), data = data, function(x) sum(x < threshold))
+ # names(cooling_days)[2] <- "Cooling_Days"
+  #return(cooling_days)
+#}
+
+# Calculate cooling days for 1980 and 2022
+#cooling_days_1980 <- calculate_cooling_days(temperature_data_1980, cooling_threshold)
+#cooling_days_2022 <- calculate_cooling_days(temperature_data_2022, cooling_threshold)
+
+# Print cooling days for each month and day in 1980 and 2022
+#print("Cooling days for 1980:")
+#print(cooling_days_1980)
+
+#print("Cooling days for 2022:")
+#print(cooling_days_2022)
+
+```
+
+```{r}
+Phoenix <-
+  Phoenix %>% 
+  mutate(Day = day(Date))
+
+
+Phoenix$MonthDay <- as.Date(paste(Phoenix$Month, Phoenix$Day, sep = "-"),
+                            "%m-%d")
+
+#Phoenix$MonthDay <- format(Phoenix$MonthDay, "%m%d", sep = )
+#NSW_2010$DATE_MONTH <- format(NSW_2010$DATE, "%m/%d")
+#FountainHills$Heat_Degrees <- rep(0)
+#df$Date <- as.Date(paste(df$year, df$month, sep="-"), "%Y-%M")
+
+Phoenix_Cooling_2022 <- Phoenix %>%
+  group_by(Month) %>%
+  filter(Year == "2022") %>%
+  select(Date, Month, MonthDay, Cool_Degrees)
+
+Phoenix_Cooling_1980 <- Phoenix %>%
+  group_by(Month) %>%
+  filter(Year == "1980") %>%
+  select(Date, Month, MonthDay, Cool_Degrees)
+
+
+plot_Phoenix_1980_2022_Cool <- ggplot() +
+  geom_line(data = Phoenix_Cooling_1980, 
+            aes(x = MonthDay, y = Cool_Degrees), 
+            color='darkorange') +
+  geom_line(data = Phoenix_Cooling_2022, 
+            aes(x = MonthDay, y = Cool_Degrees),
+            color = 'purple') +
+  labs(title = "Intensity of Cooling Degrees in Phoenix, 1980 and 2022",
+       x = "Date") 
+print(plot_Phoenix_1980_2022_Cool)
+
+
+Phoenix_Cool_1980_Lineplot <- 
+  ggplot(Phoenix_Cooling_1980, 
+         aes(x = Date, y = Cool_Degrees)) +
+  geom_line(color = "darkorange")+
+  labs(title = "Intensity of Cooling Days (Above 65 F) in Phoenix, 1980",
+       x = "Date", y = "Number of Degrees F Above 65 F")
+print(Phoenix_Cool_1980_Lineplot)
+
+Phoenix_Cool_2022_Lineplot <- 
+  ggplot(Phoenix_Cool_2022, 
+         aes(x = Date, y = Cool_Degrees)) +
+  geom_line(color = "purple")+
+  labs(title = "Intensity of Cooling Days (Above 65 F) in Phoenix, 2022",
+       x = "Date", y = "Number of Degrees F Above 65 F")
+print(Phoenix_Cool_2022_Lineplot)
+
+grid_Phoenix_1980_2022_Cool <-
+  plot_grid(Phoenix_Cool_1980_Lineplot, Phoenix_Cool_2022_Lineplot)
+
+print(grid_Phoenix_1980_2022_Cool)
+```
+
