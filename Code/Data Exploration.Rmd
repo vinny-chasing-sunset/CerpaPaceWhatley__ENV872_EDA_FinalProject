@@ -50,58 +50,6 @@ Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
   mutate(Date = ymd(Date))
 ```
 
-
-```{r Calculating Heating and Cooling Degree Days}
-#1. Create a column for heating degrees with 0s
-#2. Create a column for heating degrees with 0s
-#3. Calculate heating degrees by finding the mean temp that's below 65F then
-#subtracting the mean temp from 65
-#4. Calculate cooling degrees by finding the mean temp that's above 65F then
-#subtracting 65 from the mean temp
-
-Phoenix$Heat_Degrees <- rep(0)
-Phoenix$Cool_Degrees <- rep(0)
-Phoenix$Heat_Degrees [Phoenix$Temp_Avg < 65] <-
-  65 - Phoenix$Temp_Avg [Phoenix$Temp_Avg < 65]
-Phoenix$Cool_Degrees [Phoenix$Temp_Avg > 65] <-
-  Phoenix$Temp_Avg [Phoenix$Temp_Avg > 65] - 65
-
-FountainHills$Heat_Degrees <- rep(0)
-FountainHills$Cool_Degrees <- rep(0)
-FountainHills$Heat_Degrees [FountainHills$Temp_Avg < 65] <-
-  65 - FountainHills$Temp_Avg [FountainHills$Temp_Avg < 65]
-FountainHills$Cool_Degrees [FountainHills$Temp_Avg > 65] <-
-  FountainHills$Temp_Avg [FountainHills$Temp_Avg > 65] - 65
-
-LasVegas$Heat_Degrees <- rep(0)
-LasVegas$Cool_Degrees <- rep(0)
-LasVegas$Heat_Degrees [LasVegas$Temp_Avg < 65] <-
-  65 - LasVegas$Temp_Avg [LasVegas$Temp_Avg < 65]
-LasVegas$Cool_Degrees [LasVegas$Temp_Avg > 65] <-
-  LasVegas$Temp_Avg [LasVegas$Temp_Avg > 65] - 65
-
-Pahrump$Heat_Degrees <- rep(0)
-Pahrump$Cool_Degrees <- rep(0)
-Pahrump$Heat_Degrees [Pahrump$Temp_Avg < 65] <-
-  65 - Pahrump$Temp_Avg [Pahrump$Temp_Avg < 65]
-Pahrump$Cool_Degrees [Pahrump$Temp_Avg > 65] <-
-  Pahrump$Temp_Avg [Pahrump$Temp_Avg > 65] - 65
-
-SanDiego$Heat_Degrees <- rep(0)
-SanDiego$Cool_Degrees <- rep(0)
-SanDiego$Heat_Degrees [SanDiego$Temp_Avg < 65] <-
-  65 - SanDiego$Temp_Avg [SanDiego$Temp_Avg < 65]
-SanDiego$Cool_Degrees [SanDiego$Temp_Avg > 65] <-
-  SanDiego$Temp_Avg [SanDiego$Temp_Avg > 65] - 65
-
-Ramona$Heat_Degrees <- rep(0)
-Ramona$Cool_Degrees <- rep(0)
-Ramona$Heat_Degrees [Ramona$Temp_Avg < 65] <-
-  65 - Ramona$Temp_Avg [Ramona$Temp_Avg < 65]
-Ramona$Cool_Degrees [Ramona$Temp_Avg > 65] <-
-  Ramona$Temp_Avg [Ramona$Temp_Avg > 65] - 65
-```
-
 ``` {r create plot template}
 theme_EDA <- theme_base() +
   theme(
@@ -117,7 +65,6 @@ theme_EDA <- theme_base() +
   )
 theme_set(theme_EDA)
 ```
-
 
 ## Exploratory Visualizations 
 
@@ -137,7 +84,6 @@ ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location)) +
   geom_line() +
   geom_smooth(method=lm)
 ```
-
 
 ```{r plot heating days and cooling days, echo=FALSE}
 #Create dataframes for heating and cooling days, separately
@@ -208,13 +154,4 @@ plot_Phoenix_2022_HeatCoolDays <- ggplot() +
   labs(title = "Cooling and Heating in Phoenix, 2022", x = "Month", y = "Cooling or Heating Days") + 
   scale_fill_manual(values = c("blue", "red"))
 print(plot_Phoenix_2022_HeatCoolDays)
-```
-
-```{r save files}
-write.csv <- 
-write.csv <- 
-write.csv <- 
-write.csv <- 
-write.csv <- 
-write.csv <- 
 ```
