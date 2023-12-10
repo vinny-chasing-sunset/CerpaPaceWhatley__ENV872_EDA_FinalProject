@@ -1,4 +1,6 @@
-```{Load in packages}
+```{r}
+#Code not working saving for reference as I attempt to start over
+
 knitr::opts_chunk$set(echo = TRUE)
 #install.packages("tidyverse") # This code chunk installs the tidyverse package.
 #install.packages("lubridate") # This code chunk install lubridate package.
@@ -11,20 +13,31 @@ library(lubridate)
 library(here)
 library(ggplot2)
 library(ggthemes)
-library(cowplot)
 
 here()
 ```
 
-```{Anova Testing for each city}
+```{r}
+summary(LasVegas)
+
+summary(Pahrump)
+
+summary(Phoenix)
+
+summary(FountainHills)
+
+summary(SanDiego)
+
+summary(Ramona)
+```
+
+```{One way anova test for each city}
+LasVegas.aov <- aov(Year ~ Temp_Avg, data = LasVegas)
+summary(LasVegas.aov)
 
 ```
 
-```{Urban vs Rural}
-
-```
-
-```{Visualizatiion}
+```{r}
 
 ```
 
