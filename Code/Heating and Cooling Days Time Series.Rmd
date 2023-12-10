@@ -1,0 +1,165 @@
+---
+title: "Heating and Cooling Days Time Series"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-12-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages(ggplot2)
+#install.packages(ggpthemes)
+#install.packages(cowplot)
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
+
+# Working Directory with the here() command
+here()
+```
+
+
+
+```{r creating ts objects}
+#Creating univariate time series objects for heat degrees and cool degrees for each major city
+
+Phoenix_heatdegrees_ts <- ts(Phoenix$Heat_Degrees, 
+                            start = c(1980, 1),
+                            frequency = 365)
+
+Phoenix_cooldegrees_ts <- ts(Phoenix$Cool_Degrees, 
+                            start = c(1980, 1),
+                            frequency = 365)
+
+LasVegas_heatdegrees_ts <- ts(LasVegas$Heat_Degrees,
+                              start = c(1972, 1),
+                              frequency = 365)
+
+LasVegas_cooldegrees_ts <- ts(LasVegas$Cool_Degrees,
+                              start = c(1972, 1),
+                              frequency = 365)
+
+SanDiego_heatdegrees_ts <- ts(SanDiego$Heat_Degrees,
+                              start = c(1972, 1),
+                              frequency = 365)
+
+SanDiego_cooldegrees_ts <- ts(SanDiego$Cool_Degrees,
+                              start = c(1972, 1),
+                              frequency = 365)
+
+```
+
+
+
+```{r decomposing time series objects}
+# Decomposing each ts object
+
+Phoenix_heatdegrees_ts_Decomposed <-
+  stl(Phoenix_heatdegrees_ts, s.window = "periodic")
+
+plot(Phoenix_heatdegrees_ts_Decomposed)
+
+Phoenix_cooldegrees_ts_Decomposed <-
+  stl(Phoenix_cooldegrees_ts, s.window = "periodic")
+
+plot(Phoenix_cooldegrees_ts_Decomposed)
+
+#Las Vegas decomposition and plot
+
+LasVegas_heatdegrees_ts_Decomposed <-
+  stl(LasVegas_heatdegrees_ts, s.window = "periodic")
+
+plot(LasVegas_heatdegrees_ts_Decomposed)
+
+LasVegas_cooldegrees_ts_Decomposed <-
+  stl(LasVegas_cooldegrees_ts, s.window = "periodic")
+
+plot(LasVegas_cooldegrees_ts_Decomposed)
+
+# San Diego decompostion and plot
+
+SanDiego_heatdegrees_ts_Decomposed <-
+  stl(SanDiego_heatdegrees_ts, s.window = "periodic")
+
+plot(SanDiego_heatdegrees_ts_Decomposed)
+
+SanDiego_cooldegrees_ts_Decomposed <-
+  stl(SanDiego_cooldegrees_ts, s.window = "periodic")
+
+plot(SanDiego_cooldegrees_ts_Decomposed)
+
+```
+```{r SMK test for Heating Degree Days}
+
+# Run Seasonal Mann Kendall Test for Phoenix
+Phoenix_heatdegrees_trend <-
+  Kendall::SeasonalMannKendall(Phoenix_heatdegrees_ts)
+
+Phoenix_heatdegrees_trend
+summary(Phoenix_heatdegrees_trend)
+
+# many warning signs ...
+# p value is very small, less than 0.5, so can reject the null hypothesis which is that the data is stationary
+# tau value is the slope of the trend line: -0.0592
+
+# Run Seasonal Mann Kendall Test for Las Vegas
+LasVegas_heatdegrees_trend <-
+  Kendall::SeasonalMannKendall(LasVegas_heatdegrees_ts)
+
+LasVegas_heatdegrees_trend
+summary(LasVegas_heatdegrees_trend)
+
+# many warning signs
+# p value is 2.22 e-16 ; can reject the null and there is a trend
+# tau is -0.16
+
+SanDiego_heatdegrees_trend <-
+  Kendall::SeasonalMannKendall(SanDiego_heatdegrees_ts)
+
+SanDiego_heatdegrees_trend
+summary(SanDiego_heatdegrees_trend)
+
+# many warnings
+# p value = 0.49529 ; cannot reject the null
+# tau = -0.00414
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r Seasonal Mann Kendall Test for Cooling Degree Days}
+# Run Seasonal Mann Kendall Test for Phoenix
+Phoenix_cooldegrees_trend <-
+  Kendall::SeasonalMannKendall(Phoenix_cooldegrees_ts)
+
+Phoenix_cooldegrees_trend
+summary(Phoenix_cooldegrees_trend)
+
+# warnings
+# p value is 2.22 e -16 ; very small - reject the null and say there is a trend
+# tau = 0.0983
+
+LasVegas_cooldegrees_trend <-
+  Kendall::SeasonalMannKendall(LasVegas_cooldegrees_ts)
+
+LasVegas_cooldegrees_trend
+summary(LasVegas_cooldegrees_trend)
+
+# warnings
+# tiny p value; reject the null
+# tau value is 0.189
+
+SanDiego_cooldegrees_trend <-
+  Kendall::SeasonalMannKendall(SanDiego_cooldegrees_ts)
+
+SanDiego_cooldegrees_trend
+summary(SanDiego_cooldegrees_trend)
+
+# warnings
+#p value is 0.36317 ; cannot reject the null
+# tau value is -0.00542
+```
+
