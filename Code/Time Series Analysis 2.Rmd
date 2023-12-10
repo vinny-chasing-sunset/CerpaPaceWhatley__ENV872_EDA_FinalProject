@@ -1,0 +1,56 @@
+---
+title: "Time Series Analysis 2"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-12-10"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
+
+here()
+```
+
+```{r Load processed files}
+Phoenix <- read.csv(here("./Data/Processed/PhoenixAZ_processed.csv"),
+                    stringsAsFactors = TRUE) %>% 
+  mutate(Date = ymd(Date))
+
+FountainHills <- read.csv(here("./Data/Processed/FountainHillsAZ_processed.csv"),
+                          stringsAsFactors = TRUE) %>% 
+  mutate(Date = ymd(Date))
+
+LasVegas <- read.csv(here("./Data/Processed/LasVegasNV_processed.csv"),
+                     stringsAsFactors = TRUE) %>% 
+  mutate(Date = ymd(Date))
+
+Pahrump <- read.csv(here("./Data/Processed/PahrumpNV_processed.csv"),
+                    stringsAsFactors = TRUE) %>% 
+  mutate(Date = ymd(Date))
+
+SanDiego <- read.csv(here("./Data/Processed/SanDiegoCA_processed.csv"),
+                     stringsAsFactors = TRUE) %>%
+  mutate(Date = ymd(Date))
+
+Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
+                   stringsAsFactors = TRUE) %>% 
+  mutate(Date = ymd(Date))
+```
+
+```{r time analysis}
+
+```
