@@ -1,0 +1,30 @@
+```{Load in packages}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
+
+here()
+```
+
+```{Anova Testing for each city}
+
+```
+
+```{Urban vs Rural}
+
+```
+
+```{Visualizatiion}
+
+```
+
