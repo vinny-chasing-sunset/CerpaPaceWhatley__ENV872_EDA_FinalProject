@@ -140,6 +140,8 @@ ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location)) +
 
 
 ```{r plot heating days and cooling days, echo=FALSE}
+#Create dataframes for heating and cooling days, separately
+#Make one for 1980 and 2022 to compare the start and end of the time series
 Phoenix_Heat_1980 <- Phoenix %>%
   group_by(Heat_Degrees) %>%
   filter(Year == "1980", Heat_Degrees != 0) %>%
@@ -150,28 +152,69 @@ Phoenix_Cool_1980 <- Phoenix %>%
   filter(Year == "1980", Cool_Degrees != 0) %>%
   select(Date, Month, Cool_Degrees)
 
+Phoenix_Heat_2022 <- Phoenix %>%
+  group_by(Heat_Degrees) %>%
+  filter(Year == "2022", Heat_Degrees != 0) %>%
+  select(Date, Month, Heat_Degrees)
+
+Phoenix_Cool_2022 <- Phoenix %>%
+  group_by(Cool_Degrees) %>%
+  filter(Year == "2022", Cool_Degrees != 0) %>%
+  select(Date, Month, Cool_Degrees)
+
+#Plot heating days and cooling days in separate graph bars
 plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
   geom_bar(fill = "red") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Days when Heating is Needed in Phoenix, 1980", x = "Month", y = "Heating Days")
+  labs(title = "Heating Days in Phoenix, 1980", x = "Month", y = "Heating Days")
 print(plot_Phoenix_1980_Heat)
 
 plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
   geom_bar(fill = "blue") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Days when Cooling is Needed in Phoenix, 1980", x = "Month", y = "Cooling Days")
+  labs(title = "Cooling Days in Phoenix, 1980", x = "Month", y = "Cooling Days")
 
 grid_Phoenix_1980_HeatCoolDays <- plot_grid(plot_Phoenix_1980_Cool, plot_Phoenix_1980_Heat)
 print(grid_Phoenix_1980_HeatCoolDays)
 
-#instead of count do percentage
+#2022 plots
+plot_Phoenix_2022_Heat <- ggplot(Phoenix_Heat_2022, aes(x = Month)) +
+  geom_bar(fill = "red") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Heating Days in Phoenix, 2022", x = "Month", y = "Heating Days")
+print(plot_Phoenix_2022_Heat)
 
+plot_Phoenix_2022_Cool <- ggplot(Phoenix_Cool_2022, aes(x = Month)) +
+  geom_bar(fill = "blue") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling Days in Phoenix, 2022", x = "Month", y = "Cooling Days")
+
+grid_Phoenix_2022_HeatCoolDays <- plot_grid(plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
+print(grid_Phoenix_2022_HeatCoolDays)
+
+#Put the heating and cool days on the same graph
 plot_Phoenix_1980_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_1980, aes(x = Month, fill = "Cooling Days")) +
   geom_bar(data = Phoenix_Heat_1980, aes(x = Month, fill = "Heating Days")) +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Days when Cooling or Heating is Needed in Phoenix, 1980", x = "Month", y = "Cooling or Heating Days") + 
+  labs(title = "Cooling and Heating Days in Phoenix, 1980", x = "Month", y = "Cooling or Heating Days") + 
   scale_fill_manual(values = c("blue", "red"))
 print(plot_Phoenix_1980_HeatCoolDays)
+
+plot_Phoenix_2022_HeatCoolDays <- ggplot() +
+  geom_bar(data = Phoenix_Cool_2022, aes(x = Month, fill = "Cooling Days")) +
+  geom_bar(data = Phoenix_Heat_2022, aes(x = Month, fill = "Heating Days")) +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling and Heating in Phoenix, 2022", x = "Month", y = "Cooling or Heating Days") + 
+  scale_fill_manual(values = c("blue", "red"))
+print(plot_Phoenix_2022_HeatCoolDays)
 ```
 
+```{r save files}
+write.csv <- 
+write.csv <- 
+write.csv <- 
+write.csv <- 
+write.csv <- 
+write.csv <- 
+```

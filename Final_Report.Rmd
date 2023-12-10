@@ -1,0 +1,65 @@
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+# Set your working directory
+
+# Load your packages
+
+# Set your ggplot theme
+
+# Load your datasets
+
+```
+
+
+# Rationale and Research Questions
+Climate change is the phenomena of the accumulation of greenhouse gases which in turn traps heat increasing global temperature. It is an imminent threat which for a decade has been harped on by environmentalists, and world governments for decades. It took center stage and became a critical focus at the Conference of Parties 2021(COP 21) in which all OECD pledged to decrease carbon emissions. That is because rising temperatures devastate the entire earth's ecosystems by causing adverse weather patterns that have displaced whole communities. These communities often deal with severe flooding or severe droughts caused by this temperature change.
+
+Focusing on the United States there are regions that are more impacted than others. For example, the southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature, and minimum temperature.  Thus, our research questions are.
+ Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
+Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
+How have minimum and maximum temperatures changed over time?
+High temp (103+) over time
+
+
+
+\newpage
+
+# Dataset Information
+
+
+
+\newpage
+
+# Exploratory Analysis 
+
+
+
+\newpage
+
+# Analysis
+
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 

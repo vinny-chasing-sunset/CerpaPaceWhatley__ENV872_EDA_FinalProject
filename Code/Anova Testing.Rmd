@@ -1,0 +1,74 @@
+```{r}
+#Most current Anova Analysis
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(ggpubr)
+
+here()
+```
+
+```{r}
+summary(LasVegas)
+
+summary(Pahrump)
+
+summary(Phoenix)
+
+summary(FountainHills)
+
+summary(SanDiego)
+
+summary(Ramona)
+```
+
+```{r}
+LasVegas.aov <- aov(Year ~ Temp_Avg, data = LasVegas)
+summary(LasVegas.aov)
+```
+
+```{r}
+Pahrump.aov <- aov(Year ~ Temp_Avg, data = Pahrump)
+summary(Pahrump.aov)
+```
+
+```{r}
+Phoenix.aov <- aov(Temp_Avg ~ Year, data = Phoenix)
+summary(Phoenix.aov)
+plot(Phoenix.aov)
+
+```
+
+```{r}
+FountainHills.aov <- aov(Year ~ Temp_Avg, data = FountainHills)
+summary(FountainHills.aov)
+```
+
+```{r}
+SanDiego.aov <- aov(Year ~ Temp_Avg, data = SanDiego)
+summary(SanDiego.aov)
+```
+
+```{r}
+Ramona.aov <- aov(Year ~ Temp_Avg, data = Ramona)
+summary(Ramona.aov)
+```
+
+```{r}
+#attempting merging data
+Urban_merged_data <- merge(merge(LasVegas.aov, Phoenix.aov, by = "Year","Temp_Avg"), SanDiego.aov, by = "Year","Temp_Avg")
+```
+
+```{Visulaiztion}
+# Example of interaction plot
+ggline(LasVegas.aov, x = "Year", y = "Temp_Avg", 
+       add = c("mean_se", "jitter"), 
+       ylab = "Temperature", xlab = "Year")
+```
+
+```{r}
+
+```
+

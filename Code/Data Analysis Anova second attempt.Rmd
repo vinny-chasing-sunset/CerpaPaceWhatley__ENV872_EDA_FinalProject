@@ -1,0 +1,43 @@
+```{r}
+#Code not working saving for reference as I attempt to start over
+
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+
+here()
+```
+
+```{r}
+summary(LasVegas)
+
+summary(Pahrump)
+
+summary(Phoenix)
+
+summary(FountainHills)
+
+summary(SanDiego)
+
+summary(Ramona)
+```
+
+```{One way anova test for each city}
+LasVegas.aov <- aov(Year ~ Temp_Avg, data = LasVegas)
+summary(LasVegas.aov)
+
+```
+
+```{r}
+
+```
+

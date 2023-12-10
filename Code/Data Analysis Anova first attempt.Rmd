@@ -1,0 +1,69 @@
+```{Load in packages}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("tidyverse") # This code chunk installs the tidyverse package.
+#install.packages("lubridate") # This code chunk install lubridate package.
+#install.packages("here") # This code chunk will install the here package.
+#install.packages("zoo")
+# they are all now comments so it will knit.
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggpubr)
+library(ggthemes)
+library(broom)
+library(AICcmodavg)
+library(cowplot)
+
+here()
+```
+
+```{Checking data}
+summary(LasVegas)
+
+summary(Pahrump)
+
+summary(Phoenix)
+
+summary(FountainHills)
+
+summary(SanDiego)
+
+summary(Ramona)
+
+
+
+```
+
+
+```{One Way Anova Testing for each city}
+LasVegas.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(LasVegas.aov)
+
+Pahrump.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(Pahrump.aov)
+
+Phoenix.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(Phoenix.aov)
+
+FountainHills.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(FountainHills.aov)
+
+SanDiego.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(SanDiego.aov)
+
+Ramona.aov <- aov(Date ~ Temp_Avg, data = LasVegas)
+summary(Ramona.aov)
+ 
+```
+
+```{Urban vs Rural}
+
+```
+
+```{Visualizatiion}
+head()
+
+```
+
