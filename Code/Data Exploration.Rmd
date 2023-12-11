@@ -80,7 +80,7 @@ Three_cities <- rbind(LasVegas,
                       Phoenix,
                       SanDiego)
 
-ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location)) +
+ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location, alpha = 0.75)) +
   geom_line() +
   geom_smooth(method=lm)
 ```

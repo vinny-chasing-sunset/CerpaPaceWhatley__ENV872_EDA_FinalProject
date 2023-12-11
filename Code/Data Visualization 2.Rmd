@@ -97,6 +97,3 @@ grid_Phoenix_1980_2022_Cool <-
 print(grid_Phoenix_1980_2022_Cool)
 ```
 
-```{r write CSVs}
-write.csv <- 
-```

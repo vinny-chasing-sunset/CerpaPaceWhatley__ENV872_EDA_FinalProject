@@ -77,7 +77,7 @@ plot_Phoenix_1980_2022_Heat <- ggplot() +
   labs(title = "Intensity of Heating Degrees in Phoenix, 1980 and 2022",
        x = "Season") +
   #scale_x_continuous(breaks = season_lab$jul, labels = season_lab$lab) +
-  #scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
 print(plot_Phoenix_1980_2022_Heat)
 
