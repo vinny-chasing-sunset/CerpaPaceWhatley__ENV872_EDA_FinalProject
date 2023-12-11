@@ -1,5 +1,5 @@
 ---
-title: "Data Wrangling Part 1"
+title: "Data Wrangling"
 author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
 date: "2023-11-20"
 output: pdf_document
@@ -7,11 +7,10 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#install.packages("tidyverse") # This code chunk installs the tidyverse package.
-#install.packages("lubridate") # This code chunk install lubridate package.
-#install.packages("here") # This code chunk will install the here package.
+#install.packages("tidyverse")
+#install.packages("lubridate")
+#install.packages("here")
 #install.packages("zoo")
-# they are all now comments so it will knit.
 
 library(tidyverse)
 library(lubridate)
@@ -20,10 +19,6 @@ library(zoo)
 
 here()
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 ```{r data wrangling}
 Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
@@ -36,7 +31,8 @@ Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
   mutate(Year = year(DATE)) %>%
   mutate(DayofYear = yday(DATE))
 
-FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
+FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
+                          stringsAsFactors = TRUE) %>% 
   filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
   select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
   mutate(DATE = ymd(DATE)) %>%
@@ -90,22 +86,34 @@ Ramona <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
 
 ```{r update column names, echo=FALSE}
 colnames(Phoenix) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 
 colnames(FountainHills) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 
 colnames(LasVegas) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 
 colnames(Pahrump) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 
 colnames(SanDiego) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 
 colnames(Ramona) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear")
 ```
 
 ```{r data summaries}
@@ -122,7 +130,7 @@ summary(Ramona)
 ```{r linear interpolation}
 # FountainHills, Pahrump, Ramona requires interpolation for the min and max temps
 
-# Linear interpolation for FountainHills
+# Linear interpolation for Fountain Hills
 FountainHills <-
   FountainHills %>% 
   mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
