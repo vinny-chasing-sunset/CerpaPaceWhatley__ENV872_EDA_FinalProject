@@ -103,7 +103,7 @@ Phoenix_heatdegrees_trend
 summary(Phoenix_heatdegrees_trend)
 
 # many warning signs ...
-# p value is very small, less than 0.5, so can reject the null hypothesis which is that the data is stationary
+# p value is very small, less than 0.05, so can reject the null hypothesis which is that the data is stationary
 # tau value is the slope of the trend line: -0.0592
 
 # Run Seasonal Mann Kendall Test for Las Vegas

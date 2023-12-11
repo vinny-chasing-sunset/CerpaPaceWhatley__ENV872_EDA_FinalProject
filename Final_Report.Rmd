@@ -1,45 +1,446 @@
+---
+title: "Trends in Heating and Cooling Days in Suburban and Urban Settlements in the U.S. Southwest"
+author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+date: "2023-12-13"
+output: pdf_document
+---
 \newpage
 \tableofcontents 
 \newpage
 \listoftables 
-\newpage
 \listoffigures 
 \newpage
 
-```{r setup, include=FALSE}
-# Set your working directory
-
-# Load your packages
-
-# Set your ggplot theme
-
-# Load your datasets
-
+```{r setting global code chunks, include =FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
 ```
 
 
-# Rationale and Research Questions
+```{r setup, include=FALSE}
+
+# Load your packages
+#install.packages(ggplot2)
+#install.packages(ggpthemes)
+#install.packages(cowplot)
+
+library(tidyverse)
+library(lubridate)
+library(here)
+library(ggplot2)
+library(ggthemes)
+library(cowplot)
+library(zoo)
+
+# Set your working directory
+here()
+
+# Set your ggplot theme
+theme_EDA <- theme_base() +
+  theme(
+    
+   plot.background = element_rect(
+      color = "black",
+      fill = "gray"
+    ),
+    legend.position = "right",
+    complete = TRUE
+  )
+theme_set(theme_EDA)
+
+```
+
+# 1 Rationale and Research Questions
 Climate change is the phenomena of the accumulation of greenhouse gases which in turn traps heat increasing global temperature. It is an imminent threat which for a decade has been harped on by environmentalists, and world governments for decades. It took center stage and became a critical focus at the Conference of Parties 2021(COP 21) in which all OECD pledged to decrease carbon emissions. That is because rising temperatures devastate the entire earth's ecosystems by causing adverse weather patterns that have displaced whole communities. These communities often deal with severe flooding or severe droughts caused by this temperature change.
 
-Focusing on the United States there are regions that are more impacted than others. For example, the southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature, and minimum temperature.  Thus, our research questions are.
- Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
-Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
-How have minimum and maximum temperatures changed over time?
-High temp (103+) over time
+Focusing on the United States there are regions that are more impacted than others. For example, the southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature, and minimum temperature.  Thus, our research questions are:
 
+1. Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
 
+2. Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
-\newpage
+3. How have minimum and maximum temperatures changed over time?
 
-# Dataset Information
+# 2 Dataset Information
+Our datasets were retrieved from NOAA's National Centers for Environmental Information, specifically from the GHCN (Global Historical Climatology Network). We selected a total of six stations, encompassing three major cities and each with an associated nearby suburban location. We  selected the nearby suburban locations to be within 50 miles of the major city and with a population of less than 50,000 in 2022. The selected locations are as follows:
 
+* Phoenix and Fountain Hills, Arizona
+* Las Vegas and Pahrump, Nevada
+* San Diego and Ramona, California
 
+We primarily examined the daily data for TMAX = Maximum temperature (Fahrenheit) and TMIN = Minimum temperature (Fahrenheit) for each of the six locations. Our datasets had varying levels of coverage and start dates for each location. All the datasets had high coverage from 1998-2022, and all but Ramona, CA have data from 1980-1998. More information about this data's documentation can be found at https://www.ncei.noaa.gov/pub/data/cdo/documentation/GHCND_documentation.pdf and in the Metadata folder of this project's repository.
+
+```{r load and wrangle data}
+
+Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
+                    stringsAsFactors = TRUE) %>% 
+  filter(NAME == "PHOENIX AIRPORT, AZ US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Phoenix") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+
+FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"), stringsAsFactors = TRUE) %>% 
+  filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Fountain Hills") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+
+LasVegas <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
+                     stringsAsFactors = TRUE) %>% 
+  filter(NAME == "MCCARRAN INTERNATIONAL AIRPORT, NV US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Las Vegas") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+
+Pahrump <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
+                    stringsAsFactors = TRUE) %>% 
+  filter(NAME == "PAHRUMP 4 NW, NV US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = ymd(DATE)) %>%
+  mutate(NAME = "Pahrump") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+
+SanDiego <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
+                     stringsAsFactors = TRUE) %>% 
+  filter(NAME == "SAN DIEGO INTERNATIONAL AIRPORT, CA US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = mdy(DATE)) %>%
+  mutate(NAME = "San Diego") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+
+Ramona <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
+                   stringsAsFactors = TRUE) %>% 
+  filter(NAME == "RAMONA AIRPORT, CA US") %>% 
+  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  mutate(DATE = mdy(DATE)) %>%
+  mutate(NAME = "Ramona") %>%
+  mutate(Month = month(DATE)) %>%
+  mutate(Year = year(DATE)) %>%
+  mutate(DayofYear = yday(DATE))
+```
+
+```{r update column names}
+colnames(Phoenix) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+
+colnames(FountainHills) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+
+colnames(LasVegas) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+
+colnames(Pahrump) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+
+colnames(SanDiego) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+
+colnames(Ramona) <-
+  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine", "Month", "Year", "DayofYear")
+```
+
+```{r data summaries}
+# Determining which locations and columns have the most NA's for max and min
+#daily temperatures, therefore determining which to interpolate
+summary(Phoenix)
+summary(FountainHills)
+summary(LasVegas)
+summary(Pahrump)
+summary(SanDiego)
+summary(Ramona)
+```
+
+```{r}
+# FountainHills, Pahrump, Ramona requires interpolation for the min and max temps
+
+# Linear interpolation for FountainHills
+FountainHills <-
+  FountainHills %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(Phoenix$Daily_Temp_Max)
+summary(Phoenix$Daily_Temp_Min)
+
+# Linear interpolation for Pahrump
+Pahrump <-
+  Pahrump %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(Pahrump$Daily_Temp_Max)
+summary(Pahrump$Daily_Temp_Min)
+
+# Linear interpolation for Ramona
+Ramona <-
+  Ramona %>% 
+  mutate(Daily_Temp_Max = na.approx(Daily_Temp_Max), 
+         Daily_Temp_Min = na.approx(Daily_Temp_Min))
+
+# Showing that there are no longer NA's in either of these columns.
+summary(Ramona$Daily_Temp_Max)
+summary(Ramona$Daily_Temp_Min)
+```
+
+```{r update the average column}
+Phoenix$Temp_Avg <- 
+  rowMeans(Phoenix [, c(5, 6)], na.rm = TRUE)
+
+FountainHills$Temp_Avg <- 
+  rowMeans(FountainHills [, c(5, 6)], na.rm = TRUE)
+
+Pahrump$Temp_Avg <- 
+  rowMeans(Pahrump [, c(5, 6)], na.rm = TRUE)
+
+LasVegas$Temp_Avg <- 
+  rowMeans(LasVegas [, c(5, 6)], na.rm = TRUE)
+
+SanDiego$Temp_Avg <- 
+  rowMeans(SanDiego [, c(5, 6)], na.rm = TRUE)
+
+Ramona$Temp_Avg <- 
+  rowMeans(Ramona [, c(5, 6)], na.rm = TRUE)
+```
+
+```{r Calculating Heating and Cooling Degree Days}
+#1. Create a column for heating degrees with 0s
+#2. Create a column for heating degrees with 0s
+#3. Calculate heating degrees by finding the mean temp that's below 65F then
+#subtracting the mean temp from 65
+#4. Calculate cooling degrees by finding the mean temp that's above 65F then
+#subtracting 65 from the mean temp
+
+Phoenix$Heat_Degrees <- rep(0)
+Phoenix$Cool_Degrees <- rep(0)
+Phoenix$Heat_Degrees [Phoenix$Temp_Avg < 65] <-
+  65 - Phoenix$Temp_Avg [Phoenix$Temp_Avg < 65]
+Phoenix$Cool_Degrees [Phoenix$Temp_Avg > 65] <-
+  Phoenix$Temp_Avg [Phoenix$Temp_Avg > 65] - 65
+
+FountainHills$Heat_Degrees <- rep(0)
+FountainHills$Cool_Degrees <- rep(0)
+FountainHills$Heat_Degrees [FountainHills$Temp_Avg < 65] <-
+  65 - FountainHills$Temp_Avg [FountainHills$Temp_Avg < 65]
+FountainHills$Cool_Degrees [FountainHills$Temp_Avg > 65] <-
+  FountainHills$Temp_Avg [FountainHills$Temp_Avg > 65] - 65
+
+LasVegas$Heat_Degrees <- rep(0)
+LasVegas$Cool_Degrees <- rep(0)
+LasVegas$Heat_Degrees [LasVegas$Temp_Avg < 65] <-
+  65 - LasVegas$Temp_Avg [LasVegas$Temp_Avg < 65]
+LasVegas$Cool_Degrees [LasVegas$Temp_Avg > 65] <-
+  LasVegas$Temp_Avg [LasVegas$Temp_Avg > 65] - 65
+
+Pahrump$Heat_Degrees <- rep(0)
+Pahrump$Cool_Degrees <- rep(0)
+Pahrump$Heat_Degrees [Pahrump$Temp_Avg < 65] <-
+  65 - Pahrump$Temp_Avg [Pahrump$Temp_Avg < 65]
+Pahrump$Cool_Degrees [Pahrump$Temp_Avg > 65] <-
+  Pahrump$Temp_Avg [Pahrump$Temp_Avg > 65] - 65
+
+SanDiego$Heat_Degrees <- rep(0)
+SanDiego$Cool_Degrees <- rep(0)
+SanDiego$Heat_Degrees [SanDiego$Temp_Avg < 65] <-
+  65 - SanDiego$Temp_Avg [SanDiego$Temp_Avg < 65]
+SanDiego$Cool_Degrees [SanDiego$Temp_Avg > 65] <-
+  SanDiego$Temp_Avg [SanDiego$Temp_Avg > 65] - 65
+
+Ramona$Heat_Degrees <- rep(0)
+Ramona$Cool_Degrees <- rep(0)
+Ramona$Heat_Degrees [Ramona$Temp_Avg < 65] <-
+  65 - Ramona$Temp_Avg [Ramona$Temp_Avg < 65]
+Ramona$Cool_Degrees [Ramona$Temp_Avg > 65] <-
+  Ramona$Temp_Avg [Ramona$Temp_Avg > 65] - 65
+```
+
+```{r saving processed data}
+write.csv(Phoenix, 
+          file = "./Data/Processed/PhoenixAZ_processed.csv")
+
+write.csv(FountainHills, 
+          file = "./Data/Processed/FountainHillsAZ_processed.csv")
+
+write.csv(LasVegas, 
+          file = "./Data/Processed/LasVegasNV_processed.csv")
+
+write.csv(Pahrump,
+          file = "./Data/Processed/PahrumpNV_processed.csv")
+
+write.csv(SanDiego,
+          file = "./Data/Processed/SanDiegoCA_processed.csv")
+
+write.csv(Ramona,
+          file = "./Data/Processed/RamonaCA_processed.csv")
+```
 
 \newpage
 
 # Exploratory Analysis 
 
+```{r Exploratory Visualizations}
+ggplot(Phoenix,
+       aes(x = Date, y = Daily_Temp_Min)) +
+         geom_line() + 
+  geom_smooth (method = lm)+
+  labs( title = "Phoenix Daily Maximum Temperatures 1980-2022")+
+  geom_hline(yintercept = 65)
 
+Three_cities <- rbind(LasVegas,
+                      Phoenix,
+                      SanDiego)
+
+ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max, color = Location, alpha = 0.75)) +
+  geom_line() +
+  geom_smooth(method=lm)
+```
+
+```{r}
+#Create dataframes for heating and cooling days, separately
+#Make one for 1980 and 2022 to compare the start and end of the time series
+Phoenix_Heat_1980 <- Phoenix %>%
+  group_by(Heat_Degrees) %>%
+  filter(Year == "1980", Heat_Degrees != 0) %>%
+  select(Date, Month, Heat_Degrees)
+
+Phoenix_Cool_1980 <- Phoenix %>%
+  group_by(Cool_Degrees) %>%
+  filter(Year == "1980", Cool_Degrees != 0) %>%
+  select(Date, Month, Cool_Degrees)
+
+Phoenix_Heat_2022 <- Phoenix %>%
+  group_by(Heat_Degrees) %>%
+  filter(Year == "2022", Heat_Degrees != 0) %>%
+  select(Date, Month, Heat_Degrees)
+
+Phoenix_Cool_2022 <- Phoenix %>%
+  group_by(Cool_Degrees) %>%
+  filter(Year == "2022", Cool_Degrees != 0) %>%
+  select(Date, Month, Cool_Degrees)
+
+#Plot heating days and cooling days in separate graph bars
+plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
+  geom_bar(fill = "red") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Heating Days in Phoenix, 1980", x = "Month", y = "Heating Days")
+print(plot_Phoenix_1980_Heat)
+
+plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
+  geom_bar(fill = "blue") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling Days in Phoenix, 1980", x = "Month", y = "Cooling Days")
+
+grid_Phoenix_1980_HeatCoolDays <- plot_grid(plot_Phoenix_1980_Cool, plot_Phoenix_1980_Heat)
+print(grid_Phoenix_1980_HeatCoolDays)
+
+#2022 plots
+plot_Phoenix_2022_Heat <- ggplot(Phoenix_Heat_2022, aes(x = Month)) +
+  geom_bar(fill = "red") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Heating Days in Phoenix, 2022", x = "Month", y = "Heating Days")
+print(plot_Phoenix_2022_Heat)
+
+plot_Phoenix_2022_Cool <- ggplot(Phoenix_Cool_2022, aes(x = Month)) +
+  geom_bar(fill = "blue") +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling Days in Phoenix, 2022", x = "Month", y = "Cooling Days")
+
+grid_Phoenix_2022_HeatCoolDays <- plot_grid(plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
+print(grid_Phoenix_2022_HeatCoolDays)
+
+#Put the heating and cool days on the same graph
+plot_Phoenix_1980_HeatCoolDays <- ggplot() +
+  geom_bar(data = Phoenix_Cool_1980, aes(x = Month, fill = "Cooling Days")) +
+  geom_bar(data = Phoenix_Heat_1980, aes(x = Month, fill = "Heating Days")) +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling and Heating Days in Phoenix, 1980", x = "Month", y = "Cooling or Heating Days") + 
+  scale_fill_manual(values = c("blue", "red"))
+print(plot_Phoenix_1980_HeatCoolDays)
+
+plot_Phoenix_2022_HeatCoolDays <- ggplot() +
+  geom_bar(data = Phoenix_Cool_2022, aes(x = Month, fill = "Cooling Days")) +
+  geom_bar(data = Phoenix_Heat_2022, aes(x = Month, fill = "Heating Days")) +
+  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
+  labs(title = "Cooling and Heating in Phoenix, 2022", x = "Month", y = "Cooling or Heating Days") + 
+  scale_fill_manual(values = c("blue", "red"))
+print(plot_Phoenix_2022_HeatCoolDays)
+```
+
+```{r}
+Phoenix$DayofYear <- yday(Phoenix$Date)
+
+Phoenix$Year <- as.factor(format(Phoenix$Date,'%Y'))
+
+Phoenix_Heat_2022 <- Phoenix %>%
+  group_by(Month) %>%
+  filter(Year == "2022") %>%
+  select(Date, Year, Month, DayofYear, Heat_Degrees)
+
+Phoenix_Heat_1980 <- Phoenix %>%
+  group_by(Month) %>%
+  filter(Year == "1980") %>%
+  select(Date, Year, Month, DayofYear, Heat_Degrees)
+
+#seasonal labels https://scottishsnow.wordpress.com/2020/04/24/lubridate-ggplot-date-helpers/
+season_lab = tibble(jul = yday(as.Date(c("1980-03-01", "1980-06-01",
+                                         "1980-09-01", "1980-12-01"))),
+                 lab = c("Spring", "Summer", "Fall", "Winter"))
+
+#monthly labels  https://scottishsnow.wordpress.com/2020/04/24/lubridate-ggplot-date-helpers/
+month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
+                                          "1980-06-15", "1980-08-15",
+                                          "1980-10-15", "1980-12-15"))),
+                     lab = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec"))
+
+plot_Phoenix_1980_2022_Heat <- ggplot() +
+  geom_line(data = Phoenix_Heat_1980, 
+            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
+  geom_line(data = Phoenix_Heat_2022, 
+            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
+  labs(title = "Intensity of Heating Degrees in Phoenix, 1980 and 2022",
+       x = "Month") +
+  scale_x_continuous(breaks = season_lab$jul, labels = season_lab$lab) +
+  ylim(0, 40)
+print(plot_Phoenix_1980_2022_Heat)
+
+Phoenix_Heat_1980_Lineplot <-
+  ggplot(Phoenix_Heat_1980, aes(x = DayofYear, y = Heat_Degrees)) +
+  geom_line(color = "darkorange") +
+  labs(title = "Intensity of Heating Days (below 65 F) in Phoenix, 1980",
+       x = "Date", y = "Number of Degrees F below 65 F") +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
+print(Phoenix_Heat_1980_Lineplot)
+
+Phoenix_Heat_2022_Lineplot <- 
+  ggplot(Phoenix_Heat_2022, 
+         aes(x = DayofYear, y = Heat_Degrees)) +
+  geom_line(color = "purple")+
+  labs(title = "Intensity of Heating Days (below 65 F) in Phoenix, 2022",
+       x = "Date", y = "Number of Degrees F below 65 F") +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
+print(Phoenix_Heat_2022_Lineplot)
+
+grid_Phoenix_1980_2022_heat <-
+  plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
+print(grid_Phoenix_1980_2022_heat)
+```
 
 \newpage
 
@@ -47,10 +448,11 @@ High temp (103+) over time
 
 
 
-## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
 
-## Question 2: 
+## Question 2: Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
+## Question 3: How have minimum and maximum temperatures changed over time?
 
 
 
