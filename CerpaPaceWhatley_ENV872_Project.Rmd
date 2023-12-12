@@ -11,19 +11,14 @@ output: pdf_document
 \listoffigures 
 \newpage
 
-```{r setting global code chunks, include =FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_chunk$set(message = FALSE)
-knitr::opts_chunk$set(warning = FALSE)
-```
-
-
 ```{r setup, include=FALSE}
 
 # Load your packages
-#install.packages(ggplot2)
-#install.packages(ggpthemes)
-#install.packages(cowplot)
+#install.packages("ggplot2")
+#install.packages("ggthemes")
+#install.packages("cowplot")
+#install.packages("knitr")
+#install.packages("Kendall")
 
 library(tidyverse)
 library(lubridate)
@@ -32,22 +27,30 @@ library(ggplot2)
 library(ggthemes)
 library(cowplot)
 library(zoo)
+library(knitr)
+library(Kendall)
 
 # Set your working directory
 here()
+```
 
+```{r setting global code chunks, include =FALSE}
+opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r set ggplot theme}
 # Set your ggplot theme
-theme_EDA <- theme_base() +
+theme <- theme_base() +
   theme(
-    
    plot.background = element_rect(
       color = "black",
       fill = "gray"
     ),
-    legend.position = "right",
+    legend.position = "top", 
+   legend.direction = "vertical",
     complete = TRUE
   )
-theme_set(theme_EDA)
+theme_set(theme)
 
 #monthly labels
 month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
@@ -325,6 +328,7 @@ print(grid_Phoenix_1980_2022_Cool)
 ## Question 2: Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
+To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every city. We first created univariate time series objects for each measure for each site.
 ```{r time series objects for min and max temperatures}
 #Creating univariate time series objects for min & max temperature for each site
 #Pheonix
@@ -381,7 +385,7 @@ Ramona_temp_max_ts <- ts(Ramona$Daily_Temp_Max,
                             start = c(1998, 1),
                             frequency = 365)
 ```
-
+We then decomposed each time series to review the trends and seasonality present.
 ```{r decomposing time series objects for min and max temperatures}
 # Decompose each time series (ts) object
 #Phoenix
@@ -439,89 +443,62 @@ Ramona_temp_max_ts_Decomposed <- stl(Ramona_temp_max_ts,
 plot(Ramona_temp_max_ts_Decomposed)
 ```
 
+We then conducted a Seasonal Mann  Kendal test to test whether the hypothesis that the data is stationary. This would mean that the data exhibit no statistically-significant upward or downward trend over time, meaning that there is no change in the temperature minimum and maximums over time.
 ```{r SMK tests for min and max temperatures}
 #Run Seasonal Mann Kendall Tests
 
 #Phoenix
 Phoenix_temp_max_trend <- SeasonalMannKendall(Phoenix_temp_max_ts)
-summary(Phoenix_temp_max_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0617 slope of the trend line
-
 Phoenix_temp_min_trend <- SeasonalMannKendall(Phoenix_temp_min_ts)
-summary(Phoenix_temp_min_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0951 slope of the trend line
 
 #Fountain Hills
 FountainHills_temp_max_trend <- SeasonalMannKendall(FountainHills_temp_max_ts)
-summary(FountainHills_temp_max_trend)
-
-#p-value: 7.6637e-07 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: -0.0282 slope of the trend line
-
 FountainHills_temp_min_trend <- SeasonalMannKendall(FountainHills_temp_min_ts)
-summary(FountainHills_temp_min_trend)
-
-#p-value: <2.22e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0979 slope of the trend line
 
 #Las Vegas
 LasVegas_temp_max_trend <- SeasonalMannKendall(LasVegas_temp_max_ts)
-summary(LasVegas_temp_max_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0671 slope of the trend line
-
 LasVegas_temp_min_trend <- SeasonalMannKendall(LasVegas_temp_min_ts)
-summary(LasVegas_temp_min_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.29 slope of the trend line
 
 #Pahrump
 Pahrump_temp_max_trend <- SeasonalMannKendall(Pahrump_temp_max_ts)
-summary(Pahrump_temp_max_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0482 slope of the trend line
-
 Pahrump_temp_min_trend <- SeasonalMannKendall(Pahrump_temp_min_ts)
-summary(Pahrump_temp_min_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0678 slope of the trend line
 
 #San Diego
 SanDiego_temp_max_trend <- SeasonalMannKendall(SanDiego_temp_max_ts)
-summary(SanDiego_temp_max_trend)
-
-#p-value: 0.00089098 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: 0.0173 slope of the trend line
-
 SanDiego_temp_min_trend <- SeasonalMannKendall(SanDiego_temp_min_ts)
-summary(SanDiego_temp_min_trend)
-
-#p-value: 0.00051036 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: -0.0182 slope of the trend line
 
 #Ramona
 Ramona_temp_max_trend <- SeasonalMannKendall(Ramona_temp_max_ts)
-summary(Ramona_temp_max_trend)
-
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: -0.112 slope of the trend line
-
 Ramona_temp_min_trend <- SeasonalMannKendall(Ramona_temp_min_ts)
-summary(Ramona_temp_min_trend)
+```
+The results of the Seasonal Mann Kendall test show us that .
+``` {r ktable with results from the Seasonal Mann Kendall test}
+temp_SMK_cities <- c("Phoenix", "Phoenix", "Fountain Hills", "Fountain Hills",
+            "Las Vegas", "Las Vegas", "Pahrump", "Pahrump",
+            "San Diego", "San Diego", "Ramona", "Ramona")
 
-#p-value: <2.22 e-16 <0.05 so null hypothesis (data is stationary) is rejected
-#tau value: -0.0912 slope of the trend line
+temp_SMK_variable <- c("max temperature", "min temperature", "max temperature",
+                   "min temperature", "max temperature", "min temperature",
+                   "max temperature", "min temperature", "max temperature",
+                   "min temperature", "max temperature", "min temperature")
+
+temp_SMK_p_values <- c("<2.22 e-16", "<2.22 e-16", " 7.66 e-07", "<2.22 e-16", 
+                  "<2.22 e-16", "<2.22 e-16", "<2.22 e-16", "<2.22 e-16", 
+                  "8.91 e-4", "5.10 e-4", "<2.22 e-16", "<2.22 e-16")
+
+temp_SMK_tau_values <- c("0.0617", "0.0951", "-0.0282", "0.0979",
+                    "0.0671", "0.29", "0.0482", "0.0678",
+                    "0.0173",  "-0.0182",  "-0.112",  "-0.0912")
+
+temp_SMK <- data.frame(temp_SMK_cities, temp_SMK_variable,
+                       temp_SMK_p_values, temp_SMK_tau_values)
+
+kable(temp_SMK, "pipe", col.names =  c("City", "Variable", "p-value", "tau value"), 
+caption = "Results for the Seasonal Mann Kendall test on minimum and maximum
+temperatures", align = c("l", "c", "c", "c"), digits = 4, scientific = TRUE)
 ```
 
-``` {r plots for min and max temperatures, fig.width=8, fig.height=14}
+``` {r plots for min and max temperatures, include = FALSE}
 #Phoenix plot
 Phoenix_plot_temp <- ggplot(Phoenix, aes(x = Date)) +
   geom_line(aes(y = Daily_Temp_Max, color = "Max Temp")) + 
@@ -587,9 +564,17 @@ Ramona_plot_temp <- ggplot(Ramona, aes(x = Date)) +
   labs(title = "Ramona (1998-2022)", x = "Year",
        y = "Daily Temp Peaks (°F)", color = "Legend")
 print(Ramona_plot_temp)
+```
+
+``` {r put above plots in a single grid,  fig.width = 7.5, fig.height = 10}
+#create a title
+title <- ggdraw() + draw_label("Trends in Minimum and Maximum Temperatures across Cities")
 
 #extract a legend from one of the plots, make it into an object
-plot_legend <- get_legend(Ramona_plot_temp + theme(legend.position = "top")
+plot_legend <- get_legend(Ramona_plot_temp
+                          + guides(color = guide_legend(nrow = 1)) + 
+                            theme(legend.position = "top")
+                          )
 
 #add the plots without legends to a cowplot
 temp_plots <- plot_grid(
@@ -599,15 +584,14 @@ temp_plots <- plot_grid(
   Pahrump_plot_temp + theme(legend.position = "none"),
   SanDiego_plot_temp + theme(legend.position = "none"),
   Ramona_plot_temp + theme(legend.position = "none"),
-  ncol = 2, nrow = 3)
-print(temp_plots)
+  align = c("hv"), ncol = 2, nrow = 3)
 
 #combine plots and legend
-temperature_plots <- plot_grid(temp_plots, plot_legend,
-                               ncol = 2, nrow = 3)
+temperature_plots <- plot_grid(title, plot_legend, temp_plots, ncol = 1, nrow = 3, rel_heights = c(0.5, 0.75, 10))
 print(temperature_plots)
 ```
 
+The graphs above show the trends increasing or slightly decreasing in the case of .
 
 \newpage
 
