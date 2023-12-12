@@ -6,6 +6,7 @@ library(here)
 library(ggplot2)
 library(ggthemes)
 library(ggpubr)
+library(knitr)
 
 here()
 ```
@@ -25,50 +26,126 @@ summary(Ramona)
 ```
 
 ```{r}
-LasVegas.aov <- aov(Year ~ Temp_Avg, data = LasVegas)
-summary(LasVegas.aov)
+#Filtering Datasets from 1980 to 2022
+LasVegasMetro <- LasVegas %>%
+  filter(Year >= 1972 & Year <= 2022)
+
+PahrumpSuburban <- Pahrump %>%
+  filter(Year >= 1972 & Year <= 2022)
+
+PhoenixMetro <- Phoenix %>%
+  filter(Year >= 1980 & Year <= 2022)
+
+FountainHillsSuburban <- FountainHills %>%
+  filter(Year >= 1980 & Year <= 2022)
+
+SanDiegoMetro <- SanDiego %>%
+  filter(Year >= 1998 & Year <= 2022)
+
+RamonaSuburban <- Ramona %>%
+  filter(Year >= 1998 & Year <= 2022)
+
 ```
 
 ```{r}
-Pahrump.aov <- aov(Year ~ Temp_Avg, data = Pahrump)
-summary(Pahrump.aov)
+# Combine datasets by rows
+Nevada_data <- rbind(LasVegasMetro, PahrumpSuburban)
+
+Nevada_data <- Nevada_data %>%
+  select(Location, Year, Heat_Degrees, Cool_Degrees)
+
+# Perform ANOVA test for Heat_Degrees by Location and Year
+anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = Nevada_data)
+
+# Perform ANOVA test for Cool_Degrees by Location and Year
+anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = Nevada_data)
+
+# Summary of ANOVA results for Heat_Degrees
+summary(anova_result_heat) 
+
+
+# Summary of ANOVA results for Cool_Degrees
+summary(anova_result_cool)
+
+# Extract F-values using the summary function
+summary_anova_heat <- summary(anova_result_heat)
+summary_anova_cool <- summary(anova_result_cool)
+# Access F-values from the summary
+f_values_heat <- summary_anova_heat[[1]]$"F value"
+f_values_cool <- summary_anova_cool[[1]]$"F value"
+
+
+
+# Create a bar plot for F-values
+barplot(c(f_values_heat, f_values_cool), 
+        beside = TRUE,
+        col = c("red", "blue"),
+        names.arg = c("Heat_Degrees", "Cool_Degrees"),
+        main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+        ylab = "F-value",
+        legend.text = c("Heat_Degrees", "Cool_Degrees"),
+        args.legend = list(x = "topright", bty = "n"))
+
 ```
 
 ```{r}
-Phoenix.aov <- aov(Temp_Avg ~ Year, data = Phoenix)
-summary(Phoenix.aov)
-plot(Phoenix.aov)
+# Assuming f_values_heat and f_values_cool contain the extracted F-values
+
+# Example F-values (replace these with your extracted F-values)
+f_values_heat <- c(803.9, 88.6, 36.4)  # Replace with your F-values for Heat_Degrees
+f_values_cool <- c(1228.7, 153.4, 36.4)  # Replace with your F-values for Cool_Degrees
+
+# Combine the F-values into a matrix
+f_values_matrix <- matrix(c(f_values_heat, f_values_cool), nrow = 3, byrow = TRUE)
+
+# Names for the bars (change or customize as needed)
+bar_names <- c("Heat Values", "Cool Values")
+
+# Assign colors to bars corresponding to each factor
+colors <- c(rep("red", length(f_values_heat)), rep("blue", length(f_values_cool)))
+
+# Check the number of names and columns in the matrix
+if (length(bar_names) != ncol(f_values_matrix)) {
+  stop("Incorrect number of names for the columns in the matrix.")
+} else {
+  # Create a bar plot with specific colors for each bar
+  barplot(f_values_matrix, beside = TRUE,
+          col = colors,
+          names.arg = bar_names,
+          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          ylab = "F-value",
+          legend.text = c("Heat_Degrees", "Cool_Degrees"),
+          args.legend = list(x = "center", bty = "n"))
+}
+
 
 ```
+
 
 ```{r}
-FountainHills.aov <- aov(Year ~ Temp_Avg, data = FountainHills)
-summary(FountainHills.aov)
+# Extract the ANOVA table from the summary.aov object
+anova_table <- summary(anova_result_heat)[[1]]
+
+# Convert the ANOVA table to a data frame
+anova_df <- as.data.frame(anova_table)
+
+# Display the ANOVA table using kable
+library(knitr)
+kable(anova_df, caption = "ANOVA Summary Table for Heat_Degrees")
+
+
+
 ```
 
-```{r}
-SanDiego.aov <- aov(Year ~ Temp_Avg, data = SanDiego)
-summary(SanDiego.aov)
-```
-
-```{r}
-Ramona.aov <- aov(Year ~ Temp_Avg, data = Ramona)
-summary(Ramona.aov)
-```
-
-```{r}
-#attempting merging data
-Urban_merged_data <- merge(merge(LasVegas.aov, Phoenix.aov, by = "Year","Temp_Avg"), SanDiego.aov, by = "Year","Temp_Avg")
-```
-
-```{Visulaiztion}
-# Example of interaction plot
-ggline(LasVegas.aov, x = "Year", y = "Temp_Avg", 
-       add = c("mean_se", "jitter"), 
-       ylab = "Temperature", xlab = "Year")
-```
 
 ```{r}
 
+interaction.plot(x.factor = Nevada_data$Year, 
+                 trace.factor = Nevada_data$Location, 
+                 response = Nevada_data$Heat_Degrees, 
+                 fun = mean, 
+                 type = "b",
+                 xlab = "Year", 
+                 ylab = "Mean Heat Degrees",
+                 main = "Interaction Plot of Heat_Degrees by Location and Year")
 ```
-
