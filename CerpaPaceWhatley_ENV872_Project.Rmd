@@ -61,7 +61,7 @@ month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
                      lab = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec"))
 ```
 
-# 1 Rationale and Research Questions
+# 1. Rationale and Research Questions
 Climate change, long-term shifts in temperatures and weather patterns, is a naturally-occurring process that has been accelerated by human actions, primarily the burning of fossil fuels. One of the impacts of climate change is rising temperatures, which has negative impacts on Earth's ecosystems, such as melting glaciers, intensifying storms, and worsening drought conditions. Humans are directly impacted by rising temperatures: as the number of hot days and heat waves increase, so do the number of heat-related illnesses.
 
 The U.S. has not escaped these impact. The southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature and minimum temperature.  Thus, our research questions are:
@@ -72,7 +72,7 @@ The U.S. has not escaped these impact. The southwest region of the US which we d
 
 3. How have minimum and maximum temperatures changed over time?
 
-# 2 Dataset Information
+# 2. Dataset Information
 Our datasets were retrieved from NOAA's National Centers for Environmental Information (NCEI), specifically from the GHCN (Global Historical Climatology Network). We selected a total of six stations, encompassing three major cities and each with an associated nearby suburban location. We  selected the nearby suburban locations to be within 50 miles of the major city and with a population of less than 50,000 in 2022. The selected locations are as follows:
 
 * Phoenix and Fountain Hills, Arizona
@@ -83,7 +83,7 @@ We primarily examined the daily data for TMAX = Maximum temperature (Fahrenheit)
 
 \newpage
 
-# 3 Data Wrangling
+# 3. Data Wrangling
 
 We took several steps in our workflow to clean our datasets. The raw data included both the city and suburb in the same CSV, so we first filtered the data to separate out the locations. For each of the 6 locations, we selected the columns we were interested in exploring, which included NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN, and created columns for Month, Year, and DayofYear to enable different years to be overlaid on a graph.
 
@@ -122,9 +122,9 @@ To wrangle our data, we:
 
 \newpage
 
-# 3. Exploratory Analysis 
+# 4. Exploratory Analysis 
 
-For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trendline for Las Vegas has a noticeable positive slope over time, while the trendline for Phoenix demonstrates only a slight increase and San Diego's trendline remains to be horizontal with no major changes in slope.
+For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trend for Las Vegas has a noticeable positive slope over time, while the trend for Phoenix demonstrates only a slight increase and San Diego's trend remains to be horizontal with no major changes in slope.
 
 ```{r Load Processed files}
 Phoenix <- read.csv(here("./Data/Processed/PhoenixAZ_processed.csv"),
@@ -406,7 +406,7 @@ print(plot_Phoenix_1980_2022_Cool)
 
 \newpage
 
-# 4. Analysis
+# 5. Analysis
 
 ## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1980 to 2022?
 
@@ -443,7 +443,7 @@ SanDiego_cooldegrees_ts <- ts(SanDiego$Cool_Degrees,
                               frequency = 365)
 ```
 
-```{r decomposing for heat/cool degrees, out.width="50%"}
+```{r decomposing for heat/cool degrees, out.width= "50%"}
 # Decomposing each ts object
 
 Phoenix_heatdegrees_ts_Decomposed <-
@@ -829,11 +829,11 @@ The graphs above show the trends increasing or slightly decreasing in the case o
 
 \newpage
 
-# 5. Summary and Conclusions
+# 6. Summary and Conclusions
 
 
 \newpage
 
-# 6. References
+# 7. References
 
 US EPA, O. (2016, July 1). Climate Change Indicators: Heating and Cooling Degree Days [Reports and Assessments]. https://www.epa.gov/climate-indicators/climate-change-indicators-heating-and-cooling-degree-days
