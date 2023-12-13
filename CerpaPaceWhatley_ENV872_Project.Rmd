@@ -748,7 +748,7 @@ California_anova_df_cool <- as.data.frame(California_anova_table_cool)
 kable(California_anova_df_cool, caption = "ANOVA Summary Table for California Cool_Degrees")
 ```
 
-We then extracted the f-values from those datasets and create a bar charts to visualize the stark difference between statically significant variables compared to the other variables.
+We then extracted the f-values from those datasets and created bar charts to visualize the stark difference between statically significant variables compared to the other variables.
 
 ```{r Creating Bar plot of F-values, Nevada data}
 
@@ -1115,6 +1115,7 @@ The graphs above show the trends increasing or slightly decreasing in the case o
 
 # 6. Summary and Conclusions
 
+(Question 1)... ANOVA testing allowed us to ascertain that Location played the biggest role in determining average means of Heating and Cooling Degrees. This is true for Nevada, Arizona, and California minus California’s Cooling degree mean. Which we believe was different due to data set being smaller compared to the other data sets from Nevada and Arizona which have a couple of more decades worth of data. We didn't want to stop here though and decided that further analysis was needed, this time testing the data with time series analysis... (Question 3)
 
 \newpage
 
