@@ -150,39 +150,32 @@ SanDiego <- read.csv(here("./Data/Processed/SanDiegoCA_processed.csv"),
 Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
                    stringsAsFactors = TRUE) %>% 
   mutate(Date = ymd(Date))
-
-summary(Phoenix)
-summary(FountainHills)
-summary(LasVegas)
-summary(Pahrump)
-summary(SanDiego)
-summary(Ramona)
 ```
 
-``` {r summary table}
-sum_city <- c("Phoenix", "Fountain Hills", "Las Vegas", "Pahrump", "San Diego", "Ramona")
-sum_date <- c("1980-01-01 to 2022-12-31", "1980-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2023-01-01", "1998-04-16 to 2023-01-01")
-sum_precip <- c()
-sum_perc_sun <- c()
-sum_daily_temp_max <- c()
-sum_daily_temp_min <- c()
-sum_temp_avg <- c()
-sum_total_sun <- c()
-sum_month <- c("1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12")
-sum_year <- c("1980 to 2022", "1980 to 2022", "1972 to 2022", "1972 to 2022", "1972 to 2023", "1998 to 2023")
-sum_dayofyear <- c("1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366")
-sum_heat_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
-sum_cool_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
+```{summary table, eval=FALSE, include=FALSE}
+#sum_city <- c("Phoenix", "Fountain Hills", "Las Vegas", "Pahrump", "San Diego", "Ramona")
+#sum_date <- c("1980-01-01 to 2022-12-31", "1980-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2023-01-01", "1998-04-16 to 2023-01-01")
+#sum_precip <- c()
+#sum_perc_sun <- c()
+#sum_daily_temp_max <- c()
+#sum_daily_temp_min <- c()
+#sum_temp_avg <- c()
+#sum_total_sun <- c()
+#sum_month <- c("1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12")
+#sum_year <- c("1980 to 2022", "1980 to 2022", "1972 to 2022", "1972 to 2022", "1972 to 2023", "1998 to 2023")
+#sum_dayofyear <- c("1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366")
+#sum_heat_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
+#sum_cool_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
 
-summary_table <- data.frame(sum_city, sum_date, sum_precip, sum_perc_sun, sum_daily_temp_max, sum_daily_temp_min, sum_temp_avg, sum_total_sun, sum_month, sum_year, sum_dayofyear, sum_heat_degrees, sum_cool_degrees)
+#summary_table <- data.frame(sum_city, sum_date, sum_precip, sum_perc_sun, sum_daily_temp_max, sum_daily_temp_min, sum_temp_avg, sum_total_sun, sum_month, sum_year, sum_dayofyear, sum_heat_degrees, sum_cool_degrees)
 
-kable(summary_table, "pipe", col.names =  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+#kable(summary_table, "pipe", col.names =  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
     "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
     "Month", "Year", "DayofYear"), 
-caption = "Data Structure Summary", align = c("c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"))
+#caption = "Data Structure Summary", align = c("c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"))
 ```
 
-```{r all cities avg temp, fig.cap= "Average Tempearture for Phoenix, Las Vegas, San Diego", fig.height= 2.5}
+```{r all cities avg temp, fig.cap= "Average Tempearture for Phoenix, Las Vegas, San Diego", fig.height = 2.75}
 Three_cities <- rbind(LasVegas,
                       Phoenix,
                       SanDiego)
@@ -194,13 +187,12 @@ ggplot(Three_cities, aes(x = Date,
   geom_line() +
   geom_smooth(method=lm) + 
   labs(title = "Three Cities' Daily Average Temperatures",
-       y = "Daily Avg Temp in degrees F") +
-  theme(legend.position = "right")
+       y = "Daily Avg Temp in degrees F") 
 ```
 
 For the remainder of the exploratory analysis section, we focused on a single city - Phoenix, Arizona - in order to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trendlines for the minimum and maximum temperatures show that there has been a modest increase in both over time. The black horizontal line on Figure 2 marks the 65 F threshold for heating and cooling degrees. Based on the trends in this figure, we would expect there to be more cooling degree days than heating.
 
-```{r plots exploring the trends in the min and max temperatures, fig.cap="Phoenix Daily Maiximum and Minimum Temperatures", fig.height= 2.5}
+```{r plots exploring the trends in the min and max temperatures, fig.cap="Phoenix Daily Maiximum and Minimum Temperatures", fig.height = 2.75}
 # Creating a plot with Phoenix's min and max temp
 ggplot(Phoenix, aes(x = Date)) +
      	geom_line(aes(y = Daily_Temp_Max, color = "Max Temp")) +
@@ -263,6 +255,8 @@ plot_Phoenix_2022_Cool <- ggplot(Phoenix_Cool_2022, aes(x = Month)) +
 #  plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
 ```
 
+\newpage
+
 Figures 3 and 4 compare the number of heating and cooling degree days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of cooling days in March, April, and October and a decrease in the number of heating days in February and March.  
 
 ```{r number of heating/cooling days Phoenix 1980, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 1980"}
@@ -277,7 +271,7 @@ plot_Phoenix_1980_HeatCoolDays <- ggplot() +
 print(plot_Phoenix_1980_HeatCoolDays)
 ```
 
-```{r Phoenix 2022 heat/cool degree days, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 2022}
+```{r Phoenix 2022 heat/cool degree days, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 2022"}
 plot_Phoenix_2022_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_2022, aes(x = Month, fill = "Cooling Days")) +
   geom_bar(data = Phoenix_Heat_2022, aes(x = Month, fill = "Heating Days")) +
@@ -288,8 +282,17 @@ plot_Phoenix_2022_HeatCoolDays <- ggplot() +
 print(plot_Phoenix_2022_HeatCoolDays)
 ```
 
+\newpage
 
-```{r plots for intensity of cooling/heating degree days}
+Figures 5 and 6 show the intensity of heating and cooling degree days in Phoenix in 1980 and 2022. In this instance, intensity is the number of degrees over or under 65 F per day. The peaks of the heating degree day intensity is approximately half the intensity of the cooling degree day intensity. Figure 5 shows that there were some higher peaks in 2022 of heating degree days, and March of 2022 saw a much lower intensity of heat degree days than March of 1980. Figure 6 shows the intensity of cooling degree days peaking consistently in the month of July. July 2022 reached 39 degrees F and July 1980 reached 36 degrees F. In 2022 compared to 1980, cooling degree days started earlier in the year, and consistently reached a slightly higher intensity.  
+
+```{r code for intensity of cooling/heating degree days, fig.cap="Comparison of Heat Degree Days in Phoenix in 1980 and 2022"}
+#monthly labels
+month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
+                                          "1980-06-15", "1980-08-15",
+                                          "1980-10-15", "1980-12-15"))),
+                     lab = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec"))
+
 #heating degree days
 Phoenix_Heat_2022 <- Phoenix %>%
   group_by(Month) %>%
@@ -303,9 +306,11 @@ Phoenix_Heat_1980 <- Phoenix %>%
 
 plot_Phoenix_1980_2022_Heat <- ggplot() +
   geom_line(data = Phoenix_Heat_1980, 
-            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
+            aes(x = DayofYear, y = Heat_Degrees, 
+                color = '1980')) +
   geom_line(data = Phoenix_Heat_2022, 
-            aes(x = DayofYear, y = Heat_Degrees, color = Year)) +
+            aes(x = DayofYear, y = Heat_Degrees, 
+                color = '2022')) +
   labs(title = "Intensity of Heating Degrees (<65 F) in Phoenix (1980 & 2022)",
        x = "Month", y = "Number of Degrees F below 65 F") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
@@ -319,7 +324,6 @@ Phoenix_Heat_1980_Lineplot <-
        x = "Month", y = "Number of Degrees F below 65 F") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
-print(Phoenix_Heat_1980_Lineplot)
 
 Phoenix_Heat_2022_Lineplot <- 
   ggplot(Phoenix_Heat_2022, 
@@ -329,12 +333,52 @@ Phoenix_Heat_2022_Lineplot <-
        x = "Month", y = "Number of Degrees F below 65 F") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
-print(Phoenix_Heat_2022_Lineplot)
+
+#grid_Phoenix_1980_2022_heat <-
+ # plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
+
+```
+
+```{r side by side intensity of heat degree days}
+Phoenix_Heat_1980_Lineplot <-
+  ggplot(Phoenix_Heat_1980, aes(x = DayofYear, y = Heat_Degrees)) +
+  geom_line(color = "darkorange") +
+  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (1980)",
+       x = "Month", y = "Number of Degrees F below 65 F") +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
+
+Phoenix_Heat_2022_Lineplot <- 
+  ggplot(Phoenix_Heat_2022, 
+         aes(x = DayofYear, y = Heat_Degrees)) +
+  geom_line(color = "purple")+
+  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (2022)",
+       x = "Month", y = "Number of Degrees F below 65 F") +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
 
 grid_Phoenix_1980_2022_heat <-
   plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
-print(grid_Phoenix_1980_2022_heat)
+```
 
+```{r Intensity of Heat Degree Days Phoenix 1980 and 2022 }
+# Comparing Intensity of Heat Degree Days in Phoenix in 1980 and 2022
+
+plot_Phoenix_1980_2022_Heat <- ggplot() +
+  geom_line(data = Phoenix_Heat_1980, 
+            aes(x = DayofYear, y = Heat_Degrees),
+                color = 'darkorange') +
+  geom_line(data = Phoenix_Heat_2022, 
+            aes(x = DayofYear, y = Heat_Degrees), 
+                color = 'purple') +
+  labs(title = "Intensity of Heating Degrees (<65 F) in Phoenix (1980 & 2022)",
+       x = "Month", y = "Number of Degrees F below 65 F") +
+  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
+  ylim(0, 40)
+#print(plot_Phoenix_1980_2022_Heat)
+```
+
+```{r cooling degree days intensity, fig.cap="Comparison of Cool Degree Days in Phoenix in 1980 and 2022"}
 #cooling degree days
 Phoenix_Cooling_2022 <- Phoenix %>%
   group_by(Month) %>%
@@ -348,42 +392,18 @@ Phoenix_Cooling_1980 <- Phoenix %>%
 
 plot_Phoenix_1980_2022_Cool <- ggplot() +
   geom_line(data = Phoenix_Cooling_1980, 
-            aes(x = DayofYear, y = Cool_Degrees), 
-            color='darkorange') +
+            aes(x = DayofYear, y = Cool_Degrees, 
+            color='1980')) +
   geom_line(data = Phoenix_Cooling_2022, 
-            aes(x = DayofYear, y = Cool_Degrees),
-            color = 'purple') +
-  labs(title = "Intensity of Cooling Degrees (>65 F) in Phoenix (1980-2022)",
+            aes(x = DayofYear, y = Cool_Degrees,
+            color = '2022')) +
+  labs(title = "Intensity of Cooling Degrees (>65 F) in Phoenix (1980 & 2022)",
        x = "Month", y = "Number of Degrees F above 65 F") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
 print(plot_Phoenix_1980_2022_Cool)
-
-Phoenix_Cool_1980_Lineplot <- 
-  ggplot(Phoenix_Cooling_1980, 
-         aes(x = DayofYear, y = Cool_Degrees)) +
-  geom_line(color = "darkorange")+
-  labs(title = "Intensity of Cooling Days (>65 F) in Phoenix (1980)",
-       x = "Month", y = "Number of Degrees F Above 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-print(Phoenix_Cool_1980_Lineplot)
-
-Phoenix_Cool_2022_Lineplot <- 
-  ggplot(Phoenix_Cooling_2022, 
-         aes(x = DayofYear, y = Cool_Degrees)) +
-  geom_line(color = "purple")+
-  labs(title = "Intensity of Cooling Days (>65 F) in Phoenix, 2022",
-       x = "Month", y = "Number of Degrees F Above 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-print(Phoenix_Cool_2022_Lineplot)
-
-grid_Phoenix_1980_2022_Cool <-
-  plot_grid(Phoenix_Cool_1980_Lineplot, Phoenix_Cool_2022_Lineplot)
-
-print(grid_Phoenix_1980_2022_Cool)
 ```
+
 
 \newpage
 
@@ -664,4 +684,5 @@ The graphs above show the trends increasing or slightly decreasing in the case o
 \newpage
 
 # 6. References
-<add references here if relevant, otherwise delete this section> 
+
+US EPA, O. (2016, July 1). Climate Change Indicators: Heating and Cooling Degree Days [Reports and Assessments]. https://www.epa.gov/climate-indicators/climate-change-indicators-heating-and-cooling-degree-days

@@ -494,3 +494,276 @@ summary(SanDiego_cooldegrees_trend)
 #p value is 0.36317 ; cannot reject the null
 # tau value is -0.00542
 ```
+
+
+```{r Summary of data for each city}
+summary(LasVegas)
+
+summary(Pahrump)
+
+summary(Phoenix)
+
+summary(FountainHills)
+
+summary(SanDiego)
+
+summary(Ramona)
+```
+
+```{r Fitering each data set for companion city}
+#Filtering Datasets from 1980 to 2022
+LasVegasMetro <- LasVegas %>%
+  filter(Year >= 1972 & Year <= 2022)
+
+PahrumpSuburban <- Pahrump %>%
+  filter(Year >= 1972 & Year <= 2022)
+
+PhoenixMetro <- Phoenix %>%
+  filter(Year >= 1980 & Year <= 2022)
+
+FountainHillsSuburban <- FountainHills %>%
+  filter(Year >= 1980 & Year <= 2022)
+
+SanDiegoMetro <- SanDiego %>%
+  filter(Year >= 1998 & Year <= 2022)
+
+RamonaSuburban <- Ramona %>%
+  filter(Year >= 1998 & Year <= 2022)
+
+```
+
+```{r combine nevada cities }
+# Combine datasets by rows
+Nevada_data <- rbind(LasVegasMetro, PahrumpSuburban)
+
+Nevada_data <- Nevada_data %>%
+  select(Location, Year, Heat_Degrees, Cool_Degrees)
+
+# Perform ANOVA test for Heat_Degrees by Location and Year
+Nevada_anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = Nevada_data)
+
+# Perform ANOVA test for Cool_Degrees by Location and Year
+Nevada_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = Nevada_data)
+
+# Summary of ANOVA results for Heat_Degrees
+summary(Nevada_anova_result_heat) 
+
+
+# Summary of ANOVA results for Cool_Degrees
+summary(Nevada_anova_result_cool)
+
+# Extract F-values using the summary function
+Nevada_summary_anova_heat <- summary(Nevada_anova_result_heat)
+Nevada_summary_anova_cool <- summary(Nevada_anova_result_cool)
+
+
+```
+
+```{r combine Arizona cities}
+# Combine datasets by rows
+Arizona_data <- rbind(PhoenixMetro, FountainHillsSuburban)
+
+Arizona_data <- Arizona_data %>%
+  select(Location, Year, Heat_Degrees, Cool_Degrees)
+
+# Perform ANOVA test for Heat_Degrees by Location and Year
+Arizona_anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = Arizona_data)
+
+# Perform ANOVA test for Cool_Degrees by Location and Year
+Arizona_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = Arizona_data)
+
+# Summary of ANOVA results for Heat_Degrees
+summary(Arizona_anova_result_heat) 
+
+
+# Summary of ANOVA results for Cool_Degrees
+summary(Arizona_anova_result_cool)
+
+# Extract F-values using the summary function
+Arizona_summary_anova_heat <- summary(Arizona_anova_result_heat)
+Arizona_summary_anova_cool <- summary(Arizona_anova_result_cool)
+```
+
+```{r combine California cities}
+# Combine datasets by rows
+California_data <- rbind(SanDiegoMetro, RamonaSuburban)
+
+California_data <- California_data %>%
+  select(Location, Year, Heat_Degrees, Cool_Degrees)
+
+# Perform ANOVA test for Heat_Degrees by Location and Year
+California_anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = California_data)
+
+# Perform ANOVA test for Cool_Degrees by Location and Year
+California_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = California_data)
+
+# Summary of ANOVA results for Heat_Degrees
+summary(California_anova_result_heat) 
+
+
+# Summary of ANOVA results for Cool_Degrees
+summary(California_anova_result_cool)
+
+# Extract F-values using the summary function
+California_summary_anova_heat <- summary(California_anova_result_heat)
+California_summary_anova_cool <- summary(California_anova_result_cool)
+```
+
+
+```{r Nevada Kable}
+# Extract the aov table from the summary.aov object
+Nevada_anova_table_heat <- summary(Nevada_anova_result_heat)[[1]]
+
+# Convert the ANOVA table to a data frame
+Nevada_anova_df_heat <- as.data.frame(Nevada_anova_table_heat)
+
+# Display the ANOVA table using kable
+kable(Nevada_anova_df_heat, caption = "ANOVA Summary Table for Nevada Heat_Degrees")
+
+# Extract the aov table from the summary.aov object
+Nevada_anova_table_cool <- summary(Nevada_anova_result_cool)[[1]]
+
+# Convert the ANOVA table to a data frame
+Nevada_anova_df_cool <- as.data.frame(Nevada_anova_table_cool)
+
+# Display the ANOVA table using kable
+kable(Nevada_anova_df_cool, caption = "ANOVA Summary Table for Nevada Cool_Degrees")
+
+```
+
+```{r Arizona Kable}
+# Extract the aov table from the summary.aov object
+# Extract the aov table from the summary.aov object
+Arizona_anova_table_heat <- summary(Arizona_anova_result_heat)[[1]]
+
+# Convert the ANOVA table to a data frame
+Arizona_anova_df_heat <- as.data.frame(Arizona_anova_table_heat)
+
+# Display the ANOVA table using kable
+kable(Arizona_anova_df_heat, caption = "ANOVA Summary Table for Arizona Heat_Degrees")
+
+# Extract the aov table from the summary.aov object
+Arizona_anova_table_cool <- summary(Arizona_anova_result_cool)[[1]]
+
+# Convert the ANOVA table to a data frame
+Arizona_anova_df_cool <- as.data.frame(Arizona_anova_table_cool)
+
+# Display the ANOVA table using kable
+kable(Arizona_anova_df_cool, caption = "ANOVA Summary Table for Arizona Cool_Degrees")
+```
+
+```{r California Kable}
+# Extract the aov table from the summary.aov object
+California_anova_table_heat <- summary(California_anova_result_heat)[[1]]
+
+# Convert the ANOVA table to a data frame
+California_anova_df_heat <- as.data.frame(California_anova_table_heat)
+
+# Display the ANOVA table using kable
+kable(California_anova_df_heat, caption = "ANOVA Summary Table for California Heat_Degrees")
+
+# Extract the aov table from the summary.aov object
+California_anova_table_cool <- summary(California_anova_result_cool)[[1]]
+
+# Convert the ANOVA table to a data frame
+California_anova_df_cool <- as.data.frame(California_anova_table_cool)
+
+# Display the ANOVA table using kable
+kable(California_anova_df_cool, caption = "ANOVA Summary Table for California Cool_Degrees")
+```
+
+
+```{r Creating Bar plot of F-values, Nevada data}
+
+# extracted F-values
+Nevada_f_values_heat <- c(803.9, 88.6, 36.4)  
+Nevada_f_values_cool <- c(1228.7, 153.4, 36.4)  
+
+# Combine the F-values into a matrix
+Nevada_f_values_matrix <- matrix(c(Nevada_f_values_heat, Nevada_f_values_cool), nrow = 3, byrow = TRUE)
+
+# Names for the bars (change or customize as needed)
+bar_names <- c("Heat Values", "Cool Values")
+
+# Assign colors to bars corresponding to each factor
+colors <- c(rep("red", length(Nevada_f_values_heat)), rep("blue", length(Nevada_f_values_cool)))
+
+
+# Check the number of names and columns in the matrix
+if (length(bar_names) != ncol(Nevada_f_values_matrix)) {
+  stop("Incorrect number of names for the columns in the matrix.")
+} else {
+  # Create a bar plot with specific colors for each bar
+  barplot(f_values_matrix, beside = TRUE,
+          col = colors,
+          names.arg = bar_names,
+          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          ylab = "F-value")
+
+  # Adding custom labels above the bars
+  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+}
+
+```
+
+```{r Creating Bar plot of F-values, Arizona data}
+# extracted F-values
+Arizona_f_values_heat <- c(236.3, 44.5, 3.7)  
+Arizona_f_values_cool <- c(238.2, 25.2, 6.8)  
+
+# Combine the F-values into a matrix
+Arizona_f_values_matrix <- matrix(c(Arizona_f_values_heat, Arizona_f_values_cool), nrow = 3, byrow = TRUE)
+
+# Names for the bars (change or customize as needed)
+bar_names <- c("Heat Values", "Cool Values")
+
+# Assign colors to bars corresponding to each factor
+colors <- c(rep("red", length(Arizona_f_values_heat)), rep("blue", length(Arizona_f_values_cool)))
+
+
+# Check the number of names and columns in the matrix
+if (length(bar_names) != ncol(Arizona_f_values_matrix)) {
+  stop("Incorrect number of names for the columns in the matrix.")
+} else {
+  # Create a bar plot with specific colors for each bar
+  barplot(Arizona_f_values_matrix, beside = TRUE,
+          col = colors,
+          names.arg = bar_names,
+          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          ylab = "F-value")
+
+  # Adding custom labels above the bars
+  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+}
+```
+
+```{r Creating Bar plot of F-values, California data}
+# extracted F-values
+California_f_values_heat <- c(1870.4, 114.2, 0.2)  
+California_f_values_cool <- c(18.9, 237.4, 7.3)  
+
+# Combine the F-values into a matrix
+California_f_values_matrix <- matrix(c(California_f_values_heat, California_f_values_cool), nrow = 3, byrow = TRUE)
+
+# Names for the bars (change or customize as needed)
+bar_names <- c("Heat Values", "Cool Values")
+
+# Assign colors to bars corresponding to each factor
+colors <- c(rep("red", length(California_f_values_heat)), rep("blue", length(California_f_values_cool)))
+
+
+# Check the number of names and columns in the matrix
+if (length(bar_names) != ncol(California_f_values_matrix)) {
+  stop("Incorrect number of names for the columns in the matrix.")
+} else {
+  # Create a bar plot with specific colors for each bar
+  barplot(California_f_values_matrix, beside = TRUE,
+          col = colors,
+          names.arg = bar_names,
+          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          ylab = "F-value")
+
+  # Adding custom labels above the bars
+  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+}
+```
