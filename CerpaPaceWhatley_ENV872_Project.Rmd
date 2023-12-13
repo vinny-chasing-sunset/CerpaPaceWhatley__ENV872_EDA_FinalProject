@@ -35,7 +35,8 @@ here()
 ```
 
 ```{r setting global code chunks, include =FALSE}
-opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
+               fig.height = 3, fig.width = 6)
 ```
 
 ```{r set ggplot theme}
@@ -62,7 +63,7 @@ month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
 # 1 Rationale and Research Questions
 Climate change, long-term shifts in temperatures and weather patterns, is a naturally-occurring process that has been accelerated by human actions, primarily the burning of fossil fuels. One of the impacts of climate change is rising temperatures, which has negative impacts on Earth's ecosystems, such as melting glaciers, intensifying storms, and worsening drought conditions. Humans are directly impacted by rising temperatures: as the number of hot days and heat waves increase, so do the number of heat-related illnesses.
 
-The U.S. has not escaped these impact. The southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature, and minimum temperature.  Thus, our research questions are:
+The U.S. has not escaped these impact. The southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature and minimum temperature.  Thus, our research questions are:
 
 1. Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
 
@@ -78,6 +79,24 @@ Our datasets were retrieved from NOAA's National Centers for Environmental Infor
 * San Diego and Ramona, California
 
 We primarily examined the daily data for TMAX = Maximum temperature (Fahrenheit) and TMIN = Minimum temperature (Fahrenheit) for each of the six locations. Our datasets had varying levels of coverage and start dates for each location. All the datasets had high coverage from 1998-2022, and all but Ramona, CA have data from 1980-1998. More information about this data's documentation can be found at https://www.ncei.noaa.gov/pub/data/cdo/documentation/GHCND_documentation.pdf and in the Metadata folder of this project's repository.
+
+\newpage
+
+# 3 Data Wrangling
+
+We took several steps in our workflow to clean our datasets. The raw data included both the city and suburb in the same CSV, so we first filtered the data to separate out the locations. For each of the 6 locations, we selected the columns we were interested in exploring, which included NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN, and created columns for Month, Year, and DayofYear to enable different years to be overlaid on a graph.
+
+The Fountain Hills, Pahrump, and Ramona datasets had some missing data points in the maximum and minimum daily temperatures, so we used linear interpolation to fill in the missing data. The raw data for the 'Average Temperature' column contained many missing values, so we inputted the calculated mean of the daily maximum and minimum for this column.
+
+## Heating and Cooling Degree Days Calculations
+
+Having the daily average temperature calculated for each location, we then calculated the heating degree days and cooling degree days. Heating degree days are when people turn their heater on because the average temperature is low, and cooling degree days is when people turn their air conditioner on because the average temperature is warm. The industry standard threshold is 65 degrees F, meaning that anything higher than 65 F would constitute a cooling degree day, and anything lower than 65 would mean it is a heating degree day (US EPA, 2016). The equations to calculate the heating and cooling degree days are as follows:
+
+Heating degree days = 65 - daily average temperature
+
+Cooling degree days = daily average temperature - 65
+
+From these calculations we are able to look at the number of heating and cooling degree days, as well as the intensity, which are two main components examined in the exploratory analysis section.
 
 *Describe how you wrangled your dataset in a format similar to a methods section of a journal article.*
 
@@ -104,7 +123,9 @@ To wrangle our data, we:
 
 # Exploratory Analysis 
 
-```{r Load processed files}
+For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trendline for Las Vegas has a noticeable positive slope over time, while the trendline for Phoenix demonstrates only a slight increase and San Diego's trendline remains to be horizontal with no major changes in slope.
+
+```{r Load Processed files}
 Phoenix <- read.csv(here("./Data/Processed/PhoenixAZ_processed.csv"),
                     stringsAsFactors = TRUE) %>% 
   mutate(Date = ymd(Date))
@@ -130,25 +151,36 @@ Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
   mutate(Date = ymd(Date))
 ```
 
-```{r plots exploring the trends in the min and max temperatures}
-ggplot(Phoenix,
-       aes(x = Date, y = Daily_Temp_Min)) +
-         geom_line() + 
-  geom_smooth (method = lm)+
-  labs( title = "Phoenix Daily Maximum Temperatures 1980-2022")+
-  geom_hline(yintercept = 65)
-
+```{r all cities avg temp, fig.cap= "Average Tempearture for Phoenix, Las Vegas, San Diego", fig.height= 2.5}
 Three_cities <- rbind(LasVegas,
                       Phoenix,
                       SanDiego)
 
-ggplot(Three_cities, aes(x = Date, y = Daily_Temp_Max,
-                         color = Location, alpha = 0.75)) +
+ggplot(Three_cities, aes(x = Date,
+                         y = Temp_Avg,
+                         color = Location, 
+                         alpha = 0.75)) +
   geom_line() +
-  geom_smooth(method=lm)
+  geom_smooth(method=lm) + 
+  labs(title = "Three Cities' Daily Average Temperatures",
+       y = "Daily Avg Temp in degrees F") +
+  theme(legend.position = "right")
 ```
 
-```{r plot number of heating and cooling days}
+For the remainder of the exploratory analysis section, we focused on a single city - Phoenix, Arizona - in order to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trendlines for the minimum and maximum temperatures show that there has been a modest increase in both over time. The black horizontal line on Figure 2 marks the 65 F threshold for heating and cooling degrees. Based on the trends in this figure, we would expect there to be more cooling degree days than heating.
+
+```{r plots exploring the trends in the min and max temperatures, fig.cap="Phoenix Daily Maiximum and Minimum Temperatures", fig.height= 2.5}
+# Creating a plot with Phoenix's min and max temp
+ggplot(Phoenix, aes(x = Date)) +
+     	geom_line(aes(y = Daily_Temp_Max, color = "Max Temp")) +
+  geom_smooth (aes(y = Daily_Temp_Max), method = lm, color = "red")+
+  geom_line(aes(y = Daily_Temp_Min, color = "Min Temp")) +
+  geom_smooth(aes(y = Daily_Temp_Min), method = lm, color = "blue") +
+  labs( title = "Phoenix Daily Maximum and Minimum Temperatures 1980-2022", y = "Temperature in F") +
+  geom_hline(yintercept = 65)
+```
+
+```{r code to plot number of heating and cooling days}
 #Create dataframes for heating and cooling days, separately
 #Make one for 1980 and 2022 to compare the start and end of the time series
 Phoenix_Heat_1980 <- Phoenix %>%
@@ -176,7 +208,6 @@ plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
   geom_bar(fill = "red") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Heating Days in Phoenix, 1980", x = "Month", y = "Heating Days")
-print(plot_Phoenix_1980_Heat)
 
 plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
   geom_bar(fill = "blue") +
@@ -185,24 +216,25 @@ plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
 
 grid_Phoenix_1980_HeatCoolDays <- plot_grid(
   plot_Phoenix_1980_Cool, plot_Phoenix_1980_Heat)
-print(grid_Phoenix_1980_HeatCoolDays)
 
 #2022 plots
 plot_Phoenix_2022_Heat <- ggplot(Phoenix_Heat_2022, aes(x = Month)) +
   geom_bar(fill = "red") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Heating Days in Phoenix, 2022", x = "Month", y = "Heating Days")
-print(plot_Phoenix_2022_Heat)
 
 plot_Phoenix_2022_Cool <- ggplot(Phoenix_Cool_2022, aes(x = Month)) +
   geom_bar(fill = "blue") +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Cooling Days in Phoenix, 2022", x = "Month", y = "Cooling Days")
 
-grid_Phoenix_2022_HeatCoolDays <- plot_grid(
-  plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
-print(grid_Phoenix_2022_HeatCoolDays)
+# grid_Phoenix_2022_HeatCoolDays <- plot_grid(
+#  plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
+```
 
+Figures 3 and 4 compare the number of heating and cooling degree days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of cooling days in March, April, and October and a decrease in the number of heating days in February and March.  
+
+```{r number of heating/cooling days Phoenix 1980, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 1980"}
 #Put the heating and cool days on the same graph
 plot_Phoenix_1980_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_1980, aes(x = Month, fill = "Cooling Days")) +
@@ -212,7 +244,9 @@ plot_Phoenix_1980_HeatCoolDays <- ggplot() +
        y = "Cooling or Heating Days") + 
   scale_fill_manual(values = c("blue", "red"))
 print(plot_Phoenix_1980_HeatCoolDays)
+```
 
+```{r Phoenix 2022 heat/cool degree days, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 2022}
 plot_Phoenix_2022_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_2022, aes(x = Month, fill = "Cooling Days")) +
   geom_bar(data = Phoenix_Heat_2022, aes(x = Month, fill = "Heating Days")) +
@@ -223,7 +257,8 @@ plot_Phoenix_2022_HeatCoolDays <- ggplot() +
 print(plot_Phoenix_2022_HeatCoolDays)
 ```
 
-```{r plots for intensity of cooling and heating degree days}
+
+```{r plots for intensity of cooling/heating degree days}
 #heating degree days
 Phoenix_Heat_2022 <- Phoenix %>%
   group_by(Month) %>%
