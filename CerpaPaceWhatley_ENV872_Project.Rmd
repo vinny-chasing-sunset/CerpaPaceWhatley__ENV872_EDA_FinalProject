@@ -3,6 +3,7 @@ title: "Trends in Heating and Cooling Days in Suburban and Urban Settlements in 
 author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
 date: "2023-12-13"
 output: pdf_document
+fig_caption: yes
 ---
 \newpage
 \tableofcontents 
@@ -48,7 +49,7 @@ theme <- theme_base() +
       fill = "gray"
     ),
     legend.position = "top", 
-   legend.direction = "vertical",
+   legend.direction = "horizontal",
     complete = TRUE
   )
 theme_set(theme)
@@ -121,7 +122,7 @@ To wrangle our data, we:
 
 \newpage
 
-# Exploratory Analysis 
+# 3. Exploratory Analysis 
 
 For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trendline for Las Vegas has a noticeable positive slope over time, while the trendline for Phoenix demonstrates only a slight increase and San Diego's trendline remains to be horizontal with no major changes in slope.
 
@@ -149,6 +150,36 @@ SanDiego <- read.csv(here("./Data/Processed/SanDiegoCA_processed.csv"),
 Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
                    stringsAsFactors = TRUE) %>% 
   mutate(Date = ymd(Date))
+
+summary(Phoenix)
+summary(FountainHills)
+summary(LasVegas)
+summary(Pahrump)
+summary(SanDiego)
+summary(Ramona)
+```
+
+``` {r summary table}
+sum_city <- c("Phoenix", "Fountain Hills", "Las Vegas", "Pahrump", "San Diego", "Ramona")
+sum_date <- c("1980-01-01 to 2022-12-31", "1980-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2023-01-01", "1998-04-16 to 2023-01-01")
+sum_precip <- c()
+sum_perc_sun <- c()
+sum_daily_temp_max <- c()
+sum_daily_temp_min <- c()
+sum_temp_avg <- c()
+sum_total_sun <- c()
+sum_month <- c("1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12")
+sum_year <- c("1980 to 2022", "1980 to 2022", "1972 to 2022", "1972 to 2022", "1972 to 2023", "1998 to 2023")
+sum_dayofyear <- c("1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366")
+sum_heat_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
+sum_cool_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
+
+summary_table <- data.frame(sum_city, sum_date, sum_precip, sum_perc_sun, sum_daily_temp_max, sum_daily_temp_min, sum_temp_avg, sum_total_sun, sum_month, sum_year, sum_dayofyear, sum_heat_degrees, sum_cool_degrees)
+
+kable(summary_table, "pipe", col.names =  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
+    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+    "Month", "Year", "DayofYear"), 
+caption = "Data Structure Summary", align = c("c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"))
 ```
 
 ```{r all cities avg temp, fig.cap= "Average Tempearture for Phoenix, Las Vegas, San Diego", fig.height= 2.5}
@@ -356,14 +387,14 @@ print(grid_Phoenix_1980_2022_Cool)
 
 \newpage
 
-# Analysis
+# 4. Analysis
 
 ## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
 
 ## Question 2: Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
-To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every city. We first created univariate time series objects for each measure for each site.
+To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every city. We first created univariate time series objects for each measure for each site. We then decomposed each time series to review the trends and seasonality present.
 ```{r time series objects for min and max temperatures}
 #Creating univariate time series objects for min & max temperature for each site
 #Pheonix
@@ -420,65 +451,65 @@ Ramona_temp_max_ts <- ts(Ramona$Daily_Temp_Max,
                             start = c(1998, 1),
                             frequency = 365)
 ```
-We then decomposed each time series to review the trends and seasonality present.
-```{r decomposing time series objects for min and max temperatures}
+
+```{r decomposing time series objects for min and max temperatures, out.width="50%"}
 # Decompose each time series (ts) object
 #Phoenix
-Phoenix_temp_min_ts_Decomposed <- stl(Phoenix_temp_min_ts,
-                                      s.window = "periodic")
-plot(Phoenix_temp_min_ts_Decomposed)
-
 Phoenix_temp_max_ts_Decomposed <- stl(Phoenix_temp_max_ts,
                                       s.window = "periodic")
-plot(Phoenix_temp_max_ts_Decomposed)
+plot(Phoenix_temp_max_ts_Decomposed, main = "Phoenix Max Temperature")
+
+Phoenix_temp_min_ts_Decomposed <- stl(Phoenix_temp_min_ts, 
+                                      s.window = "periodic")
+plot(Phoenix_temp_min_ts_Decomposed, main = "Phoenix Min Temperature")
 
 #Fountain Hills
-FountainHills_temp_min_ts_Decomposed <- stl(FountainHills_temp_min_ts,
-                                            s.window = "periodic")
-plot(FountainHills_temp_min_ts_Decomposed)
-
 FountainHills_temp_max_ts_Decomposed <- stl(FountainHills_temp_max_ts,
                                             s.window = "periodic")
-plot(FountainHills_temp_max_ts_Decomposed)
+plot(FountainHills_temp_max_ts_Decomposed, main = "Fountain Hills Max Temperature")
+
+FountainHills_temp_min_ts_Decomposed <- stl(FountainHills_temp_min_ts,
+                                            s.window = "periodic")
+plot(FountainHills_temp_min_ts_Decomposed, main = "Fountain Hills Min Temperature")
 
 #Las Vegas
-LasVegas_temp_min_ts_Decomposed <- stl(LasVegas_temp_min_ts,
-                                       s.window = "periodic")
-plot(LasVegas_temp_min_ts_Decomposed)
-
 LasVegas_temp_max_ts_Decomposed <- stl(LasVegas_temp_max_ts,
                                        s.window = "periodic")
-plot(LasVegas_temp_max_ts_Decomposed)
+plot(LasVegas_temp_max_ts_Decomposed, main = "Las Vegas Max Temperature")
+
+LasVegas_temp_min_ts_Decomposed <- stl(LasVegas_temp_min_ts,
+                                       s.window = "periodic")
+plot(LasVegas_temp_min_ts_Decomposed, main = "Las Vegas Min Temperature")
 
 #Pahrump
-Pahrump_temp_min_ts_Decomposed <- stl(Pahrump_temp_min_ts,
-                                      s.window = "periodic")
-plot(Pahrump_temp_min_ts_Decomposed)
-
 Pahrump_temp_max_ts_Decomposed <- stl(Pahrump_temp_max_ts,
                                       s.window = "periodic")
-plot(Pahrump_temp_max_ts_Decomposed)
+plot(Pahrump_temp_max_ts_Decomposed, main = "Pahrump Max Temperature")
+
+Pahrump_temp_min_ts_Decomposed <- stl(Pahrump_temp_min_ts,
+                                      s.window = "periodic")
+plot(Pahrump_temp_min_ts_Decomposed, main = "Pahrump Min Temperature")
 
 #San Diego
-SanDiego_temp_min_ts_Decomposed <- stl(SanDiego_temp_min_ts,
-                                       s.window = "periodic")
-plot(SanDiego_temp_min_ts_Decomposed)
-
 SanDiego_temp_max_ts_Decomposed <- stl(SanDiego_temp_max_ts,
                                        s.window = "periodic")
-plot(SanDiego_temp_max_ts_Decomposed)
+plot(SanDiego_temp_max_ts_Decomposed, main = "San Diego Max Temperature")
+
+SanDiego_temp_min_ts_Decomposed <- stl(SanDiego_temp_min_ts,
+                                       s.window = "periodic")
+plot(SanDiego_temp_min_ts_Decomposed, main = "San Diego Min Temperature")
 
 #Ramona
-Ramona_temp_min_ts_Decomposed <- stl(Ramona_temp_min_ts,
-                                    s.window = "periodic")
-plot(Ramona_temp_min_ts_Decomposed)
-
 Ramona_temp_max_ts_Decomposed <- stl(Ramona_temp_max_ts,
                                      s.window = "periodic")
-plot(Ramona_temp_max_ts_Decomposed)
+plot(Ramona_temp_max_ts_Decomposed, main = "Ramona Max Temperature")
+
+Ramona_temp_min_ts_Decomposed <- stl(Ramona_temp_min_ts,
+                                    s.window = "periodic")
+plot(Ramona_temp_min_ts_Decomposed, main = "Ramona Min Temperature")
 ```
 
-We then conducted a Seasonal Mann  Kendal test to test whether the hypothesis that the data is stationary. This would mean that the data exhibit no statistically-significant upward or downward trend over time, meaning that there is no change in the temperature minimum and maximums over time.
+We then conducted a Seasonal Mann  Kendall test to test whether the hypothesis that the data is stationary. This would mean that the data exhibit no statistically-significant upward or downward trend over time, meaning that there is no change in the temperature minimum and maximums over time.
 ```{r SMK tests for min and max temperatures}
 #Run Seasonal Mann Kendall Tests
 
@@ -506,7 +537,7 @@ SanDiego_temp_min_trend <- SeasonalMannKendall(SanDiego_temp_min_ts)
 Ramona_temp_max_trend <- SeasonalMannKendall(Ramona_temp_max_ts)
 Ramona_temp_min_trend <- SeasonalMannKendall(Ramona_temp_min_ts)
 ```
-The results of the Seasonal Mann Kendall test show us that .
+The results of the Seasonal Mann Kendall test show us that all trends are statistically significant, so none of the data are stationary. The tau value shows the slope of the trend. Interestingly, Fountain Hill's maximum temperatures, San Diego's minimum temperatures, and Ramona's maximum and minimum temperatures have a downward trend. Every other variable has an upward trend.
 ``` {r ktable with results from the Seasonal Mann Kendall test}
 temp_SMK_cities <- c("Phoenix", "Phoenix", "Fountain Hills", "Fountain Hills",
             "Las Vegas", "Las Vegas", "Pahrump", "Pahrump",
@@ -606,10 +637,7 @@ print(Ramona_plot_temp)
 title <- ggdraw() + draw_label("Trends in Minimum and Maximum Temperatures across Cities")
 
 #extract a legend from one of the plots, make it into an object
-plot_legend <- get_legend(Ramona_plot_temp
-                          + guides(color = guide_legend(nrow = 1)) + 
-                            theme(legend.position = "top")
-                          )
+plot_legend <- get_legend(Ramona_plot_temp)
 
 #add the plots without legends to a cowplot
 temp_plots <- plot_grid(
@@ -622,7 +650,7 @@ temp_plots <- plot_grid(
   align = c("hv"), ncol = 2, nrow = 3)
 
 #combine plots and legend
-temperature_plots <- plot_grid(title, plot_legend, temp_plots, ncol = 1, nrow = 3, rel_heights = c(0.5, 0.75, 10))
+temperature_plots <- plot_grid(title, plot_legend, temp_plots, ncol = 1, nrow = 3, rel_heights = c(0.5, 0.5, 10))
 print(temperature_plots)
 ```
 
@@ -630,10 +658,10 @@ The graphs above show the trends increasing or slightly decreasing in the case o
 
 \newpage
 
-# Summary and Conclusions
+# 5. Summary and Conclusions
 
 
 \newpage
 
-# References
+# 6. References
 <add references here if relevant, otherwise delete this section> 
