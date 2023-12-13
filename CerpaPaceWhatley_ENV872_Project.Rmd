@@ -1,9 +1,9 @@
 ---
 title: "Trends in Heating and Cooling Days in Suburban and Urban Settlements in the U.S. Southwest"
 author: "Candela Cerpa & Samantha Pace & Vinny Whatley"
+subtitle: "GitHub Repository: https://github.com/vinny-chasing-sunset/CerpaPaceWhatley__ENV872_EDA_FinalProject"
 date: "2023-12-13"
 output: pdf_document
-fig_caption: yes
 ---
 \newpage
 \tableofcontents 
@@ -12,7 +12,7 @@ fig_caption: yes
 \listoffigures 
 \newpage
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 
 # Load your packages
 #install.packages("ggplot2")
@@ -24,7 +24,6 @@ fig_caption: yes
 library(tidyverse)
 library(lubridate)
 library(here)
-library(ggplot2)
 library(ggthemes)
 library(cowplot)
 library(zoo)
@@ -35,7 +34,7 @@ library(Kendall)
 here()
 ```
 
-```{r setting global code chunks, include =FALSE}
+```{r setting global code chunks, include = FALSE}
 opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, 
                fig.height = 3, fig.width = 6)
 ```
@@ -62,69 +61,27 @@ month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
 ```
 
 # 1. Rationale and Research Questions
-Climate change, long-term shifts in temperatures and weather patterns, is a naturally-occurring process that has been accelerated by human actions, primarily the burning of fossil fuels. One of the impacts of climate change is rising temperatures, which has negative impacts on Earth's ecosystems, such as melting glaciers, intensifying storms, and worsening drought conditions. Humans are directly impacted by rising temperatures: as the number of hot days and heat waves increase, so do the number of heat-related illnesses.
 
-The U.S. has not escaped these impact. The southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature and minimum temperature.  Thus, our research questions are:
+Climate change, long-term shifts in temperatures and weather patterns, is a naturally occurring process that has been accelerated by human actions, primarily the burning of fossil fuels. One of the impacts of climate change is rising temperatures, which have negative impacts on Earth’s ecosystems, such as melting glaciers, intensifying storms, and worsening drought conditions. Humans are directly impacted by rising temperatures: as the number of hot days and heat waves increases, so does the number of heat-related illnesses.
 
-1. Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1980 to 2022?
+The U.S. has not escaped these impacts. The U.S. Southwest, which we define as Arizona, California, and Nevada, has witnessed an uptick in droughts. Lake Me, the main source of drinking water for Nevada, has seen record lows in recent years, cautioning the state to adopt water conservation strategies. News about California’s wildfire seasons seem to increase in intensity and length every year. Arizona has reported some of the highest temperatures in the U.S. Lastly, the impacts are not spread evenly across human settlements. The Urban Heat Island phenomenon describes the situation where cities, with their heat-trapping cement and lower tree canopy cover, tend to be hotter than nearby rural areas.
 
-2. Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
+In light of these issues, this project aims to understand the intensity of rising temperatures in the U.S. Southwest.  Our research questions are:
+1. Has there been an increase in the number of Heating and Cooling Days in the U.S. Southwest from 1980 to 2022?
+
+2. Is there a difference in Heating and Cooling Days in urban and rural spaces in the U.S. Southwest over time?
 
 3. How have minimum and maximum temperatures changed over time?
 
 # 2. Dataset Information
-Our datasets were retrieved from NOAA's National Centers for Environmental Information (NCEI), specifically from the GHCN (Global Historical Climatology Network). We selected a total of six stations, encompassing three major cities and each with an associated nearby suburban location. We  selected the nearby suburban locations to be within 50 miles of the major city and with a population of less than 50,000 in 2022. The selected locations are as follows:
+
+We retrieved historical temperature data  from NOAA's National Centers for Environmental Information (NCEI), specifically from the GHCN (Global Historical Climatology Network). We chose this dataset because NCEI is a reputable source of weather-related historic data. We selected a total of six stations, encompassing three major cities and each with an associated nearby suburban location. We selected the nearby suburban locations to be within 50 miles of the major city and with a population of less than 50,000 in 2022. The selected locations are as follows:
 
 * Phoenix and Fountain Hills, Arizona
 * Las Vegas and Pahrump, Nevada
 * San Diego and Ramona, California
 
-We primarily examined the daily data for TMAX = Maximum temperature (Fahrenheit) and TMIN = Minimum temperature (Fahrenheit) for each of the six locations. Our datasets had varying levels of coverage and start dates for each location. All the datasets had high coverage from 1998-2022, and all but Ramona, CA have data from 1980-1998. More information about this data's documentation can be found at https://www.ncei.noaa.gov/pub/data/cdo/documentation/GHCND_documentation.pdf and in the Metadata folder of this project's repository.
-
-\newpage
-
-# 3. Data Wrangling
-
-We took several steps in our workflow to clean our datasets. The raw data included both the city and suburb in the same CSV, so we first filtered the data to separate out the locations. For each of the 6 locations, we selected the columns we were interested in exploring, which included NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN, and created columns for Month, Year, and DayofYear to enable different years to be overlaid on a graph.
-
-The Fountain Hills, Pahrump, and Ramona datasets had some missing data points in the maximum and minimum daily temperatures, so we used linear interpolation to fill in the missing data. The raw data for the 'Average Temperature' column contained many missing values, so we inputted the calculated mean of the daily maximum and minimum for this column.
-
-## Heating and Cooling Degree Days Calculations
-
-Having the daily average temperature calculated for each location, we then calculated the heating degree days and cooling degree days. Heating degree days are when people turn their heater on because the average temperature is low, and cooling degree days is when people turn their air conditioner on because the average temperature is warm. The industry standard threshold is 65 degrees F, meaning that anything higher than 65 F would constitute a cooling degree day, and anything lower than 65 would mean it is a heating degree day (US EPA, 2016). The equations to calculate the heating and cooling degree days are as follows:
-
-Heating degree days = 65 - daily average temperature
-
-Cooling degree days = daily average temperature - 65
-
-From these calculations we are able to look at the number of heating and cooling degree days, as well as the intensity, which are two main components examined in the exploratory analysis section.
-
-*Describe how you wrangled your dataset in a format similar to a methods section of a journal article.*
-
-To wrangle our data, we:
-* Read in the .csv’s
-* Filtered by location and created new files for each location
-* Kept certain columns (name, date, precipitation, sun coverage %, max temp, min temp, average tem, total sun)
-* Format the date column into a date object
-* Changed the station name to the city name
-* Created a column for month, year, and day of year by extracting the information from the existing date column
-* Updated the column names to the full title
-** Check the NAs with the summary function
-* Saw that some cities have NAs in max, min, and average temperature
-* Interpolate gaps in min and max using linear interpolation in Fountain Hills, Pahrump, and Ramona
-* Calculate the average daily temperature and fill in the existing column
-* Created separate columns for heating and cooling degrees and calculated the values
-** As we created the two columns, we filled them with 0s
-** We calculate heating degrees by indexing the mean temperatures that are below 65F then subtracting the mean temp from 65
-** We calculate cooling degrees by indexing the mean temperatures that are above 65F then subtracting 65 from the mean temp
-
-*Add a table that summarizes your data structure (variables, units, ranges and/or central tendencies, data source if multiple are used, etc.). This table can be made in markdown text or inserted as a kable function in an R chunk. If the latter, do not include the code used to generate your table.*
-
-\newpage
-
-# 4. Exploratory Analysis 
-
-For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trend for Las Vegas has a noticeable positive slope over time, while the trend for Phoenix demonstrates only a slight increase and San Diego's trend remains to be horizontal with no major changes in slope.
+We primarily examined the daily data for TMAX = Maximum temperature (Fahrenheit) and TMIN = Minimum temperature (Fahrenheit) for each of the six locations. As Table 1 shows, our datasets had varying levels of coverage and start dates for each location. All the datasets had high coverage from 1998-2022, and all but Ramona, CA have data from 1980-1998. More information about this data's documentation can be found at https://www.ncei.noaa.gov/pub/data/cdo/documentation/GHCND_documentation.pdf and in the Metadata folder of this project's repository.
 
 ```{r Load Processed files}
 Phoenix <- read.csv(here("./Data/Processed/PhoenixAZ_processed.csv"),
@@ -152,59 +109,87 @@ Ramona <- read.csv(here("./Data/Processed/RamonaCA_processed.csv"),
   mutate(Date = ymd(Date))
 ```
 
-```{summary table, eval=FALSE, include=FALSE}
-#sum_city <- c("Phoenix", "Fountain Hills", "Las Vegas", "Pahrump", "San Diego", "Ramona")
-#sum_date <- c("1980-01-01 to 2022-12-31", "1980-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31", "1972-01-01 to 2023-01-01", "1998-04-16 to 2023-01-01")
-#sum_precip <- c()
-#sum_perc_sun <- c()
-#sum_daily_temp_max <- c()
-#sum_daily_temp_min <- c()
-#sum_temp_avg <- c()
-#sum_total_sun <- c()
-#sum_month <- c("1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12")
-#sum_year <- c("1980 to 2022", "1980 to 2022", "1972 to 2022", "1972 to 2022", "1972 to 2023", "1998 to 2023")
-#sum_dayofyear <- c("1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366", "1 to 366")
-#sum_heat_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
-#sum_cool_degrees <- c("0 to ", "0 to ", "0 to ", "0 to ", "0 to ", "0 to ")
+```{r data structure summary table}
+sum_city <- c("Phoenix", "Fountain Hills", "Las Vegas",
+              "Pahrump", "San Diego", "Ramona")
+sum_date <- c("1980-01-01 to 2022-12-31", "1980-01-01 to 2022-12-31",
+              "1972-01-01 to 2022-12-31", "1972-01-01 to 2022-12-31",
+              "1972-01-01 to 2023-01-01", "1998-04-16 to 2023-01-01")
+sum_daily_temp_max <- c("43 to 122", "25 to 125", "31 to 117",
+                        "27 to 115", "50 to 107", "47 to 117")
+sum_daily_temp_min <- c("26 to 96", "23 to 97", "11 to 95",
+                        "-2 to 86", "34 to 78", "0 to 76")
+sum_temp_avg <- c("36.5 to 106.5", "33.5 to 107.5", "22 to 106",
+                  "15 to 98", "43.5 to 87.5", "35 to 92")
+sum_month <- c("1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12", "1 to 12")
+sum_year <- c("1980 to 2022", "1980 to 2022", "1972 to 2022",
+              "1972 to 2022", "1972 to 2023", "1998 to 2023")
+sum_dayofyear <- c("1 to 366", "1 to 366", "1 to 366",
+                   "1 to 366", "1 to 366", "1 to 366")
+sum_heat_degrees <- c("0 to 28.5", "0 to 31.5", "0 to 43",
+                      "0 to 50", "0 to 21.5", "0 to 30")
+sum_cool_degrees <- c("0 to 41.5", "0 to 42.5", "0 to 41",
+                      "0 to 33", "0 to 22.5", "0 to 27")
 
-#summary_table <- data.frame(sum_city, sum_date, sum_precip, sum_perc_sun, sum_daily_temp_max, sum_daily_temp_min, sum_temp_avg, sum_total_sun, sum_month, sum_year, sum_dayofyear, sum_heat_degrees, sum_cool_degrees)
+summary_table <- data.frame(sum_city, sum_date, sum_daily_temp_max,
+                            sum_daily_temp_min, sum_temp_avg, sum_month, sum_year,
+                            sum_dayofyear, sum_heat_degrees, sum_cool_degrees)
 
-#kable(summary_table, "pipe", col.names =  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
-    "Month", "Year", "DayofYear"), 
-#caption = "Data Structure Summary", align = c("c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c"))
+kable(summary_table, "pipe",
+      col.names =  c("Location", "Date", "Daily Temp Max (°F)",
+                     "Daily Temp Min (°F)", "Temp Avg (°F)", "Month", "Year",
+                     "Day of Year", "Heating Degrees (°F)", "Cooling Degrees (°F)"),
+      caption = "Data Structure Summary", align = c("c"))
 ```
 
-```{r all cities avg temp, fig.cap= "Average Tempearture for Phoenix, Las Vegas, San Diego", fig.height = 2.75}
-Three_cities <- rbind(LasVegas,
-                      Phoenix,
-                      SanDiego)
+# 3. Data Wrangling
 
-ggplot(Three_cities, aes(x = Date,
-                         y = Temp_Avg,
-                         color = Location, 
-                         alpha = 0.75)) +
+We took several steps in our workflow to clean our datasets. The raw data included both the city and suburb in the same CSV, so we first filtered the data to separate out the locations. For each of the 6 locations, we selected the columns we were interested in exploring, which included NAME, DATE, TMAX, TMIN, TAVG, and created columns for Month, Year, and Day of Year to enable different years to be overlaid on a graph.
+
+The Fountain Hills, Pahrump, and Ramona datasets had some missing data points in the maximum and minimum daily temperatures, so we used linear interpolation to fill in the missing data. The raw data for the 'Average Temperature' column contained many missing values, so we inputted the calculated mean of the daily maximum and minimum for this column.
+
+## Heating and Cooling Degree Days Calculations
+
+Having the daily average temperature calculated for each location, we then calculated the Heating Degree Days and Cooling Degree Days. Heating Degree Days are when people turn their heater on because the average temperature is low, and Cooling Degree Days is when people turn their air conditioner on because the average temperature is warm. The industry standard threshold is 65 degrees F, meaning that anything higher than 65 F would constitute a Cooling Degree Day, and anything lower than 65 would mean it is a Heating Degree Day (US EPA, 2016). The equations to calculate the Heating and Cooling Degree Days are as follows:
+
+* If mean temperature > 65°F then 
++ mean temperature - 65°F = Cooling Degree Days
+* If mean temperature < 65°F then
++ 65°F - mean temperature = Heating Degree Days
+
+From these calculations we are able to look at the number of Heating and Cooling Degree Days, as well as the intensity, which are two main components examined in the exploratory analysis section.
+
+# 4. Exploratory Analysis 
+
+For the purposes of exploring our data, we first plotted the three major cities together to get a sense of how their average daily temperatures compared over time, shown in Figure 1. Based on the figure, there are clear seasonal trends throughout the year, and Phoenix has the highest daily average temperature over time, followed by Las Vegas and then San Diego. The trend for Las Vegas has a noticeable positive slope over time, while the trend for Phoenix demonstrates only a slight increase and San Diego's trend remains horizontal with no major changes in slope.
+
+```{r all cities avg temp, fig.cap = "Average Temperature for Phoenix, Las Vegas, San Diego", fig.height = 2.75}
+Three_cities <- rbind(LasVegas, Phoenix, SanDiego)
+
+ggplot(Three_cities, aes(x = Date, y = Temp_Avg, color = Location), alpha = 0.75) +
   geom_line() +
-  geom_smooth(method=lm) + 
+  geom_smooth(method = lm) + 
   labs(title = "Three Cities' Daily Average Temperatures",
-       y = "Daily Avg Temp in degrees F") 
+       y = "Daily Avg Temp in degrees F", color = "Legend")
 ```
 
-For the remainder of the exploratory analysis section, we focused on a single city - Phoenix, Arizona - in order to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trend for the minimum and maximum temperatures show that there has been a modest increase in both over time. The black horizontal line on Figure 2 marks the 65 F threshold for heating and cooling degrees. Based on the trends in this figure, we would expect there to be more cooling degree days than heating.
+For the remainder of the exploratory analysis section, we focused on a single city (Phoenix, Arizona) to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trend for the minimum and maximum temperatures shows that there has been a modest increase in both over time. The black horizontal line in Figure 2 marks the 65 F threshold for Heating and Cooling Degrees. Based on the trends in this figure, we would expect there to be more Cooling than Heating Degree Days.
 
-```{r plots exploring the trends in the min and max temperatures, fig.cap="Phoenix Daily Maiximum and Minimum Temperatures", fig.height = 2.75}
+```{r plots exploring the trends in the min and max temperatures, fig.height = 2.75, fig.cap = "Phoenix Daily Maiximum and Minimum Temperatures"}
 # Creating a plot with Phoenix's min and max temp
 ggplot(Phoenix, aes(x = Date)) +
      	geom_line(aes(y = Daily_Temp_Max, color = "Max Temp")) +
   geom_smooth (aes(y = Daily_Temp_Max), method = lm, color = "red")+
   geom_line(aes(y = Daily_Temp_Min, color = "Min Temp")) +
   geom_smooth(aes(y = Daily_Temp_Min), method = lm, color = "blue") +
-  labs( title = "Phoenix Daily Maximum and Minimum Temperatures 1980-2022", y = "Temperature in F") +
-  geom_hline(yintercept = 65)
+  labs( title = "Phoenix Daily Maximum and Minimum Temperatures 1980-2022",
+        x = "Year", y = "Temperature in F", color = "Legend") +
+  geom_hline(aes(yintercept = 65), color = "black")
 ```
+Figures 3 and 4 compare the number of Heating and Cooling Degree Days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of Cooling Degree Days in March, April, and October and a decrease in the number of Heating Degree Days in February and March.
 
-```{r code to plot number of heating and cooling days}
-#Create dataframes for heating and cooling days, separately
+```{r code to plot number of Heating and Cooling Days}
+#Create dataframes for Heating and Cooling Days, separately
 #Make one for 1980 and 2022 to compare the start and end of the time series
 Phoenix_Heat_1980 <- Phoenix %>%
   group_by(Heat_Degrees) %>%
@@ -225,75 +210,43 @@ Phoenix_Cool_2022 <- Phoenix %>%
   group_by(Cool_Degrees) %>%
   filter(Year == "2022", Cool_Degrees != 0) %>%
   select(Date, Month, Cool_Degrees)
-
-#Plot heating days and cooling days in separate graph bars
-plot_Phoenix_1980_Heat <- ggplot(Phoenix_Heat_1980, aes(x = Month)) +
-  geom_bar(fill = "red") +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Heating Days in Phoenix, 1980", x = "Month", y = "Heating Days")
-
-plot_Phoenix_1980_Cool <- ggplot(Phoenix_Cool_1980, aes(x = Month)) +
-  geom_bar(fill = "blue") +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Cooling Days in Phoenix, 1980", x = "Month", y = "Cooling Days")
-
-grid_Phoenix_1980_HeatCoolDays <- plot_grid(
-  plot_Phoenix_1980_Cool, plot_Phoenix_1980_Heat)
-
-#2022 plots
-plot_Phoenix_2022_Heat <- ggplot(Phoenix_Heat_2022, aes(x = Month)) +
-  geom_bar(fill = "red") +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Heating Days in Phoenix, 2022", x = "Month", y = "Heating Days")
-
-plot_Phoenix_2022_Cool <- ggplot(Phoenix_Cool_2022, aes(x = Month)) +
-  geom_bar(fill = "blue") +
-  scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
-  labs(title = "Cooling Days in Phoenix, 2022", x = "Month", y = "Cooling Days")
-
-# grid_Phoenix_2022_HeatCoolDays <- plot_grid(
-#  plot_Phoenix_2022_Cool, plot_Phoenix_2022_Heat)
 ```
 
-\newpage
-
-Figures 3 and 4 compare the number of heating and cooling degree days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of cooling days in March, April, and October and a decrease in the number of heating days in February and March.  
-
 ```{r number of heating/cooling days Phoenix 1980, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 1980"}
-#Put the heating and cool days on the same graph
+#Put the heating and Cooling days on the same graph
 plot_Phoenix_1980_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_1980, aes(x = Month, fill = "Cooling Days")) +
   geom_bar(data = Phoenix_Heat_1980, aes(x = Month, fill = "Heating Days")) +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Cooling and Heating Days in Phoenix, 1980", x = "Month",
-       y = "Cooling or Heating Days") + 
+       y = "Cooling or Heating Days", fill = "Legend") + 
   scale_fill_manual(values = c("blue", "red"))
 print(plot_Phoenix_1980_HeatCoolDays)
 ```
 
-```{r Phoenix 2022 heat/cool degree days, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 2022"}
+```{r Phoenix 2022 Heating/Cooling degree days, fig.cap="Number of Phoenix's Heating and Cooling Degree Days, 2022"}
 plot_Phoenix_2022_HeatCoolDays <- ggplot() +
   geom_bar(data = Phoenix_Cool_2022, aes(x = Month, fill = "Cooling Days")) +
   geom_bar(data = Phoenix_Heat_2022, aes(x = Month, fill = "Heating Days")) +
   scale_x_continuous(breaks = seq_along(month.abb), labels = month.abb) +
   labs(title = "Cooling and Heating in Phoenix, 2022", x = "Month",
-       y = "Cooling or Heating Days") + 
+       y = "Cooling or Heating Days", fill = "Legend") + 
   scale_fill_manual(values = c("blue", "red"))
 print(plot_Phoenix_2022_HeatCoolDays)
 ```
 
 \newpage
 
-Figures 5 and 6 show the intensity of heating and cooling degree days in Phoenix in 1980 and 2022. In this instance, intensity is the number of degrees over or under 65 F per day. The peaks of the heating degree day intensity is approximately half the intensity of the cooling degree day intensity. Figure 5 shows that there were some higher peaks in 2022 of heating degree days, and March of 2022 saw a much lower intensity of heat degree days than March of 1980. Figure 6 shows the intensity of cooling degree days peaking consistently in the month of July. July 2022 reached 39 degrees F and July 1980 reached 36 degrees F. In 2022 compared to 1980, cooling degree days started earlier in the year, and consistently reached a slightly higher intensity.  
+Figures 5 and 6 show the intensity of Heating and Cooling Degree Days in Phoenix in 1980 and 2022. In this instance, intensity is the number of degrees over or under 65 F per day. The peaks of the Heating Degree Day intensity are approximately half the intensity of the Cooling Degree Day intensity. Figure 5 shows that there were some higher peaks in 2022 of Heating Degree Days, and March of 2022 saw a much lower intensity of Heating Degree Days than March of 1980. Figure 6 shows the intensity of Cooling Degree Days peaking consistently in the month of July. July 2022 reached 39 degrees F and July 1980 reached 36 degrees F. In 2022 compared to 1980, Cooling Degree Days started earlier in the year, and consistently reached a slightly higher intensity.
 
-```{r code for intensity of cooling/heating degree days, fig.cap="Comparison of Heat Degree Days in Phoenix in 1980 and 2022"}
+```{r intensity of Heating Degree Days, fig.cap="Comparison of Heating Degree Days in Phoenix in 1980 and 2022"}
 #monthly labels
 month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
                                           "1980-06-15", "1980-08-15",
                                           "1980-10-15", "1980-12-15"))),
                      lab = c("Feb", "Apr", "Jun", "Aug", "Oct", "Dec"))
 
-#heating degree days
+#Heating Degree Days
 Phoenix_Heat_2022 <- Phoenix %>%
   group_by(Month) %>%
   filter(Year == "2022") %>%
@@ -312,74 +265,14 @@ plot_Phoenix_1980_2022_Heat <- ggplot() +
             aes(x = DayofYear, y = Heat_Degrees, 
                 color = '2022')) +
   labs(title = "Intensity of Heating Degrees (<65 F) in Phoenix (1980 & 2022)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
+       x = "Month", y = "Number of Degrees F below 65 F", color = "Legend") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
 print(plot_Phoenix_1980_2022_Heat)
-
-Phoenix_Heat_1980_Lineplot <-
-  ggplot(Phoenix_Heat_1980, aes(x = DayofYear, y = Heat_Degrees)) +
-  geom_line(color = "darkorange") +
-  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (1980)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-
-Phoenix_Heat_2022_Lineplot <- 
-  ggplot(Phoenix_Heat_2022, 
-         aes(x = DayofYear, y = Heat_Degrees)) +
-  geom_line(color = "purple")+
-  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (2022)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-
-#grid_Phoenix_1980_2022_heat <-
- # plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
-
 ```
 
-```{r side by side intensity of heat degree days}
-Phoenix_Heat_1980_Lineplot <-
-  ggplot(Phoenix_Heat_1980, aes(x = DayofYear, y = Heat_Degrees)) +
-  geom_line(color = "darkorange") +
-  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (1980)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-
-Phoenix_Heat_2022_Lineplot <- 
-  ggplot(Phoenix_Heat_2022, 
-         aes(x = DayofYear, y = Heat_Degrees)) +
-  geom_line(color = "purple")+
-  labs(title = "Intensity of Heating Days (<65 F) in Phoenix (2022)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-
-grid_Phoenix_1980_2022_heat <-
-  plot_grid(Phoenix_Heat_1980_Lineplot, Phoenix_Heat_2022_Lineplot)
-```
-
-```{r Intensity of Heat Degree Days Phoenix 1980 and 2022 }
-# Comparing Intensity of Heat Degree Days in Phoenix in 1980 and 2022
-
-plot_Phoenix_1980_2022_Heat <- ggplot() +
-  geom_line(data = Phoenix_Heat_1980, 
-            aes(x = DayofYear, y = Heat_Degrees),
-                color = 'darkorange') +
-  geom_line(data = Phoenix_Heat_2022, 
-            aes(x = DayofYear, y = Heat_Degrees), 
-                color = 'purple') +
-  labs(title = "Intensity of Heating Degrees (<65 F) in Phoenix (1980 & 2022)",
-       x = "Month", y = "Number of Degrees F below 65 F") +
-  scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
-  ylim(0, 40)
-#print(plot_Phoenix_1980_2022_Heat)
-```
-
-```{r cooling degree days intensity, fig.cap="Comparison of Cool Degree Days in Phoenix in 1980 and 2022"}
-#cooling degree days
+```{r Intensity of Cooling Degree Days, fig.cap = "Comparison of Cooling Degree Days in Phoenix in 1980 and 2022"}
+#Cooling Degree Days
 Phoenix_Cooling_2022 <- Phoenix %>%
   group_by(Month) %>%
   filter(Year == "2022") %>%
@@ -398,22 +291,21 @@ plot_Phoenix_1980_2022_Cool <- ggplot() +
             aes(x = DayofYear, y = Cool_Degrees,
             color = '2022')) +
   labs(title = "Intensity of Cooling Degrees (>65 F) in Phoenix (1980 & 2022)",
-       x = "Month", y = "Number of Degrees F above 65 F") +
+       x = "Month", y = "Number of Degrees F above 65 F", color = "Legend") +
   scale_x_continuous(breaks = month_lab$doy, labels = month_lab$lab) +
   ylim(0, 40)
 print(plot_Phoenix_1980_2022_Cool)
 ```
-
-\newpage
+Comparing Figures 3 and 4 to 5 and 6 reflects the importance of understanding the intensity over quantity of Heating and Cooling Days. While the initial comparison shows a slight increase in the number of days, the intensity comparison denotes a far steeper increase. The intensity also impacts energy usage, because people usually have a buffer of temperatures at which they will turn on the heat or AC that is not just 65 degrees F. More days that are closer to 100 degrees F have a worse impact on human health and energy usage than more days that are closer to 70 degrees F. In our analysis, we thus chose to look more closely at intensity over quantity of Heating and Cooling Degree Days.
 
 # 5. Analysis
 
-## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1980 to 2022?
+## Question 1: Has there been an increase in the number of Heating and Cooling Days in the U.S. Southwest from 1980 to 2022?
 
-We used a time series analysis for the heating and cooling degree days for each of the three major cities to address this research question. We made univariate time series objects for the heating and cooling degree days for each city, and then decomposed each time series object to separate out the seasonality, trend, and remainder from the data. The graphs below showcase the time series plots.
+To address this research question, we used a time series analysis for the Heating and Cooling Degree Days for each of the three major cities. We made univariate time series objects for the Heating and Cooling Degree Days for each city, and then decomposed each time series object to separate out the seasonality, trend, and remainder from the data. The graphs below showcase the time series plots.
 
-```{r creating time series objects for heat and cool degrees}
-#Creating univariate time series objects for heat and cool degrees for each major city
+```{r creating time series objects for Heating and Cooling Degrees}
+#Creating univariate time series objects for Heating and cooling Degrees for each major city
 
 #Phoenix
 Phoenix_heatdegrees_ts <- ts(Phoenix$Heat_Degrees, 
@@ -443,61 +335,58 @@ SanDiego_cooldegrees_ts <- ts(SanDiego$Cool_Degrees,
                               frequency = 365)
 ```
 
-```{r decomposing for heat/cool degrees, out.width= "50%"}
-# Decomposing each ts object
-
-Phoenix_heatdegrees_ts_Decomposed <-
-  stl(Phoenix_heatdegrees_ts, s.window = "periodic")
-
-plot(Phoenix_heatdegrees_ts_Decomposed, main="Phoenix Heat Degree Days")
-
-Phoenix_cooldegrees_ts_Decomposed <-
-  stl(Phoenix_cooldegrees_ts, s.window = "periodic")
-
-plot(Phoenix_cooldegrees_ts_Decomposed, main="Phoenix Cool Degree Days")
-
-#Las Vegas decomposition and plot
-
-LasVegas_heatdegrees_ts_Decomposed <-
-  stl(LasVegas_heatdegrees_ts, s.window = "periodic")
-
-plot(LasVegas_heatdegrees_ts_Decomposed, main="Las Vegas Heat Degree Days")
-
-LasVegas_cooldegrees_ts_Decomposed <-
-  stl(LasVegas_cooldegrees_ts, s.window = "periodic")
-
-plot(LasVegas_cooldegrees_ts_Decomposed, main = "Las Vegas Cool Degree Days")
-
-# San Diego decomposition and plot
-
-SanDiego_heatdegrees_ts_Decomposed <-
-  stl(SanDiego_heatdegrees_ts, s.window = "periodic")
-
-plot(SanDiego_heatdegrees_ts_Decomposed, main = "San Diego Heat Degree Days")
-
-SanDiego_cooldegrees_ts_Decomposed <-
-  stl(SanDiego_cooldegrees_ts, s.window = "periodic")
-
-plot(SanDiego_cooldegrees_ts_Decomposed, main = "San Diego Cool Degree Days")
-
+```{r Phoenix decomposed ts for Heating Degree Days, fig.cap = "Phoenix Decomposed Time Series for Heating Degree Days"}
+Phoenix_heatdegrees_ts_Decomposed <- stl(Phoenix_heatdegrees_ts,
+                                         s.window = "periodic")
+plot(Phoenix_heatdegrees_ts_Decomposed, main="Phoenix Heating Degree Days")
 ```
 
-The Seasonal Mann Kendall test was performed on each of the city's heating and cooling degree days data to analyze if the data is stationary. The null hypothesis for the Seasonal Mann Kendall test is that the data is stationary, meaning there is no significant trend over time. The alternative hypothesis is that there is a significant trend in the data over time.
+```{r Phoenix decomposed ts for Cooling Degree Days, fig.cap = "Phoenix Decomposed Time Series for Cooling Degree Days"}
+Phoenix_cooldegrees_ts_Decomposed <- stl(Phoenix_cooldegrees_ts,
+s.window = "periodic")
+plot(Phoenix_cooldegrees_ts_Decomposed, main="Phoenix Cooling Degree Days")
+```
 
-The results of the Seasonal Mann Kendall test for the heating degree days in Phoenix, Las Vegas, and San Diego are found in Table 1. The results indicate that Phoenix and Las Vegas have a p-value of less than 0.05 (3.0198e-13 and 2.22e-16, respectively), so the null hypothesis can be rejected. The p value for San Diego is greater than 0.5 (having a value of 0.49529), so we cannot reject the null hypothesis. The tau value indicates the slope of the trend, and all are negative, but this is only significant for only Phoenix and Las Vegas. Las Vegas has the steepest slope. 
+```{r Las Vegas decomposed ts for Heating degrees, fig.cap = "Las Vegas Decomposed Time Series for Heating Degree Days"}
+LasVegas_heatdegrees_ts_Decomposed <- stl(LasVegas_heatdegrees_ts,
+s.window = "periodic")
+plot(LasVegas_heatdegrees_ts_Decomposed, main="Las Vegas Heating Degree Days")
+```
 
-```{r SMK test for heat degree days, message=FALSE, warning=FALSE, include=FALSE}
-# Run Seasonal Mann Kendall Test for heating degree days
+```{r Las Vegas decomposed ts for Cooling Degree Days, fig.cap = "Las Vegas Decomposed Time Series for Cooling Degree Days"}
+LasVegas_cooldegrees_ts_Decomposed <- stl(LasVegas_cooldegrees_ts,
+  s.window = "periodic")
+plot(LasVegas_cooldegrees_ts_Decomposed, main = "Las Vegas Cooling Degree Days")
+```
 
+```{r San Diego decomposed ts for Heating degrees, fig.cap = "San Diego Decomposed Time Series for Heating Degree Days"}
+SanDiego_heatdegrees_ts_Decomposed <- stl(SanDiego_heatdegrees_ts,
+s.window = "periodic")
+plot(SanDiego_heatdegrees_ts_Decomposed, main = "San Diego Heating Degree Days")
+```
+
+```{r San Diego decomposed ts for Cooling Degree Days, fig.cap = "San Diego Decomposed Time Series for Cooling Degree Days"}
+SanDiego_cooldegrees_ts_Decomposed <- stl(SanDiego_cooldegrees_ts,
+s.window = "periodic")
+plot(SanDiego_cooldegrees_ts_Decomposed, main = "San Diego Cooling Degree Days")
+```
+
+\newpage
+
+The Seasonal Mann-Kendall test was performed on each of the city's Heating and Cooling Degree Days data to analyze if the data is stationary. The null hypothesis for the Seasonal Mann-Kendall test is that the data is stationary, meaning there is no significant trend over time. The alternative hypothesis is that there is a significant trend in the data over time.
+
+The results of the Seasonal Mann-Kendall test for the Heating Degree Days in Phoenix, Las Vegas, and San Diego are found in Table 2. The results indicate that Phoenix and Las Vegas have a p-value of less than 0.05 (3.0198e-13 and 2.22e-16, respectively), so the null hypothesis can be rejected. The p-value for San Diego is greater than 0.5 (having a value of 0.49529), so we cannot reject the null hypothesis. The tau value indicates the slope of the trend, and all are negative, but this is only significant for Phoenix and Las Vegas. Las Vegas has the steepest slope. 
+
+```{r Seasonal Mann-Kendall test for Heating Degree Days, message=FALSE, warning=FALSE, include=FALSE}
 #Phoenix
 Phoenix_heatdegrees_trend <- SeasonalMannKendall(Phoenix_heatdegrees_ts)
 Phoenix_heatdegrees_trend
-# tau = -0.0592 and 2-sided p value =3.0198e-13 (REJECT NULL)
+# tau = -0.0592 and 2-sided p-value =3.0198e-13 (REJECT NULL)
 
 #Las Vegas
 LasVegas_heatdegrees_trend <- SeasonalMannKendall(LasVegas_heatdegrees_ts)
 LasVegas_heatdegrees_trend
-# tau = -0.16, 2-sided p value =< 2.22e-16 (REJECT NULL)
+# tau = -0.16, 2-sided p-value =< 2.22e-16 (REJECT NULL)
 
 #San Diego
 SanDiego_heatdegrees_trend <- SeasonalMannKendall(SanDiego_heatdegrees_ts)
@@ -505,7 +394,7 @@ SanDiego_heatdegrees_trend
 # tau = -0.00414, 2-sided pvalue = 0.49529 (CANNOT REJECT NULL)
 ```
 
-```{r heating degree day kable}
+```{r Heating Degree Days kable}
 heatdegree_SMK_cities <- c("Phoenix", "Las Vegas", "San Diego")
 
 heatdegree_SMK_p_values <- c("3.0198e-13", "2.22e-16", "0.49529")
@@ -516,34 +405,32 @@ heatdegree_SMK <- data.frame(heatdegree_SMK_cities, heatdegree_SMK_p_values,
                              heatdegree_SMK_tau_values)
 
 kable(heatdegree_SMK, "pipe", col.names =  c("City", "p-value", "tau value"), 
-caption = "Results for the Seasonal Mann Kendall test for Heating Degree Days", align = c("l", "c", "c"), 
-digits = 4, scientific = TRUE)
+caption = "Results for the Seasonal Mann-Kendall test for Heating Degree Days",
+align = c("l", "c", "c"), digits = 4, scientific = TRUE)
 ```
 
-Table 2 shows the results of the Seasonal Mann Kendall Test for the cooling degree days over time in Phoenix, Las Vegas, and San Diego. Phoenix and Las Vegas have a p value of less than 0.05 (p value = 2.22e-16 for each city), so the null hypothesis can be rejected. The heating degree days for Phoenix and Las Vegas have a significant trend over time. The cooling degree days for San Diego produced a p value of 0.36317, which is higher the alpha level of 0.05, so we cannot reject the null hypothesis for this location. There is not a significant trend over time in the cooling degree days for San Diego. The tau values are the slope of the trend line, and indicate if the trend is positive or negative. For both Phoenix and Las Vegas, the slope is positive, meaning there is a positive trend over time in cooling degree days in these locations. 
+Table 3 shows the results of the Seasonal Mann-Kendall Test for the Cooling Degree Days over time in Phoenix, Las Vegas, and San Diego. Phoenix and Las Vegas have a p-value of less than 0.05 (p-value = 2.22e-16 for each city), so the null hypothesis can be rejected. The Heating Degree Days for Phoenix and Las Vegas have a significant trend over time. The Cooling Degree Days for San Diego produced a p-value of 0.36317, which is greater than 0.05, so we cannot reject the null hypothesis for this location. There is not a significant trend over time in the Cooling Degree Days for San Diego. For both Phoenix and Las Vegas, the slope of the trend line is positive, meaning there is a positive trend over time in Cooling Degree Days in these locations. 
 
-```{r SMK test for cool degree days, message=FALSE, warning=FALSE, include=FALSE}
-# Run Seasonal Mann Kendall Test for cooling degree days
-
+```{r Seasonal Mann-Kendall test for Cooling Degree Days, message=FALSE, warning=FALSE, include=FALSE}
 Phoenix_cooldegrees_trend <-SeasonalMannKendall(Phoenix_cooldegrees_ts)
 Phoenix_cooldegrees_trend
-#p value =< 2.22e-16 ; reject the null hypothesis (data is stationary)
+#p-value =< 2.22e-16 ; reject the null hypothesis (data is stationary)
 # tau = 0.0983 (slope of trend)
 
 #Las Vegas
 LasVegas_cooldegrees_trend <-SeasonalMannKendall(LasVegas_cooldegrees_ts)
 LasVegas_cooldegrees_trend
-# p value is =< 2.22e-16 ; reject the null hypothesis (data is stationary) 
+# p-value is =< 2.22e-16 ; reject the null hypothesis (data is stationary) 
 # tau = 0.189 (slope of the trend)
 
 #San Diego
 SanDiego_cooldegrees_trend <- SeasonalMannKendall(SanDiego_cooldegrees_ts)
 SanDiego_cooldegrees_trend
-# p value is 0.36317 ; CANNOT reject the null 
+# p-value is 0.36317 ; CANNOT reject the null 
 # tau = -0.00542
 ```
 
-```{r cooling degree day kable}
+```{r Cooling Degree Day kable}
 cooldegree_SMK_cities <- c("Phoenix", "Las Vegas", "San Diego")
 
 cooldegree_SMK_p_values <- c("2.22e-16", "2.22e-16", "0.36317")
@@ -554,29 +441,24 @@ cooldegree_SMK <- data.frame(cooldegree_SMK_cities, cooldegree_SMK_p_values,
                              cooldegree_SMK_tau_values)
 
 kable(cooldegree_SMK, "pipe", col.names =  c("City", "p-value", "tau value"), 
-caption = "Results for the Seasonal Mann Kendall test for Cooling Degree Days", align = c("l", "c", "c"), 
-digits = 4, scientific = TRUE)
+caption = "Results for the Seasonal Mann-Kendall test for Cooling Degree Days",
+align = c("l", "c", "c"), digits = 4, scientific = TRUE)
 ```
 
-In summary, we can conclude there has been a significant increase in the trend of cooling degree days over time in some cities in the U.S. Southwest from 1980 to 2022, but not uniformly. There has been some significant decrease in the trend of heating degree days over time in some U.S. Southwest cities from 1980 to 2022, but not in all locations. The increase in cooling degree days and decrease in heating degree days is evidence of the overall warming temperatures in Las Vegas and Phoenix. Tests performed on the San Diego dataset indicated that this data may be stationary, meaning there is no significant trend upward or downward in the heating and cooling degree days over time.
+In summary, we can conclude there has been a significant increase in the trend of Cooling Degree Days over time in some cities in the U.S. Southwest from 1980 to 2022, but not uniformly. There has been some significant decrease in the trend of Heating Degree Days over time in some U.S. Southwest cities from 1980 to 2022, but not in all locations. The increase in Cooling Degree Days and decrease in Heating Degree Days is evidence of the overall warming temperatures in Las Vegas and Phoenix. Tests performed on the San Diego dataset indicated that this data may be stationary, meaning there is no significant trend upward or downward in the Heating and Cooling Degree Days over time.
 
 \newpage
 
-## Question 2: Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
+## Question 2: Is there a difference in Heating and Cooling Days in urban and rural spaces in the U.S. Southwest over time?
 
-To address question 2, we thought it was best to perform ANOVA testing. This would allow us the check the means of the “Heat Degrees” and “Cool Degrees” for the each state against Location, Year, and Location:Year finding out what was statically significant to the contribution of the average mean of “Heat Degrees” and “Cool Degrees”  . But to get an accurate picture we thought it would be best to take the means of the Heat and Cooling variables of each state and then compare it to each other state in the dataset. This required us to create a data frame for each state where we combined the metropolitan city and suburban city data by Location, Year, Heat Degrees, and Cool Degrees. Then running 2 anova test for each of those 3 states, the first test having heat degrees as the dependent variable and the second test having cool degrees as dependent variable.
+To address this research question, we applied ANOVA tests to find whether there was a significant difference in the means of Heating and Cooling degree days between urban and rural spaces. In particular, we compared the Location, Year, and Location and Year as potential significant factors that contributed to the potential difference in Degree Days means. This required creating data frames for each sate to apply the test where Heating or Cooling Degree Days were the dependent variable and Location and Year as the independent variable.
 
 ```{r Summary of data for each city, include=FALSE}
 summary(LasVegas)
-
 summary(Pahrump)
-
 summary(Phoenix)
-
 summary(FountainHills)
-
 summary(SanDiego)
-
 summary(Ramona)
 ```
 
@@ -599,7 +481,6 @@ SanDiegoMetro <- SanDiego %>%
 
 RamonaSuburban <- Ramona %>%
   filter(Year >= 1998 & Year <= 2022)
-
 ```
 
 ```{r combine nevada cities, include=FALSE}
@@ -618,15 +499,12 @@ Nevada_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = Nevada_data
 # Summary of ANOVA results for Heat_Degrees
 summary(Nevada_anova_result_heat) 
 
-
 # Summary of ANOVA results for Cool_Degrees
 summary(Nevada_anova_result_cool)
 
 # Extract F-values using the summary function
 Nevada_summary_anova_heat <- summary(Nevada_anova_result_heat)
 Nevada_summary_anova_cool <- summary(Nevada_anova_result_cool)
-
-
 ```
 
 ```{r combine Arizona cities, include=FALSE}
@@ -637,10 +515,12 @@ Arizona_data <- Arizona_data %>%
   select(Location, Year, Heat_Degrees, Cool_Degrees)
 
 # Perform ANOVA test for Heat_Degrees by Location and Year
-Arizona_anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = Arizona_data)
+Arizona_anova_result_heat <- aov(Heat_Degrees ~ Location*Year,
+                                 data = Arizona_data)
 
 # Perform ANOVA test for Cool_Degrees by Location and Year
-Arizona_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = Arizona_data)
+Arizona_anova_result_cool <- aov(Cool_Degrees ~ Location*Year,
+                                 data = Arizona_data)
 
 # Summary of ANOVA results for Heat_Degrees
 summary(Arizona_anova_result_heat) 
@@ -662,10 +542,12 @@ California_data <- California_data %>%
   select(Location, Year, Heat_Degrees, Cool_Degrees)
 
 # Perform ANOVA test for Heat_Degrees by Location and Year
-California_anova_result_heat <- aov(Heat_Degrees ~ Location*Year, data = California_data)
+California_anova_result_heat <- aov(Heat_Degrees ~ Location*Year,
+                                    data = California_data)
 
 # Perform ANOVA test for Cool_Degrees by Location and Year
-California_anova_result_cool <- aov(Cool_Degrees ~ Location*Year, data = California_data)
+California_anova_result_cool <- aov(Cool_Degrees ~ Location*Year,
+                                    data = California_data)
 
 # Summary of ANOVA results for Heat_Degrees
 summary(California_anova_result_heat) 
@@ -679,12 +561,11 @@ California_summary_anova_heat <- summary(California_anova_result_heat)
 California_summary_anova_cool <- summary(California_anova_result_cool)
 ```
 
-After that using the anova data for heat and cool degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada, location contributed and was the only significant variable to average heat temperature. While the same story was told when looking at the average cool temperature, location being statically significant. Looking at only this and no other analysis would lead you to believe that location is the reason we see such high and low temperatures, especially considering that Nevada is a desert and it typically sees highly polarized temperatures dependent on the time of day.
+To address question 2, we thought it was best to perform ANOVA testing. This would allow us the check the means of the “Heating Degrees” and “Cooling Degrees” for the each state against Location, Year, and Location:Year finding out what was statically significant to the contribution of the average mean of “Heating Degrees” and “Cooling Degrees” . But to get an accurate picture we thought it would be best to take the means of the Heating and Cooling variables of each state and then compare it to each other state in the dataset. This required us to create a data frame for each state where we combined the metropolitan city and suburban city data by Location, Year, Heating Degrees, and Cooling Degrees. Then running 2 ANOVA test for each of those 3 states, the first test having Heating degrees as the dependent variable and the second test having Cooling degrees as dependent variable.
 
-Secondly, looking at the table for Arizona, we find that this data tells the same story as previously stated for Nevada. That Location is the statically significant factor in average heating and cooling temperatures.
+After that using the ANOVA data for Heating and Cooling degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada, location contributed and was the only significant variable to average Heating temperature. While the same story was told when looking at the average Cooling temperature, location being statically significant. Looking at only this and no other analysis would lead you to believe that location is the reason we see such high and low temperatures, especially considering that Nevada is a desert and it typically sees highly polarized temperatures dependent on the time of day.
 
-Lastly, from California’s data we learn that again for heat degree’s location was the statically significant contributor but for cool degrees Year instead is statically significant. We are thinking this is the case because our California data set (from 1998 to 2022) does not cover the same amount of time as the Nevada dataset (1972 to 2022) and Arizona dataset (1980 to 2022). Leading to slightly different results.
-
+Secondly, looking at the table for Arizona, we find that this data tells the same story as previously stated for Nevada. That Location is the statically significant factor in average Heating and Cooling temperatures. Lastly, from California’s data we learn that again for Heating degree’s location was the statically significant contributor but for Cooling degrees Year instead is statically significant. We are thinking this is the case because our California data set (from 1998 to 2022) does not cover the same amount of time as the Nevada dataset (1972 to 2022) and Arizona dataset (1980 to 2022). Leading to slightly different results.
 
 ```{r Nevada Kable}
 # Extract the aov table from the summary.aov object
@@ -694,7 +575,8 @@ Nevada_anova_table_heat <- summary(Nevada_anova_result_heat)[[1]]
 Nevada_anova_df_heat <- as.data.frame(Nevada_anova_table_heat)
 
 # Display the ANOVA table using kable
-kable(Nevada_anova_df_heat, caption = "ANOVA Summary Table for Nevada Heat_Degrees")
+kable(Nevada_anova_df_heat,
+      caption = "ANOVA Summary Table for Nevada Heating Degrees")
 
 # Extract the aov table from the summary.aov object
 Nevada_anova_table_cool <- summary(Nevada_anova_result_cool)[[1]]
@@ -703,12 +585,11 @@ Nevada_anova_table_cool <- summary(Nevada_anova_result_cool)[[1]]
 Nevada_anova_df_cool <- as.data.frame(Nevada_anova_table_cool)
 
 # Display the ANOVA table using kable
-kable(Nevada_anova_df_cool, caption = "ANOVA Summary Table for Nevada Cool_Degrees")
-
+kable(Nevada_anova_df_cool,
+      caption = "ANOVA Summary Table for Nevada Cooling Degrees")
 ```
 
 ```{r Arizona Kable}
-# Extract the aov table from the summary.aov object
 # Extract the aov table from the summary.aov object
 Arizona_anova_table_heat <- summary(Arizona_anova_result_heat)[[1]]
 
@@ -716,7 +597,8 @@ Arizona_anova_table_heat <- summary(Arizona_anova_result_heat)[[1]]
 Arizona_anova_df_heat <- as.data.frame(Arizona_anova_table_heat)
 
 # Display the ANOVA table using kable
-kable(Arizona_anova_df_heat, caption = "ANOVA Summary Table for Arizona Heat_Degrees")
+kable(Arizona_anova_df_heat,
+      caption = "ANOVA Summary Table for Arizona Heating Degrees")
 
 # Extract the aov table from the summary.aov object
 Arizona_anova_table_cool <- summary(Arizona_anova_result_cool)[[1]]
@@ -725,7 +607,8 @@ Arizona_anova_table_cool <- summary(Arizona_anova_result_cool)[[1]]
 Arizona_anova_df_cool <- as.data.frame(Arizona_anova_table_cool)
 
 # Display the ANOVA table using kable
-kable(Arizona_anova_df_cool, caption = "ANOVA Summary Table for Arizona Cool_Degrees")
+kable(Arizona_anova_df_cool,
+      caption = "ANOVA Summary Table for Arizona Cooling Degrees")
 ```
 
 ```{r California Kable}
@@ -736,7 +619,8 @@ California_anova_table_heat <- summary(California_anova_result_heat)[[1]]
 California_anova_df_heat <- as.data.frame(California_anova_table_heat)
 
 # Display the ANOVA table using kable
-kable(California_anova_df_heat, caption = "ANOVA Summary Table for California Heat_Degrees")
+kable(California_anova_df_heat,
+      caption = "ANOVA Summary Table for California Heating Degrees")
 
 # Extract the aov table from the summary.aov object
 California_anova_table_cool <- summary(California_anova_result_cool)[[1]]
@@ -745,25 +629,28 @@ California_anova_table_cool <- summary(California_anova_result_cool)[[1]]
 California_anova_df_cool <- as.data.frame(California_anova_table_cool)
 
 # Display the ANOVA table using kable
-kable(California_anova_df_cool, caption = "ANOVA Summary Table for California Cool_Degrees")
+kable(California_anova_df_cool,
+      caption = "ANOVA Summary Table for California Cooling Degrees")
 ```
 
 We then extracted the f-values from those datasets and created bar charts to visualize the stark difference between statically significant variables compared to the other variables.
 
-```{r Creating Bar plot of F-values, Nevada data}
+```{r Creating Bar plot of F-values, Nevada data, fig.cap= "Nevada ANOVA F-values for Heating and Cooling Degrees"}
 
 # extracted F-values
 Nevada_f_values_heat <- c(803.9, 88.6, 36.4)  
 Nevada_f_values_cool <- c(1228.7, 153.4, 36.4)  
 
 # Combine the F-values into a matrix
-Nevada_f_values_matrix <- matrix(c(Nevada_f_values_heat, Nevada_f_values_cool), nrow = 3, byrow = TRUE)
+Nevada_f_values_matrix <- matrix(c(Nevada_f_values_heat, Nevada_f_values_cool),
+                                 nrow = 3, byrow = TRUE)
 
 # Names for the bars (change or customize as needed)
 bar_names <- c("Heat Values", "Cool Values")
 
 # Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(Nevada_f_values_heat)), rep("blue", length(Nevada_f_values_cool)))
+colors <- c(rep("red", length(Nevada_f_values_heat)),
+            rep("blue", length(Nevada_f_values_cool)))
 
 
 # Check the number of names and columns in the matrix
@@ -774,31 +661,37 @@ if (length(bar_names) != ncol(Nevada_f_values_matrix)) {
   barplot(Nevada_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "Nevada ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "Nevada ANOVA F-values for Heating and Cooling Degrees",
           ylab = "F-value")
 
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(1.5, 1.5, 2.5), par("usr")[4] + 1, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+# Adding custom labels above the bars for Heating Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.5), par("usr")[4] + 1,
+     c("Location", "Year", "Location: Year"),
+     srt = 0, adj = c(0.5, 2), xpd = TRUE)
 
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.25, 2), par("usr")[4] + 9, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
+# Adding custom labels above the bars for Cooling Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.25, 2), par("usr")[4] + 9,
+     c("Location", "Year", "Location: Year"),
+     srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
-
 ```
 
-```{r Creating Bar plot of F-values, Arizona data}
+```{r Creating Bar plot of F-values, Arizona data, fig.cap = "Arizona ANOVA F-values for Heating and Cooling Degrees"}
 # extracted F-values
 Arizona_f_values_heat <- c(236.3, 44.5, 3.7)  
 Arizona_f_values_cool <- c(238.2, 25.2, 6.8)  
 
 # Combine the F-values into a matrix
-Arizona_f_values_matrix <- matrix(c(Arizona_f_values_heat, Arizona_f_values_cool), nrow = 3, byrow = TRUE)
+Arizona_f_values_matrix <- matrix(c(Arizona_f_values_heat,
+                                    Arizona_f_values_cool),
+                                  nrow = 3, byrow = TRUE)
 
 # Names for the bars (change or customize as needed)
 bar_names <- c("Heat Values", "Cool Values")
 
 # Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(Arizona_f_values_heat)), rep("blue", length(Arizona_f_values_cool)))
+colors <- c(rep("red", length(Arizona_f_values_heat)),
+            rep("blue", length(Arizona_f_values_cool)))
 
 
 # Check the number of names and columns in the matrix
@@ -809,30 +702,37 @@ if (length(bar_names) != ncol(Arizona_f_values_matrix)) {
   barplot(Arizona_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "Arizona ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "Arizona ANOVA F-values for Heating and Cooling Degrees",
           ylab = "F-value")
 
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 60, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+# Adding custom labels above the bars for Heating Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 60,
+     c("Location", "Year","Location: Year"),
+     srt = 0, adj = c(0.5, 2), xpd = TRUE)
 
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
+# Adding custom labels above the bars for Cooling Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] + 5,
+     c("Location", "Year", "Location: Year"),
+     srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 ```
 
-```{r Creating Bar plot of F-values, California data}
+```{r Creating Bar plot of F-values, California data, fig.cap = "California ANOVA F-values for Heating and Cooling Degrees"}
 # extracted F-values
 California_f_values_heat <- c(1870.4, 114.2, 0.2)  
 California_f_values_cool <- c(18.9, 237.4, 7.3)  
 
 # Combine the F-values into a matrix
-California_f_values_matrix <- matrix(c(California_f_values_heat, California_f_values_cool), nrow = 3, byrow = TRUE)
+California_f_values_matrix <- matrix(c(California_f_values_heat,
+                                       California_f_values_cool),
+                                     nrow = 3, byrow = TRUE)
 
 # Names for the bars (change or customize as needed)
 bar_names <- c("Heat Values", "Cool Values")
 
 # Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(California_f_values_heat)), rep("blue", length(California_f_values_cool)))
+colors <- c(rep("red", length(California_f_values_heat)),
+            rep("blue", length(California_f_values_cool)))
 
 
 # Check the number of names and columns in the matrix
@@ -843,25 +743,32 @@ if (length(bar_names) != ncol(California_f_values_matrix)) {
   barplot(California_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "California ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "California ANOVA F-values for Heating and Cooling Degrees",
           ylab = "F-value")
 
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(2.2, 2, 3), par("usr")[4] + 420, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+# Adding custom labels above the bars for Heating Values with different distances
+text(1:3 + 0.25 * c(2.2, 2, 3), par("usr")[4] + 420,
+     c("Location", "Year", "Location: Year"),
+     srt = 0, adj = c(0.5, 2), xpd = TRUE)
 
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] - 900, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
+# Adding custom labels above the bars for Cooling Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] - 900,
+     c("Location", "Year", "Location: Year"),
+     srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
-
 ```
 
-In summary, with anova testing we learned that biggest contributor to average heat and cooling temperatures for each can be attributed to solely location. Requiring us to do further analysis this time instead with time-series.
+In summary, with anova testing we learned that biggest contributor to average Heating and cooling temperatures for each can be attributed to solely location. Requiring us to do further analysis this time instead with time-series.
+
+\newpage
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
-To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every city. We first created univariate time series objects for each measure for each site. We then decomposed each time series to review the trends and seasonality present.
+
+To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every location. Similarly to the analysis for Question 1, we created univariate time series objects for each measure for every site and then decomposed each time series to review the overall trend and presence of seasonality. The trend graph, the third row in every decomposition, makes it easier to see what the general trend is. The trend of Las Vegas minimum temperature, for example, has a very clear upward trend. The trends of Ramona's maximum and minimum temperatures are also clearly downward. All other trends, however, are difficult to ascertain just by looking at them, and the degree of the slope is an important value to know.
+
 ```{r time series objects for min and max temperatures}
 #Creating univariate time series objects for min & max temperature for each site
-#Pheonix
+#Phoenix
 Phoenix_temp_min_ts <- ts(Phoenix$Daily_Temp_Min,
                             start = c(1980, 1),
                             frequency = 365)
@@ -916,67 +823,78 @@ Ramona_temp_max_ts <- ts(Ramona$Daily_Temp_Max,
                             frequency = 365)
 ```
 
-```{r decomposing time series objects for min and max temperatures, out.width="50%"}
-# Decompose each time series (ts) object
-#Phoenix
-Phoenix_temp_max_ts_Decomposed <- stl(Phoenix_temp_max_ts,
-                                      s.window = "periodic")
-plot(Phoenix_temp_max_ts_Decomposed, main = "Phoenix Max Temperature")
-
-Phoenix_temp_min_ts_Decomposed <- stl(Phoenix_temp_min_ts, 
-                                      s.window = "periodic")
-plot(Phoenix_temp_min_ts_Decomposed, main = "Phoenix Min Temperature")
-
-#Fountain Hills
-FountainHills_temp_max_ts_Decomposed <- stl(FountainHills_temp_max_ts,
-                                            s.window = "periodic")
-plot(FountainHills_temp_max_ts_Decomposed, main = "Fountain Hills Max Temperature")
-
-FountainHills_temp_min_ts_Decomposed <- stl(FountainHills_temp_min_ts,
-                                            s.window = "periodic")
-plot(FountainHills_temp_min_ts_Decomposed, main = "Fountain Hills Min Temperature")
-
-#Las Vegas
-LasVegas_temp_max_ts_Decomposed <- stl(LasVegas_temp_max_ts,
-                                       s.window = "periodic")
-plot(LasVegas_temp_max_ts_Decomposed, main = "Las Vegas Max Temperature")
-
-LasVegas_temp_min_ts_Decomposed <- stl(LasVegas_temp_min_ts,
-                                       s.window = "periodic")
-plot(LasVegas_temp_min_ts_Decomposed, main = "Las Vegas Min Temperature")
-
-#Pahrump
-Pahrump_temp_max_ts_Decomposed <- stl(Pahrump_temp_max_ts,
-                                      s.window = "periodic")
-plot(Pahrump_temp_max_ts_Decomposed, main = "Pahrump Max Temperature")
-
-Pahrump_temp_min_ts_Decomposed <- stl(Pahrump_temp_min_ts,
-                                      s.window = "periodic")
-plot(Pahrump_temp_min_ts_Decomposed, main = "Pahrump Min Temperature")
-
-#San Diego
-SanDiego_temp_max_ts_Decomposed <- stl(SanDiego_temp_max_ts,
-                                       s.window = "periodic")
-plot(SanDiego_temp_max_ts_Decomposed, main = "San Diego Max Temperature")
-
-SanDiego_temp_min_ts_Decomposed <- stl(SanDiego_temp_min_ts,
-                                       s.window = "periodic")
-plot(SanDiego_temp_min_ts_Decomposed, main = "San Diego Min Temperature")
-
-#Ramona
-Ramona_temp_max_ts_Decomposed <- stl(Ramona_temp_max_ts,
-                                     s.window = "periodic")
-plot(Ramona_temp_max_ts_Decomposed, main = "Ramona Max Temperature")
-
-Ramona_temp_min_ts_Decomposed <- stl(Ramona_temp_min_ts,
-                                    s.window = "periodic")
-plot(Ramona_temp_min_ts_Decomposed, main = "Ramona Min Temperature")
+```{r Phoenix decomposed ts for maximum temperatures, fig.cap = "Phoenix Decomposed Time Series for Maximum Temperatures"}
+Phoenix_temp_max_ts_Decomposed <- stl(Phoenix_temp_max_ts, s.window = "periodic")
+plot(Phoenix_temp_max_ts_Decomposed, main = "Phoenix Maximum Temperature")
 ```
 
-We then conducted a Seasonal Mann  Kendall test to test whether the hypothesis that the data is stationary. This would mean that the data exhibit no statistically-significant upward or downward trend over time, meaning that there is no change in the temperature minimum and maximums over time.
-```{r SMK tests for min and max temperatures}
-#Run Seasonal Mann Kendall Tests
+```{r Phoenix decomposed ts for minimum temperatures, fig.cap = "Phoenix Decomposed Time Series for Minimum Temperatures"}
+Phoenix_temp_min_ts_Decomposed <- stl(Phoenix_temp_min_ts, s.window = "periodic")
+plot(Phoenix_temp_min_ts_Decomposed, main = "Phoenix Minimum Temperature")
+```
 
+```{r Fountain Hills decomposed ts for maximum temperatures, fig.cap = "Fountain Hills Decomposed Time Series for Maximum Temperatures"}
+FountainHills_temp_max_ts_Decomposed <- stl(FountainHills_temp_max_ts,
+                                            s.window = "periodic")
+plot(FountainHills_temp_max_ts_Decomposed,
+     main = "Fountain Hills Maximum Temperature")
+```
+
+```{r Fountain Hills decomposed ts for minimum temperatures, fig.cap = "Fountain Hills Decomposed Time Series for Minimum Temperatures"}
+FountainHills_temp_min_ts_Decomposed <- stl(FountainHills_temp_min_ts,
+                                            s.window = "periodic")
+plot(FountainHills_temp_min_ts_Decomposed,
+     main = "Fountain Hills Minimum Temperature")
+```
+
+```{r Las Vegas decomposed ts for maximum temperatures, fig.cap = "Las Vegas Decomposed Time Series for Maximum Temperatures"}
+LasVegas_temp_max_ts_Decomposed <- stl(LasVegas_temp_max_ts,
+                                       s.window = "periodic")
+plot(LasVegas_temp_max_ts_Decomposed, main = "Las Vegas Maximum Temperature")
+```
+
+```{r Las Vegas decomposed ts for minimum temperatures, fig.cap = "Las Vegas Decomposed Time Series for Minimum Temperatures"}
+LasVegas_temp_min_ts_Decomposed <- stl(LasVegas_temp_min_ts,
+                                       s.window = "periodic")
+plot(LasVegas_temp_min_ts_Decomposed, main = "Las Vegas Minimum Temperature")
+```
+
+```{r Pahrump decomposed ts for maximum temperatures, fig.cap = "Pahrump Decomposed Time Series for Maximum Temperatures"}
+Pahrump_temp_max_ts_Decomposed <- stl(Pahrump_temp_max_ts, s.window = "periodic")
+plot(Pahrump_temp_max_ts_Decomposed, main = "Pahrump Maximum Temperature")
+```
+```{r Pahrump decomposed ts for minimum temperatures, fig.cap = "Pahrump Decomposed Time Series for Minimum Temperatures"}
+Pahrump_temp_min_ts_Decomposed <- stl(Pahrump_temp_min_ts, s.window = "periodic")
+plot(Pahrump_temp_min_ts_Decomposed, main = "Pahrump Minimum Temperature")
+```
+
+```{r San Diego decomposed ts for maximum temperatures, fig.cap = "San Diego Decomposed Time Series for Maximum Temperatures"}
+SanDiego_temp_max_ts_Decomposed <- stl(SanDiego_temp_max_ts,
+                                       s.window = "periodic")
+plot(SanDiego_temp_max_ts_Decomposed, main = "San Diego Maximum Temperature")
+```
+
+```{r San Diego decomposed ts for minimum temperatures, fig.cap = "San Diego Decomposed Time Series for Minimum Temperatures"}
+SanDiego_temp_min_ts_Decomposed <- stl(SanDiego_temp_min_ts,
+                                       s.window = "periodic")
+plot(SanDiego_temp_min_ts_Decomposed, main = "San Diego Minimum Temperature")
+```
+
+```{r Ramona decomposed ts for maximum temperatures, fig.cap = "Ramona Decomposed Time Series for Maximum Temperatures"}
+Ramona_temp_max_ts_Decomposed <- stl(Ramona_temp_max_ts, s.window = "periodic")
+plot(Ramona_temp_max_ts_Decomposed, main = "Ramona Maximum Temperature")
+```
+
+```{r Ramona decomposed ts for minimum temperatures, fig.cap = "Ramona Decomposed Time Series for Minimum Temperatures"}
+Ramona_temp_min_ts_Decomposed <- stl(Ramona_temp_min_ts, s.window = "periodic")
+plot(Ramona_temp_min_ts_Decomposed, main = "Ramona Minimum Temperature")
+```
+
+\newpage
+
+To understand whether the data exhibit a statistically significant upward or downward trend over time, we conducted Seasonal Mann-Kendall tests. As a reminder, the null hypothesis is that the data is stationary and does not exhibit a statistically significant upward or downward trend over time. This would mean that the data exhibit no meaning that there is no change in the temperature minimum and maximum over time. The results of the tests, summarized below, show that all trends are statistically significant, as all p-values are smaller than 0.05, so none of the data are stationary. The tau value shows the slope of the trend line.
+
+```{r Seasonal Mann-Kendall tests for min and max temperatures}
 #Phoenix
 Phoenix_temp_max_trend <- SeasonalMannKendall(Phoenix_temp_max_ts)
 Phoenix_temp_min_trend <- SeasonalMannKendall(Phoenix_temp_min_ts)
@@ -1001,8 +919,10 @@ SanDiego_temp_min_trend <- SeasonalMannKendall(SanDiego_temp_min_ts)
 Ramona_temp_max_trend <- SeasonalMannKendall(Ramona_temp_max_ts)
 Ramona_temp_min_trend <- SeasonalMannKendall(Ramona_temp_min_ts)
 ```
-The results of the Seasonal Mann Kendall test show us that all trends are statistically significant, so none of the data are stationary. The tau value shows the slope of the trend. Interestingly, Fountain Hill's maximum temperatures, San Diego's minimum temperatures, and Ramona's maximum and minimum temperatures have a downward trend. Every other variable has an upward trend.
-``` {r ktable with results from the Seasonal Mann Kendall test}
+
+Interestingly, Fountain Hill’s maximum temperatures, San Diego’s minimum temperatures, and Ramona’s maximum and minimum temperatures have a downward trend. Every other variable has an upward trend. Furthermore, most maximum temperatures are increasing at a slower rate than the minimum temperatures. The only city where the opposite happens is Ramona, which is already set apart from the rest by being the only city where both temperature variables are decreasing, and the difference is smaller. The steepest slope is in Las Vegas' minimum temperatures.
+
+``` {r ktable with results from the Seasonal Mann-Kendall test}
 temp_SMK_cities <- c("Phoenix", "Phoenix", "Fountain Hills", "Fountain Hills",
             "Las Vegas", "Las Vegas", "Pahrump", "Pahrump",
             "San Diego", "San Diego", "Ramona", "Ramona")
@@ -1024,7 +944,7 @@ temp_SMK <- data.frame(temp_SMK_cities, temp_SMK_variable,
                        temp_SMK_p_values, temp_SMK_tau_values)
 
 kable(temp_SMK, "pipe", col.names =  c("City", "Variable", "p-value", "tau value"), 
-caption = "Results for the Seasonal Mann Kendall test on minimum and maximum
+caption = "Results for the Seasonal Mann-Kendall test on minimum and maximum
 temperatures", align = c("l", "c", "c", "c"), digits = 4, scientific = TRUE)
 ```
 
@@ -1096,9 +1016,12 @@ Ramona_plot_temp <- ggplot(Ramona, aes(x = Date)) +
 print(Ramona_plot_temp)
 ```
 
-``` {r put above plots in a single grid,  fig.width = 7.5, fig.height = 10}
+Though the trends are not linear, as shown in the decomposition graphs, these graphs show the direction of the trends in minimum and maximum temperatures across cities.
+
+``` {r minimum and maximum temperature trends potted,  fig.cap = "Trends in Minimum and Maximum Temperatures across Cities", fig.width = 7.5, fig.height = 10}
 #create a title
-title <- ggdraw() + draw_label("Trends in Minimum and Maximum Temperatures across Cities")
+title <- ggdraw() +
+  draw_label("Trends in Minimum and Maximum Temperatures across Cities")
 
 #extract a legend from one of the plots, make it into an object
 plot_legend <- get_legend(Ramona_plot_temp)
@@ -1114,13 +1037,12 @@ temp_plots <- plot_grid(
   align = c("hv"), ncol = 2, nrow = 3)
 
 #combine plots and legend
-temperature_plots <- plot_grid(title, plot_legend, temp_plots, ncol = 1, nrow = 3, rel_heights = c(0.5, 0.5, 10))
+temperature_plots <- plot_grid(title, plot_legend, temp_plots,
+                               ncol = 1, nrow = 3, rel_heights = c(0.5, 0.5, 10))
 print(temperature_plots)
 ```
 
-The graphs above show the trends increasing or slightly decreasing in the case of .
-
-\newpage
+In summary, we can conclude that there are significant changes in the trend of minimum and maximum temperatures across all cities in the U.S. Southwest, but these changes are not occurring uniformly Many of the cities, both urban and rural, are seeing their minimums grow at a faster pace than the also-growing maximums. However, exploring why some urban and rural cities have maximum and minimum temperatures with statistically-significant downward trend would be an important next step in research.
 
 # 6. Summary and Conclusions
 
