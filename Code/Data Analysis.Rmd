@@ -355,8 +355,9 @@ print(temperature_plots)
 ```
 
 ```{r creating time series objects for heat and cool degrees}
-#Creating univariate time series objects for heat and cool degrees for each city
+#Creating univariate time series objects for heat and cool degrees for each major city
 
+#Phoenix
 Phoenix_heatdegrees_ts <- ts(Phoenix$Heat_Degrees, 
                             start = c(1980, 1),
                             frequency = 365)
@@ -365,6 +366,7 @@ Phoenix_cooldegrees_ts <- ts(Phoenix$Cool_Degrees,
                             start = c(1980, 1),
                             frequency = 365)
 
+#Las Vegas
 LasVegas_heatdegrees_ts <- ts(LasVegas$Heat_Degrees,
                               start = c(1972, 1),
                               frequency = 365)
@@ -373,6 +375,7 @@ LasVegas_cooldegrees_ts <- ts(LasVegas$Cool_Degrees,
                               start = c(1972, 1),
                               frequency = 365)
 
+#San Diego
 SanDiego_heatdegrees_ts <- ts(SanDiego$Heat_Degrees,
                               start = c(1972, 1),
                               frequency = 365)
@@ -421,78 +424,47 @@ plot(SanDiego_cooldegrees_ts_Decomposed)
 
 ```
 
-```{r SMK test for heating degree days}
-# Run Seasonal Mann Kendall Test
+```{r SMK test for heating and cooling degree days}
+# Run Seasonal Mann Kendall Test for heating degree days
 
 #Phoenix
-Phoenix_heatdegrees_trend <-
-  Kendall::SeasonalMannKendall(Phoenix_heatdegrees_ts)
-
+Phoenix_heatdegrees_trend <- SeasonalMannKendall(Phoenix_heatdegrees_ts)
 Phoenix_heatdegrees_trend
-summary(Phoenix_heatdegrees_trend)
-
-# p value: is very small, less than 0.05, so can reject the null
-# hypothesis which is that the data is stationary
-# tau value is the slope of the trend line: -0.0592
+# p value =3.0198e-13 ; reject the null hypothesis (data is stationary)
+# tau = -0.0592 (trendline slope)
 
 #Las Vegas
-LasVegas_heatdegrees_trend <-
-  Kendall::SeasonalMannKendall(LasVegas_heatdegrees_ts)
-
+LasVegas_heatdegrees_trend <- SeasonalMannKendall(LasVegas_heatdegrees_ts)
 LasVegas_heatdegrees_trend
-summary(LasVegas_heatdegrees_trend)
-
-# many warning signs
-# p value is 2.22 e-16 ; can reject the null and there is a trend
-# tau is -0.16
+# p value =< 2.22e-16 ; reject the null hypothesis (data is stationary)
+# tau = -0.16 (trendline slope)
 
 #San Diego
-SanDiego_heatdegrees_trend <-
-  Kendall::SeasonalMannKendall(SanDiego_heatdegrees_ts)
-
+SanDiego_heatdegrees_trend <- SeasonalMannKendall(SanDiego_heatdegrees_ts)
 SanDiego_heatdegrees_trend
-summary(SanDiego_heatdegrees_trend)
-
-# many warnings
-# p value = 0.49529 ; cannot reject the null
-# tau = -0.00414
+# pvalue =0.49529 ; CANNOT reject the null hypothesis, data is stationary
+# tau = -0.00414 (trendline slope)
 ```
 
 ```{r Seasonal Mann Kendall Test for cooling degree days}
-# Run Seasonal Mann Kendall Test
+# Run Seasonal Mann Kendall Test for cooling degree days
 
-#Phoenix
-Phoenix_cooldegrees_trend <-
-  Kendall::SeasonalMannKendall(Phoenix_cooldegrees_ts)
-
+Phoenix_cooldegrees_trend <-SeasonalMannKendall(Phoenix_cooldegrees_ts)
 Phoenix_cooldegrees_trend
-summary(Phoenix_cooldegrees_trend)
-
-# warnings
-# p value is 2.22 e -16 ; very small - reject the null and say there is a trend
-# tau = 0.0983
+#p value =< 2.22e-16 ; reject the null hypothesis (data is stationary)
+# tau = 0.0983 (slope of trend)
 
 #Las Vegas
-LasVegas_cooldegrees_trend <-
-  Kendall::SeasonalMannKendall(LasVegas_cooldegrees_ts)
-
+LasVegas_cooldegrees_trend <-SeasonalMannKendall(LasVegas_cooldegrees_ts)
 LasVegas_cooldegrees_trend
-summary(LasVegas_cooldegrees_trend)
-
-# warnings
-# tiny p value; reject the null
-# tau value is 0.189
+# p value is =< 2.22e-16 ; reject the null hypothesis (data is stationary) 
+# tau = 0.189 (slope of the trend)
 
 #San Diego
-SanDiego_cooldegrees_trend <-
-  Kendall::SeasonalMannKendall(SanDiego_cooldegrees_ts)
-
+SanDiego_cooldegrees_trend <- SeasonalMannKendall(SanDiego_cooldegrees_ts)
 SanDiego_cooldegrees_trend
-summary(SanDiego_cooldegrees_trend)
-
-# warnings
-#p value is 0.36317 ; cannot reject the null
-# tau value is -0.00542
+# p value is 0.36317 ; CANNOT reject the null 
+# tau = -0.00542
 ```
 
 

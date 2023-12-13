@@ -66,7 +66,7 @@ Climate change, long-term shifts in temperatures and weather patterns, is a natu
 
 The U.S. has not escaped these impact. The southwest region of the US which we defined as Arizona, California, and Nevada has witnessed an uptick in droughts. Nevada which utilizes water from Lake Me has seen record lows in recent years cautioning them to adopt water conservation strategies while California has been no stranger to forest fires. We plan to do this by analyzing data from the National Centers for Environmental Information, using max temperature and minimum temperature.  Thus, our research questions are:
 
-1. Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
+1. Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1980 to 2022?
 
 2. Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
@@ -190,7 +190,7 @@ ggplot(Three_cities, aes(x = Date,
        y = "Daily Avg Temp in degrees F") 
 ```
 
-For the remainder of the exploratory analysis section, we focused on a single city - Phoenix, Arizona - in order to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trendlines for the minimum and maximum temperatures show that there has been a modest increase in both over time. The black horizontal line on Figure 2 marks the 65 F threshold for heating and cooling degrees. Based on the trends in this figure, we would expect there to be more cooling degree days than heating.
+For the remainder of the exploratory analysis section, we focused on a single city - Phoenix, Arizona - in order to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trend for the minimum and maximum temperatures show that there has been a modest increase in both over time. The black horizontal line on Figure 2 marks the 65 F threshold for heating and cooling degrees. Based on the trends in this figure, we would expect there to be more cooling degree days than heating.
 
 ```{r plots exploring the trends in the min and max temperatures, fig.cap="Phoenix Daily Maiximum and Minimum Temperatures", fig.height = 2.75}
 # Creating a plot with Phoenix's min and max temp
@@ -404,12 +404,163 @@ plot_Phoenix_1980_2022_Cool <- ggplot() +
 print(plot_Phoenix_1980_2022_Cool)
 ```
 
-
 \newpage
 
 # 4. Analysis
 
-## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1972 to 2022?
+## Question 1: Has there been an increase in the number of heating and cooling days in the U.S. Southwest from 1980 to 2022?
+
+We used a time series analysis for the heating and cooling degree days for each of the three major cities to address this research question. We made univariate time series objects for the heating and cooling degree days for each city, and then decomposed each time series object to separate out the seasonality, trend, and remainder from the data. The graphs below showcase the time series plots.
+
+```{r creating time series objects for heat and cool degrees}
+#Creating univariate time series objects for heat and cool degrees for each major city
+
+#Phoenix
+Phoenix_heatdegrees_ts <- ts(Phoenix$Heat_Degrees, 
+                            start = c(1980, 1),
+                            frequency = 365)
+
+Phoenix_cooldegrees_ts <- ts(Phoenix$Cool_Degrees, 
+                            start = c(1980, 1),
+                            frequency = 365)
+
+#Las Vegas
+LasVegas_heatdegrees_ts <- ts(LasVegas$Heat_Degrees,
+                              start = c(1980, 1),
+                              frequency = 365)
+
+LasVegas_cooldegrees_ts <- ts(LasVegas$Cool_Degrees,
+                              start = c(1980, 1),
+                              frequency = 365)
+
+#San Diego
+SanDiego_heatdegrees_ts <- ts(SanDiego$Heat_Degrees,
+                              start = c(1980, 1),
+                              frequency = 365)
+
+SanDiego_cooldegrees_ts <- ts(SanDiego$Cool_Degrees,
+                              start = c(1980, 1),
+                              frequency = 365)
+```
+
+```{r decomposing for heat/cool degrees, out.width="50%"}
+# Decomposing each ts object
+
+Phoenix_heatdegrees_ts_Decomposed <-
+  stl(Phoenix_heatdegrees_ts, s.window = "periodic")
+
+plot(Phoenix_heatdegrees_ts_Decomposed, main="Phoenix Heat Degree Days")
+
+Phoenix_cooldegrees_ts_Decomposed <-
+  stl(Phoenix_cooldegrees_ts, s.window = "periodic")
+
+plot(Phoenix_cooldegrees_ts_Decomposed, main="Phoenix Cool Degree Days")
+
+#Las Vegas decomposition and plot
+
+LasVegas_heatdegrees_ts_Decomposed <-
+  stl(LasVegas_heatdegrees_ts, s.window = "periodic")
+
+plot(LasVegas_heatdegrees_ts_Decomposed, main="Las Vegas Heat Degree Days")
+
+LasVegas_cooldegrees_ts_Decomposed <-
+  stl(LasVegas_cooldegrees_ts, s.window = "periodic")
+
+plot(LasVegas_cooldegrees_ts_Decomposed, main = "Las Vegas Cool Degree Days")
+
+# San Diego decomposition and plot
+
+SanDiego_heatdegrees_ts_Decomposed <-
+  stl(SanDiego_heatdegrees_ts, s.window = "periodic")
+
+plot(SanDiego_heatdegrees_ts_Decomposed, main = "San Diego Heat Degree Days")
+
+SanDiego_cooldegrees_ts_Decomposed <-
+  stl(SanDiego_cooldegrees_ts, s.window = "periodic")
+
+plot(SanDiego_cooldegrees_ts_Decomposed, main = "San Diego Cool Degree Days")
+
+```
+
+The Seasonal Mann Kendall test was performed on each of the city's heating and cooling degree days data to analyze if the data is stationary. The null hypothesis for the Seasonal Mann Kendall test is that the data is stationary, meaning there is no significant trend over time. The alternative hypothesis is that there is a significant trend in the data over time.
+
+The results of the Seasonal Mann Kendall test for the heating degree days in Phoenix, Las Vegas, and San Diego are found in Table 1. The results indicate that Phoenix and Las Vegas have a p-value of less than 0.05 (3.0198e-13 and 2.22e-16, respectively), so the null hypothesis can be rejected. The p value for San Diego is greater than 0.5 (having a value of 0.49529), so we cannot reject the null hypothesis. The tau value indicates the slope of the trend, and all are negative, but this is only significant for only Phoenix and Las Vegas. Las Vegas has the steepest slope. 
+
+```{r SMK test for heat degree days, message=FALSE, warning=FALSE, include=FALSE}
+# Run Seasonal Mann Kendall Test for heating degree days
+
+#Phoenix
+Phoenix_heatdegrees_trend <- SeasonalMannKendall(Phoenix_heatdegrees_ts)
+Phoenix_heatdegrees_trend
+# tau = -0.0592 and 2-sided p value =3.0198e-13 (REJECT NULL)
+
+#Las Vegas
+LasVegas_heatdegrees_trend <- SeasonalMannKendall(LasVegas_heatdegrees_ts)
+LasVegas_heatdegrees_trend
+# tau = -0.16, 2-sided p value =< 2.22e-16 (REJECT NULL)
+
+#San Diego
+SanDiego_heatdegrees_trend <- SeasonalMannKendall(SanDiego_heatdegrees_ts)
+SanDiego_heatdegrees_trend
+# tau = -0.00414, 2-sided pvalue = 0.49529 (CANNOT REJECT NULL)
+```
+
+```{r heating degree day kable}
+heatdegree_SMK_cities <- c("Phoenix", "Las Vegas", "San Diego")
+
+heatdegree_SMK_p_values <- c("3.0198e-13", "2.22e-16", "0.49529")
+
+heatdegree_SMK_tau_values <- c("-0.0592", "-0.16", "-0.00414")
+
+heatdegree_SMK <- data.frame(heatdegree_SMK_cities, heatdegree_SMK_p_values, 
+                             heatdegree_SMK_tau_values)
+
+kable(heatdegree_SMK, "pipe", col.names =  c("City", "p-value", "tau value"), 
+caption = "Results for the Seasonal Mann Kendall test for Heating Degree Days", align = c("l", "c", "c"), 
+digits = 4, scientific = TRUE)
+```
+
+Table 2 shows the results of the Seasonal Mann Kendall Test for the cooling degree days over time in Phoenix, Las Vegas, and San Diego. Phoenix and Las Vegas have a p value of less than 0.05 (p value = 2.22e-16 for each city), so the null hypothesis can be rejected. The heating degree days for Phoenix and Las Vegas have a significant trend over time. The cooling degree days for San Diego produced a p value of 0.36317, which is higher the alpha level of 0.05, so we cannot reject the null hypothesis for this location. There is not a significant trend over time in the cooling degree days for San Diego. The tau values are the slope of the trend line, and indicate if the trend is positive or negative. For both Phoenix and Las Vegas, the slope is positive, meaning there is a positive trend over time in cooling degree days in these locations. 
+
+```{r SMK test for cool degree days, message=FALSE, warning=FALSE, include=FALSE}
+# Run Seasonal Mann Kendall Test for cooling degree days
+
+Phoenix_cooldegrees_trend <-SeasonalMannKendall(Phoenix_cooldegrees_ts)
+Phoenix_cooldegrees_trend
+#p value =< 2.22e-16 ; reject the null hypothesis (data is stationary)
+# tau = 0.0983 (slope of trend)
+
+#Las Vegas
+LasVegas_cooldegrees_trend <-SeasonalMannKendall(LasVegas_cooldegrees_ts)
+LasVegas_cooldegrees_trend
+# p value is =< 2.22e-16 ; reject the null hypothesis (data is stationary) 
+# tau = 0.189 (slope of the trend)
+
+#San Diego
+SanDiego_cooldegrees_trend <- SeasonalMannKendall(SanDiego_cooldegrees_ts)
+SanDiego_cooldegrees_trend
+# p value is 0.36317 ; CANNOT reject the null 
+# tau = -0.00542
+```
+
+```{r cooling degree day kable}
+cooldegree_SMK_cities <- c("Phoenix", "Las Vegas", "San Diego")
+
+cooldegree_SMK_p_values <- c("2.22e-16", "2.22e-16", "0.36317")
+
+cooldegree_SMK_tau_values <- c("0.0983", "0.189", "-0.00542")
+
+cooldegree_SMK <- data.frame(cooldegree_SMK_cities, cooldegree_SMK_p_values, 
+                             cooldegree_SMK_tau_values)
+
+kable(cooldegree_SMK, "pipe", col.names =  c("City", "p-value", "tau value"), 
+caption = "Results for the Seasonal Mann Kendall test for Cooling Degree Days", align = c("l", "c", "c"), 
+digits = 4, scientific = TRUE)
+```
+
+In summary, we can conclude there has been a significant increase in the trend of cooling degree days over time in some cities in the U.S. Southwest from 1980 to 2022, but not uniformly. There has been some significant decrease in the trend of heating degree days over time in some U.S. Southwest cities from 1980 to 2022, but not in all locations. The increase in cooling degree days and decrease in heating degree days is evidence of the overall warming temperatures in Las Vegas and Phoenix. Tests performed on the San Diego dataset indicated that this data may be stationary, meaning there is no significant trend upward or downward in the heating and cooling degree days over time.
+
+\newpage
 
 ## Question 2: Is there a difference in heating and cooling days in urban and rural spaces in the U.S. Southwest over time?
 
