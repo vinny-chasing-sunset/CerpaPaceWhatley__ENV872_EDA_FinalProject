@@ -566,7 +566,7 @@ In summary, we can conclude there has been a significant increase in the trend o
 
 To address question 2, we thought it was best to perform ANOVA testing. This would allow us the check the means of the “Heat Degrees” and “Cool Degrees” for the each state against Location, Year, and Location:Year finding out what was statically significant to the contribution of the average mean of “Heat Degrees” and “Cool Degrees”  . But to get an accurate picture we thought it would be best to take the means of the Heat and Cooling variables of each state and then compare it to each other state in the dataset. This required us to create a data frame for each state where we combined the metropolitan city and suburban city data by Location, Year, Heat Degrees, and Cool Degrees. Then running 2 anova test for each of those 3 states, the first test having heat degrees as the dependent variable and the second test having cool degrees as dependent variable.
 
-```{r Summary of data for each city}
+```{r Summary of data for each city, include=FALSE}
 summary(LasVegas)
 
 summary(Pahrump)
@@ -602,7 +602,7 @@ RamonaSuburban <- Ramona %>%
 
 ```
 
-```{r combine nevada cities }
+```{r combine nevada cities, include=FALSE}
 # Combine datasets by rows
 Nevada_data <- rbind(LasVegasMetro, PahrumpSuburban)
 
@@ -629,7 +629,7 @@ Nevada_summary_anova_cool <- summary(Nevada_anova_result_cool)
 
 ```
 
-```{r combine Arizona cities}
+```{r combine Arizona cities, include=FALSE}
 # Combine datasets by rows
 Arizona_data <- rbind(PhoenixMetro, FountainHillsSuburban)
 
@@ -654,7 +654,7 @@ Arizona_summary_anova_heat <- summary(Arizona_anova_result_heat)
 Arizona_summary_anova_cool <- summary(Arizona_anova_result_cool)
 ```
 
-```{r combine California cities}
+```{r combine California cities, include=FALSE}
 # Combine datasets by rows
 California_data <- rbind(SanDiegoMetro, RamonaSuburban)
 
@@ -774,11 +774,14 @@ if (length(bar_names) != ncol(Nevada_f_values_matrix)) {
   barplot(Nevada_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "Nevada ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.5), par("usr")[4] + 1, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.25, 2), par("usr")[4] + 9, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 
 ```
@@ -806,11 +809,14 @@ if (length(bar_names) != ncol(Arizona_f_values_matrix)) {
   barplot(Arizona_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "Arizona ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 60, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 ```
 
@@ -837,11 +843,14 @@ if (length(bar_names) != ncol(California_f_values_matrix)) {
   barplot(California_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
-          main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
+          main = "California ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(2.2, 2, 3), par("usr")[4] + 420, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] - 900, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 
 ```

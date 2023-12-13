@@ -666,14 +666,18 @@ if (length(bar_names) != ncol(Nevada_f_values_matrix)) {
   stop("Incorrect number of names for the columns in the matrix.")
 } else {
   # Create a bar plot with specific colors for each bar
-  barplot(f_values_matrix, beside = TRUE,
+  barplot(Nevada_f_values_matrix, beside = TRUE,
           col = colors,
           names.arg = bar_names,
           main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.5), par("usr")[4] + 1, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.25, 1), par("usr")[4] + 9, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 
 ```
@@ -704,8 +708,11 @@ if (length(bar_names) != ncol(Arizona_f_values_matrix)) {
           main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 25, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.5, 1), par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 ```
 
@@ -735,7 +742,10 @@ if (length(bar_names) != ncol(California_f_values_matrix)) {
           main = "ANOVA F-values for Heat_Degrees and Cool_Degrees",
           ylab = "F-value")
 
-  # Adding custom labels above the bars
-  text(1:3, par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0, 0), xpd = TRUE)
+# Adding custom labels above the bars for Heat Values with different distances
+text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 200, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
+
+# Adding custom labels above the bars for Cool Values
+text((1:3) + 4.5 + 0.25 * c(0, 0.2, 1), par("usr")[4] - 900, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
 }
 ```
