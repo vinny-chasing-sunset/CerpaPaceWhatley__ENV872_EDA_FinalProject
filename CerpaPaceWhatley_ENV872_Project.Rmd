@@ -561,9 +561,17 @@ California_summary_anova_heat <- summary(California_anova_result_heat)
 California_summary_anova_cool <- summary(California_anova_result_cool)
 ```
 
+<<<<<<< HEAD
 To address question 2, we thought it was best to perform ANOVA testing. This would allow us the check the means of the “Heating Degrees” and “Cooling Degrees” for the each state against Location, Year, and Location:Year finding out what was statically significant to the contribution of the average mean of “Heating Degrees” and “Cooling Degrees” . But to get an accurate picture we thought it would be best to take the means of the Heating and Cooling variables of each state and then compare it to each other state in the dataset. This required us to create a data frame for each state where we combined the metropolitan city and suburban city data by Location, Year, Heating Degrees, and Cooling Degrees. Then running 2 ANOVA test for each of those 3 states, the first test having Heating degrees as the dependent variable and the second test having Cooling degrees as dependent variable.
 
 After that using the ANOVA data for Heating and Cooling degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada, location contributed and was the only significant variable to average Heating temperature. While the same story was told when looking at the average Cooling temperature, location being statically significant. Looking at only this and no other analysis would lead you to believe that location is the reason we see such high and low temperatures, especially considering that Nevada is a desert and it typically sees highly polarized temperatures dependent on the time of day.
+=======
+After that using the anova data for heat and cool degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada’s heating degree, all variables Location, Year, and Location:Year we’re statically significant. While the same story was told when looking at the cooling degree vairble, all variables being statically significant. Causing us to infer that all of these factors do indeed have caused the trend in higher and colder temperatures in Nevada, explained that climate change just might be the cause.
+
+Secondly, looking at the table for Arizona, we find that this data tells a slightly different story than Nevada. That is for heating degree, Location and Year are both statically significant while Location:Year isn’t due to it having a p-value of 0.054 compared to the 0 P-value Location and Year both have. Meanwhile for the cooling degree, all variables were statically significant.
+
+Lastly, from California’s data we learn that again for heat degrees, Location and Year are both statically significant while Location:Year did not having a P-value of 0.65. All variables for cooling degree were significant.
+>>>>>>> 50dfa90b1c24dc3bce73196d8b459320fc14d123
 
 Secondly, looking at the table for Arizona, we find that this data tells the same story as previously stated for Nevada. That Location is the statically significant factor in average Heating and Cooling temperatures. Lastly, from California’s data we learn that again for Heating degree’s location was the statically significant contributor but for Cooling degrees Year instead is statically significant. We are thinking this is the case because our California data set (from 1998 to 2022) does not cover the same amount of time as the Nevada dataset (1972 to 2022) and Arizona dataset (1980 to 2022). Leading to slightly different results.
 
@@ -633,8 +641,8 @@ kable(California_anova_df_cool,
       caption = "ANOVA Summary Table for California Cooling Degrees")
 ```
 
-We then extracted the f-values from those datasets and created bar charts to visualize the stark difference between statically significant variables compared to the other variables.
 
+<<<<<<< HEAD
 ```{r Creating Bar plot of F-values, Nevada data, fig.cap= "Nevada ANOVA F-values for Heating and Cooling Degrees"}
 
 # extracted F-values
@@ -761,6 +769,9 @@ text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] - 900,
 In summary, with anova testing we learned that biggest contributor to average Heating and cooling temperatures for each can be attributed to solely location. Requiring us to do further analysis this time instead with time-series.
 
 \newpage
+=======
+In summary, with anova testing we learned that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. 
+>>>>>>> 50dfa90b1c24dc3bce73196d8b459320fc14d123
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
 
@@ -1046,7 +1057,7 @@ In summary, we can conclude that there are significant changes in the trend of m
 
 # 6. Summary and Conclusions
 
-(Question 1)... ANOVA testing allowed us to ascertain that Location played the biggest role in determining average means of Heating and Cooling Degrees. This is true for Nevada, Arizona, and California minus California’s Cooling degree mean. Which we believe was different due to data set being smaller compared to the other data sets from Nevada and Arizona which have a couple of more decades worth of data. We didn't want to stop here though and decided that further analysis was needed, this time testing the data with time series analysis... (Question 3)
+(Question 1)... ANOVA testing allowed us to ascertain that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. It is worthy to note though that when filtering the datasets, Arizona and California had few decades less of data coverage compared to Nevada... (Question 3)
 
 \newpage
 
