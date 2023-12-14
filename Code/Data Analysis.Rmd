@@ -335,9 +335,11 @@ Ramona_plot_temp <- ggplot(Ramona, aes(x = Date)) +
 print(Ramona_plot_temp)
 
 #extract a legend from one of the plots, make it into an object
-plot_legend <- get_legend(Ramona_plot_temp + theme(legend.position = "top")
+plot_legend <- get_legend(Ramona_plot_temp)
+
 
 #add the plots without legends to a cowplot
+
 temp_plots <- plot_grid(
   Phoenix_plot_temp + theme(legend.position = "none"),
   FountainHills_plot_temp + theme(legend.position = "none"),

@@ -24,7 +24,7 @@ here()
 Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
                     stringsAsFactors = TRUE) %>% 
   filter(NAME == "PHOENIX AIRPORT, AZ US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = ymd(DATE)) %>%
   mutate(NAME = "Phoenix") %>%
   mutate(Month = month(DATE)) %>%
@@ -34,7 +34,7 @@ Phoenix <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
 FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
                           stringsAsFactors = TRUE) %>% 
   filter(NAME == "FOUNTAIN HILLS, AZ US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = ymd(DATE)) %>%
   mutate(NAME = "Fountain Hills") %>%
   mutate(Month = month(DATE)) %>%
@@ -44,7 +44,7 @@ FountainHills <- read.csv(here("./Data/Raw/phoenix_fountainhills_raw.csv"),
 LasVegas <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
                      stringsAsFactors = TRUE) %>% 
   filter(NAME == "MCCARRAN INTERNATIONAL AIRPORT, NV US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = ymd(DATE)) %>%
   mutate(NAME = "Las Vegas") %>%
   mutate(Month = month(DATE)) %>%
@@ -54,7 +54,7 @@ LasVegas <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
 Pahrump <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
                     stringsAsFactors = TRUE) %>% 
   filter(NAME == "PAHRUMP 4 NW, NV US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = ymd(DATE)) %>%
   mutate(NAME = "Pahrump") %>%
   mutate(Month = month(DATE)) %>%
@@ -64,7 +64,7 @@ Pahrump <- read.csv(here("./Data/Raw/Nevada_data_raw.csv"),
 SanDiego <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
                      stringsAsFactors = TRUE) %>% 
   filter(NAME == "SAN DIEGO INTERNATIONAL AIRPORT, CA US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = mdy(DATE)) %>%
   mutate(NAME = "San Diego") %>%
   mutate(Month = month(DATE)) %>%
@@ -74,7 +74,7 @@ SanDiego <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
 Ramona <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
                    stringsAsFactors = TRUE) %>% 
   filter(NAME == "RAMONA AIRPORT, CA US") %>% 
-  select(NAME, DATE, PRCP, PSUN, TMAX, TMIN, TAVG, TSUN) %>% 
+  select(NAME, DATE, TMAX, TMIN, TAVG) %>% 
   mutate(DATE = mdy(DATE)) %>%
   mutate(NAME = "Ramona") %>%
   mutate(Month = month(DATE)) %>%
@@ -86,33 +86,27 @@ Ramona <- read.csv(here("./Data/Raw/SanDiego_Ramona_Raw_Data.csv"),
 
 ```{r update column names, echo=FALSE}
 colnames(Phoenix) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 
 colnames(FountainHills) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 
 colnames(LasVegas) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 
 colnames(Pahrump) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 
 colnames(SanDiego) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 
 colnames(Ramona) <-
-  c("Location", "Date", "Precipitation", "Percent_Sunshine_Possible",
-    "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", "Total_Sunshine",
+  c("Location", "Date", "Daily_Temp_Max", "Daily_Temp_Min", "Temp_Avg", 
     "Month", "Year", "DayofYear")
 ```
 
@@ -163,22 +157,22 @@ summary(Ramona$Daily_Temp_Min)
 
 ```{r updating the average columns}
 Phoenix$Temp_Avg <- 
-  rowMeans(Phoenix [, c(5, 6)], na.rm = TRUE)
+  rowMeans(Phoenix [, c(3, 4)], na.rm = TRUE)
 
 FountainHills$Temp_Avg <- 
-  rowMeans(FountainHills [, c(5, 6)], na.rm = TRUE)
+  rowMeans(FountainHills [, c(3, 4)], na.rm = TRUE)
 
 Pahrump$Temp_Avg <- 
-  rowMeans(Pahrump [, c(5, 6)], na.rm = TRUE)
+  rowMeans(Pahrump [, c(3, 4)], na.rm = TRUE)
 
 LasVegas$Temp_Avg <- 
-  rowMeans(LasVegas [, c(5, 6)], na.rm = TRUE)
+  rowMeans(LasVegas [, c(3, 4)], na.rm = TRUE)
 
 SanDiego$Temp_Avg <- 
-  rowMeans(SanDiego [, c(5, 6)], na.rm = TRUE)
+  rowMeans(SanDiego [, c(3, 4)], na.rm = TRUE)
 
 Ramona$Temp_Avg <- 
-  rowMeans(Ramona [, c(5, 6)], na.rm = TRUE)
+  rowMeans(Ramona [, c(3, 4)], na.rm = TRUE)
 ```
 
 ```{r Calculating Heating and Cooling Degree Days}
