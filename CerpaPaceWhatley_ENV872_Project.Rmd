@@ -155,10 +155,8 @@ The Fountain Hills, Pahrump, and Ramona datasets had some missing data points in
 
 Having the daily average temperature calculated for each location, we then calculated the Heating Degree Days and Cooling Degree Days. Heating Degree Days are when people turn their heater on because the average temperature is low, and Cooling Degree Days is when people turn their air conditioner on because the average temperature is warm. The industry standard threshold is 65 degrees F, meaning that anything higher than 65 F would constitute a Cooling Degree Day, and anything lower than 65 would mean it is a Heating Degree Day (US EPA, 2016). The equations to calculate the Heating and Cooling Degree Days are as follows:
 
-* If mean temperature > 65°F then 
-  * mean temperature - 65°F = Cooling Degree Days
-* If mean temperature < 65°F then
-  * 65°F - mean temperature = Heating Degree Days
+* If mean temperature > 65°F then: mean temperature - 65°F = Cooling Degree Days
+* If mean temperature < 65°F then: 65°F - mean temperature = Heating Degree Days
 
 From these calculations we are able to look at the number of Heating and Cooling Degree Days, as well as the intensity, which are two main components examined in the exploratory analysis section.
 
@@ -898,7 +896,7 @@ Ramona_plot_temp <- ggplot(Ramona, aes(x = Date)) +
 print(Ramona_plot_temp)
 ```
 
-Though the trends are not linear, as shown in the decomposition graphs, Figure 22 shows show the direction of the trends in minimum and maximum temperatures across cities.
+Though the trends are not linear, as shown in the decomposition graphs, Figure 23 shows show the direction of the trends in minimum and maximum temperatures across cities.
 
 ``` {r minimum and maximum temperature trends potted,  fig.cap = "Trends in Minimum and Maximum Temperatures across Cities", fig.width = 7.5, fig.height = 10}
 #create a title
