@@ -66,13 +66,13 @@ month_lab = tibble(doy = yday(as.Date(c("1980-02-15", "1980-04-15",
 
 Climate change, long-term shifts in temperatures and weather patterns, is a naturally occurring process that has been accelerated by human actions, primarily the burning of fossil fuels. One of the impacts of climate change is rising temperatures, which have negative impacts on Earth’s ecosystems, such as melting glaciers, intensifying storms, and worsening drought conditions. Humans are directly impacted by rising temperatures: as the number of hot days and heat waves increases, so does the number of heat-related illnesses.
 
-The U.S. has not escaped these impacts. The U.S. Southwest, which we define as Arizona, California, and Nevada, has witnessed an uptick in droughts. Lake Me, the main source of drinking water for Nevada, has seen record lows in recent years, cautioning the state to adopt water conservation strategies. News about California’s wildfire seasons seem to increase in intensity and length every year. Arizona has reported some of the highest temperatures in the U.S. Lastly, the impacts are not spread evenly across human settlements. The Urban Heat Island phenomenon describes the situation where cities, with their heat-trapping cement and lower tree canopy cover, tend to be hotter than nearby rural areas.
+The U.S. has not escaped these impacts. The U.S. Southwest, which we define as Arizona, California, and Nevada, has witnessed an uptick in droughts. Lake Me, the main source of drinking water for Nevada, has seen record lows in recent years, cautioning the state to adopt water conservation strategies. News about California’s wildfire seasons seem to increase in intensity and length every year. Arizona has reported some of the highest temperatures in the U.S. Lastly, the impacts are not spread evenly across human settlements. The Urban Heat Island phenomenon describes the situation where cities, with their heat-trapping cement and lower tree canopy cover, tend to be hotter than nearby suburban areas.
 
 In light of these issues, this project aims to understand the intensity of rising temperatures in the U.S. Southwest.  Our research questions are:
 
 1. Has there been an increase in the number of Heating and Cooling Days in the U.S. Southwest from 1980 to 2022?
 
-2. Is there a difference in Heating and Cooling Days in urban and rural spaces in the U.S. Southwest over time?
+2. Is there a difference in Heating and Cooling Days in urban and suburban spaces in the U.S. Southwest over time?
 
 3. How have minimum and maximum temperatures changed over time?
 
@@ -300,6 +300,7 @@ plot_Phoenix_1980_2022_Cool <- ggplot() +
   ylim(0, 40)
 print(plot_Phoenix_1980_2022_Cool)
 ```
+
 Comparing Figures 3 and 4 to 5 and 6 reflects the importance of understanding the intensity over quantity of Heating and Cooling Days. While the initial comparison shows a slight increase in the number of days, the intensity comparison denotes a far steeper increase. The intensity also impacts energy usage, because people usually have a buffer of temperatures at which they will turn on the heat or AC that is not just 65 degrees F. More days that are closer to 100 degrees F have a worse impact on human health and energy usage than more days that are closer to 70 degrees F. In our analysis, we thus chose to look more closely at intensity over quantity of Heating and Cooling Degree Days.
 
 \newpage
@@ -455,9 +456,9 @@ In summary, we can conclude there has been a significant increase in the trend o
 
 \newpage
 
-## Question 2: Is there a difference in Heating and Cooling Days in urban and rural spaces in the U.S. Southwest over time?
+## Question 2: Is there a difference in Heating and Cooling Days in urban and suburban spaces in the U.S. Southwest over time?
 
-To address this research question, we applied ANOVA tests to find whether there was a significant difference in the means of Heating and Cooling degree days between urban and rural spaces. In particular, we compared the Location, Year, and Location and Year as potential significant factors that contributed to the potential difference in Degree Days means. This required creating data frames for each sate to apply the test where Heating or Cooling Degree Days were the dependent variable and Location and Year as the independent variable.
+To address this research question, we applied ANOVA tests to find whether there was a significant difference in the means of Heating and Cooling degree days between urban and suburban spaces. In particular, we compared the Location, Year, and Location and Year as potential significant factors that contributed to the potential difference in Degree Days means. This required creating data frames for each sate to apply the test where Heating or Cooling Degree Days were the dependent variable and Location and Year as the independent variable.
 
 ```{r Summary of data for each city, include=FALSE}
 summary(LasVegas)
@@ -639,7 +640,7 @@ kable(California_anova_df_cool,
       caption = "ANOVA Summary Table for California Cooling Degrees")
 ```
 
-In summary, Location, Year, and Location:Year were a statistically-significant factor for most Heating and Cooling Degree Days variables, but not for locations.  Location and Year for Heating Degree Days in Arizona and in California were not a statistically-significant variable. These results show that there is, in fact, a difference in the Heating and Cooling Days that is driven by Location in every state. Therefore, we can assert that there is a statistically-significant difference in the Heating and Cooling Days between urban and rural locations. This aligns with the literature on the Urban Heat Island effect.
+In summary, Location, Year, and Location:Year were a statistically-significant factor for most Heating and Cooling Degree Days variables, but not for locations.  Location and Year for Heating Degree Days in Arizona and in California were not a statistically-significant variable. These results show that there is, in fact, a difference in the Heating and Cooling Days that is driven by Location in every state. Therefore, we can assert that there is a statistically-significant difference in the Heating and Cooling Days between urban and suburban locations. This aligns with the literature on the Urban Heat Island effect.
 
 \newpage
 
@@ -923,13 +924,13 @@ temperature_plots <- plot_grid(title, plot_legend, temp_plots,
 print(temperature_plots)
 ```
 
-In summary, we can conclude that there are significant changes in the trend of minimum and maximum temperatures across all cities in the U.S. Southwest, but these changes are not occurring uniformly Many of the cities, both urban and rural, are seeing their minimums grow at a faster pace than the also-growing maximums. However, exploring why some urban and rural cities have maximum and minimum temperatures with statistically-significant downward trend would be an important next step in research.
+In summary, we can conclude that there are significant changes in the trend of minimum and maximum temperatures across all cities in the U.S. Southwest, but these changes are not occurring uniformly Many of the cities, both urban and suburban, are seeing their minimums grow at a faster pace than the also-growing maximums. However, exploring why some urban and suburban cities have maximum and minimum temperatures with statistically-significant downward trend would be an important next step in research.
 
 \newpage
 
 # 6. Summary and Conclusions
 
-The state of rising temperatures in the U.S. Southwest is more complex that we initially believed. For question 2, on whether there is a difference in Heating and Cooling Degree Days between urban and rural spaces in the region, we can assert that Location represents a statistically-significant variable that influences both types of Degree Days. Our time series analyses, on the other hand, provide enough variation that we cannot conclusively provide a single answer to questions 1 and 3. On whether there is a significant trend of Cooling and Heating Days, we can say that there has been an increase in the trend of Cooling Degree Days and a decrease in the trend of Heating Degree Days, but that these are not uniform and they are not present in all cities in the U.S. Southwest. Lastly, on the question of whether minimum and maximum temperatures have changed, we can conclude that there are significant changes in the trends of these variables across all cities in the U.S. Southwest, urban and rural, but these changes are not occurring at the same rate nor in the same direction.
+The state of rising temperatures in the U.S. Southwest is more complex that we initially believed. For question 2, on whether there is a difference in Heating and Cooling Degree Days between urban and suburban spaces in the region, we can assert that Location represents a statistically-significant variable that influences both types of Degree Days. Our time series analyses, on the other hand, provide enough variation that we cannot conclusively provide a single answer to questions 1 and 3. On whether there is a significant trend of Cooling and Heating Days, we can say that there has been an increase in the trend of Cooling Degree Days and a decrease in the trend of Heating Degree Days, but that these are not uniform and they are not present in all cities in the U.S. Southwest. Lastly, on the question of whether minimum and maximum temperatures have changed, we can conclude that there are significant changes in the trends of these variables across all cities in the U.S. Southwest, urban and suburban, but these changes are not occurring at the same rate nor in the same direction.
 
 The results of this project point to a need for further research and exploration about trends in and impacts of rising temperatures in the U.S. Southwest. It would be beneficial to explore what additional physical factors may be contributing to changing temperatures, such as proximity to bodies of water, and what policies differentiate the cities, such as growing urban tree canopies.
 
