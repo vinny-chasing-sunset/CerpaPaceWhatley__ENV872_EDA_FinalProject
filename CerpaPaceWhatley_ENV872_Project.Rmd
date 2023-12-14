@@ -13,13 +13,15 @@ output: pdf_document
 \newpage
 
 ```{r setup, include = FALSE}
-
-# Load your packages
-#install.packages("ggplot2")
-#install.packages("ggthemes")
-#install.packages("cowplot")
-#install.packages("knitr")
-#install.packages("Kendall")
+# Install and load packages
+#install.packages(tidyverse)
+#install.packages(lubridate)
+#install.packages(here)
+#install.packages(ggthemes)
+#install.packagescowplot)
+#install.packages(zoo)
+#install.packages(knitr)
+#install.packages(Kendall)
 
 library(tidyverse)
 library(lubridate)
@@ -67,6 +69,7 @@ Climate change, long-term shifts in temperatures and weather patterns, is a natu
 The U.S. has not escaped these impacts. The U.S. Southwest, which we define as Arizona, California, and Nevada, has witnessed an uptick in droughts. Lake Me, the main source of drinking water for Nevada, has seen record lows in recent years, cautioning the state to adopt water conservation strategies. News about California’s wildfire seasons seem to increase in intensity and length every year. Arizona has reported some of the highest temperatures in the U.S. Lastly, the impacts are not spread evenly across human settlements. The Urban Heat Island phenomenon describes the situation where cities, with their heat-trapping cement and lower tree canopy cover, tend to be hotter than nearby rural areas.
 
 In light of these issues, this project aims to understand the intensity of rising temperatures in the U.S. Southwest.  Our research questions are:
+
 1. Has there been an increase in the number of Heating and Cooling Days in the U.S. Southwest from 1980 to 2022?
 
 2. Is there a difference in Heating and Cooling Days in urban and rural spaces in the U.S. Southwest over time?
@@ -153,9 +156,9 @@ The Fountain Hills, Pahrump, and Ramona datasets had some missing data points in
 Having the daily average temperature calculated for each location, we then calculated the Heating Degree Days and Cooling Degree Days. Heating Degree Days are when people turn their heater on because the average temperature is low, and Cooling Degree Days is when people turn their air conditioner on because the average temperature is warm. The industry standard threshold is 65 degrees F, meaning that anything higher than 65 F would constitute a Cooling Degree Day, and anything lower than 65 would mean it is a Heating Degree Day (US EPA, 2016). The equations to calculate the Heating and Cooling Degree Days are as follows:
 
 * If mean temperature > 65°F then 
-+ mean temperature - 65°F = Cooling Degree Days
+  * mean temperature - 65°F = Cooling Degree Days
 * If mean temperature < 65°F then
-+ 65°F - mean temperature = Heating Degree Days
+  * 65°F - mean temperature = Heating Degree Days
 
 From these calculations we are able to look at the number of Heating and Cooling Degree Days, as well as the intensity, which are two main components examined in the exploratory analysis section.
 
@@ -175,6 +178,8 @@ ggplot(Three_cities, aes(x = Date, y = Temp_Avg, color = Location), alpha = 0.75
 
 For the remainder of the exploratory analysis section, we focused on a single city (Phoenix, Arizona) to better understand the data for the statistical analyses. Figure 2 shows Phoenix's maximum and minimum daily temperature from 1980 until 2022. The trend for the minimum and maximum temperatures shows that there has been a modest increase in both over time. The black horizontal line in Figure 2 marks the 65 F threshold for Heating and Cooling Degrees. Based on the trends in this figure, we would expect there to be more Cooling than Heating Degree Days.
 
+Figures 3 and 4 compare the number of Heating and Cooling Degree Days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of Cooling Degree Days in March, April, and October and a decrease in the number of Heating Degree Days in February and March.
+
 ```{r plots exploring the trends in the min and max temperatures, fig.height = 2.75, fig.cap = "Phoenix Daily Maiximum and Minimum Temperatures"}
 # Creating a plot with Phoenix's min and max temp
 ggplot(Phoenix, aes(x = Date)) +
@@ -186,7 +191,6 @@ ggplot(Phoenix, aes(x = Date)) +
         x = "Year", y = "Temperature in F", color = "Legend") +
   geom_hline(aes(yintercept = 65), color = "black")
 ```
-Figures 3 and 4 compare the number of Heating and Cooling Degree Days throughout the year for Phoenix in 1980 and 2022. The differences in the two figures demonstrate an increase in the number of Cooling Degree Days in March, April, and October and a decrease in the number of Heating Degree Days in February and March.
 
 ```{r code to plot number of Heating and Cooling Days}
 #Create dataframes for Heating and Cooling Days, separately
@@ -297,6 +301,8 @@ plot_Phoenix_1980_2022_Cool <- ggplot() +
 print(plot_Phoenix_1980_2022_Cool)
 ```
 Comparing Figures 3 and 4 to 5 and 6 reflects the importance of understanding the intensity over quantity of Heating and Cooling Days. While the initial comparison shows a slight increase in the number of days, the intensity comparison denotes a far steeper increase. The intensity also impacts energy usage, because people usually have a buffer of temperatures at which they will turn on the heat or AC that is not just 65 degrees F. More days that are closer to 100 degrees F have a worse impact on human health and energy usage than more days that are closer to 70 degrees F. In our analysis, we thus chose to look more closely at intensity over quantity of Heating and Cooling Degree Days.
+
+\newpage
 
 # 5. Analysis
 
@@ -561,16 +567,7 @@ California_summary_anova_heat <- summary(California_anova_result_heat)
 California_summary_anova_cool <- summary(California_anova_result_cool)
 ```
 
-<<<<<<< HEAD
-To address question 2, we thought it was best to perform ANOVA testing. This would allow us the check the means of the “Heating Degrees” and “Cooling Degrees” for the each state against Location, Year, and Location:Year finding out what was statically significant to the contribution of the average mean of “Heating Degrees” and “Cooling Degrees” . But to get an accurate picture we thought it would be best to take the means of the Heating and Cooling variables of each state and then compare it to each other state in the dataset. This required us to create a data frame for each state where we combined the metropolitan city and suburban city data by Location, Year, Heating Degrees, and Cooling Degrees. Then running 2 ANOVA test for each of those 3 states, the first test having Heating degrees as the dependent variable and the second test having Cooling degrees as dependent variable.
-
-=======
-After that using the anova data for heat and cool degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada’s heating degree, all variables Location, Year, and Location:Year we’re statically significant. While the same story was told when looking at the cooling degree vairble, all variables being statically significant. Causing us to infer that all of these factors do indeed have caused the trend in higher and colder temperatures in Nevada, explained that climate change just might be the cause.
-
-Secondly, looking at the table for Arizona, we find that this data tells a slightly different story than Nevada. That is for heating degree, Location and Year are both statically significant while Location:Year isn’t due to it having a p-value of 0.054 compared to the 0 P-value Location and Year both have. Meanwhile for the cooling degree, all variables were statically significant.
-
-Lastly, from California’s data we learn that again for heat degrees, Location and Year are both statically significant while Location:Year did not having a P-value of 0.65. All variables for cooling degree were significant.
->>>>>>> 50dfa90b1c24dc3bce73196d8b459320fc14d123
+Table 4 shows the results for Nevada's ANOVA test on Heating Degree Days. It shows that Location (p-value =0.0000000), Year (p-value =0.0000000), and Location:Year (p-value =0.0000000) are all statically significant in influencing the Heating Degree Days. Table 5 shows the results for Nevada's ANOVA test on Cooling Degree Days, which also shows that Location (p-value =0.0000000), Year (p-value =0.0000000), and Location:Year (p-value =0.0000000) are all statically significant in influencing the Cooling Degree Days.
 
 ```{r Nevada Kable}
 # Extract the aov table from the summary.aov object
@@ -594,6 +591,8 @@ kable(Nevada_anova_df_cool,
       caption = "ANOVA Summary Table for Nevada Cooling Degrees")
 ```
 
+Table 6 shows the results for Arizona's ANOVA test on Heating Degree Days. It shows that Location (p-value =0.0000000) and Year (p-value = 0.0000000) are both statically significant in influencing the Heating Degree Days, but Location:Year is not statistically-significant(p-value = 0.0543096). Table 7 shows the results for Arizona's ANOVA test on Cooling Degree Days, which also shows that Location (p-value =0.0000000), Year (p-value = 0.0000005), and Location:Year (p-value = 0.0093086) are all statically significant in influencing the Cooling Degree Days.
+
 ```{r Arizona Kable}
 # Extract the aov table from the summary.aov object
 Arizona_anova_table_heat <- summary(Arizona_anova_result_heat)[[1]]
@@ -615,6 +614,8 @@ Arizona_anova_df_cool <- as.data.frame(Arizona_anova_table_cool)
 kable(Arizona_anova_df_cool,
       caption = "ANOVA Summary Table for Arizona Cooling Degrees")
 ```
+
+Table 8 shows the results for California's ANOVA test on Heating Degree Days. It shows that Location (p-value =0.0000000) and Year (p-value =0.0000000) are both statically significant in influencing the Heating Degree Days, but Location:Year is not statistically-significant(p-value = 0.65). Table 9 shows the results for California's ANOVA test on Cooling Degree Days, which also shows that Location (p-value = 0.0000139), Year (p-value =0.0000000), and Location:Year (p-value = 0.0070792) are all statically significant in influencing the Cooling Degree Days.
 
 ```{r California Kable}
 # Extract the aov table from the summary.aov object
@@ -638,15 +639,9 @@ kable(California_anova_df_cool,
       caption = "ANOVA Summary Table for California Cooling Degrees")
 ```
 
-
-<<<<<<< HEAD
-
-
-In summary, with anova testing we learned that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. 
+In summary, Location, Year, and Location:Year were a statistically-significant factor for most Heating and Cooling Degree Days variables, but not for locations.  Location and Year for Heating Degree Days in Arizona and in California were not a statistically-significant variable. These results show that there is, in fact, a difference in the Heating and Cooling Days that is driven by Location in every state. Therefore, we can assert that there is a statistically-significant difference in the Heating and Cooling Days between urban and rural locations. This aligns with the literature on the Urban Heat Island effect.
 
 \newpage
-=======
->>>>>>> 50dfa90b1c24dc3bce73196d8b459320fc14d123
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
 
@@ -778,7 +773,7 @@ plot(Ramona_temp_min_ts_Decomposed, main = "Ramona Minimum Temperature")
 
 \newpage
 
-To understand whether the data exhibit a statistically significant upward or downward trend over time, we conducted Seasonal Mann-Kendall tests. As a reminder, the null hypothesis is that the data is stationary and does not exhibit a statistically significant upward or downward trend over time. This would mean that the data exhibit no meaning that there is no change in the temperature minimum and maximum over time. The results of the tests, summarized below, show that all trends are statistically significant, as all p-values are smaller than 0.05, so none of the data are stationary. The tau value shows the slope of the trend line.
+To understand whether the data exhibit a statistically significant upward or downward trend over time, we conducted Seasonal Mann-Kendall tests. As a reminder, the null hypothesis is that the data is stationary and does not exhibit a statistically significant upward or downward trend over time. This would mean that the data exhibit no meaning that there is no change in the temperature minimum and maximum over time. The results of the tests, summarized in Table 10, show that all trends are statistically significant, as all p-values are smaller than 0.05, so none of the data are stationary. The tau value shows the slope of the trend line.
 
 ```{r Seasonal Mann-Kendall tests for min and max temperatures}
 #Phoenix
@@ -806,7 +801,7 @@ Ramona_temp_max_trend <- SeasonalMannKendall(Ramona_temp_max_ts)
 Ramona_temp_min_trend <- SeasonalMannKendall(Ramona_temp_min_ts)
 ```
 
-Interestingly, Fountain Hill’s maximum temperatures, San Diego’s minimum temperatures, and Ramona’s maximum and minimum temperatures have a downward trend. Every other variable has an upward trend. Furthermore, most maximum temperatures are increasing at a slower rate than the minimum temperatures. The only city where the opposite happens is Ramona, which is already set apart from the rest by being the only city where both temperature variables are decreasing, and the difference is smaller. The steepest slope is in Las Vegas' minimum temperatures.
+Interestingly, Fountain Hill’s maximum temperatures (tau value = -0.0282), San Diego’s minimum temperatures (tau value = -0.0182), and Ramona’s maximum (tau value = -0.112) and minimum temperatures (tau value = -0.0912) have a downward trend. Every other variable has an upward trend. Furthermore, most maximum temperatures are increasing at a slower rate than the minimum temperatures. The only city where the opposite happens is Ramona, which is already set apart from the rest by being the only city where both temperature variables are decreasing, and the difference is smaller. The steepest slope is in Las Vegas' minimum temperatures (tau value = 0.29).
 
 ``` {r ktable with results from the Seasonal Mann-Kendall test}
 temp_SMK_cities <- c("Phoenix", "Phoenix", "Fountain Hills", "Fountain Hills",
@@ -902,7 +897,7 @@ Ramona_plot_temp <- ggplot(Ramona, aes(x = Date)) +
 print(Ramona_plot_temp)
 ```
 
-Though the trends are not linear, as shown in the decomposition graphs, these graphs show the direction of the trends in minimum and maximum temperatures across cities.
+Though the trends are not linear, as shown in the decomposition graphs, Figure 22 shows show the direction of the trends in minimum and maximum temperatures across cities.
 
 ``` {r minimum and maximum temperature trends potted,  fig.cap = "Trends in Minimum and Maximum Temperatures across Cities", fig.width = 7.5, fig.height = 10}
 #create a title
@@ -930,9 +925,13 @@ print(temperature_plots)
 
 In summary, we can conclude that there are significant changes in the trend of minimum and maximum temperatures across all cities in the U.S. Southwest, but these changes are not occurring uniformly Many of the cities, both urban and rural, are seeing their minimums grow at a faster pace than the also-growing maximums. However, exploring why some urban and rural cities have maximum and minimum temperatures with statistically-significant downward trend would be an important next step in research.
 
+\newpage
+
 # 6. Summary and Conclusions
 
-(Question 1)... ANOVA testing allowed us to ascertain that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. It is worthy to note though that when filtering the datasets, Arizona and California had few decades less of data coverage compared to Nevada... (Question 3)
+The state of rising temperatures in the U.S. Southwest is more complex that we initially believed. For question 2, on whether there is a difference in Heating and Cooling Degree Days between urban and rural spaces in the region, we can assert that Location represents a statistically-significant variable that influences both types of Degree Days. Our time series analyses, on the other hand, provide enough variation that we cannot conclusively provide a single answer to questions 1 and 3. On whether there is a significant trend of Cooling and Heating Days, we can say that there has been an increase in the trend of Cooling Degree Days and a decrease in the trend of Heating Degree Days, but that these are not uniform and they are not present in all cities in the U.S. Southwest. Lastly, on the question of whether minimum and maximum temperatures have changed, we can conclude that there are significant changes in the trends of these variables across all cities in the U.S. Southwest, urban and rural, but these changes are not occurring at the same rate nor in the same direction.
+
+The results of this project point to a need for further research and exploration about trends in and impacts of rising temperatures in the U.S. Southwest. It would be beneficial to explore what additional physical factors may be contributing to changing temperatures, such as proximity to bodies of water, and what policies differentiate the cities, such as growing urban tree canopies.
 
 \newpage
 
