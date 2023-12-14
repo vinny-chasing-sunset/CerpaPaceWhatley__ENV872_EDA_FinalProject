@@ -679,11 +679,11 @@ California_summary_anova_heat <- summary(California_anova_result_heat)
 California_summary_anova_cool <- summary(California_anova_result_cool)
 ```
 
-After that using the anova data for heat and cool degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada, location contributed and was the only significant variable to average heat temperature. While the same story was told when looking at the average cool temperature, location being statically significant. Looking at only this and no other analysis would lead you to believe that location is the reason we see such high and low temperatures, especially considering that Nevada is a desert and it typically sees highly polarized temperatures dependent on the time of day.
+After that using the anova data for heat and cool degrees we created tables for both dependent variables using the Kable function. With this we were able to learn a few things, firstly that for Nevada’s heating degree, all variables Location, Year, and Location:Year we’re statically significant. While the same story was told when looking at the cooling degree vairble, all variables being statically significant. Causing us to infer that all of these factors do indeed have caused the trend in higher and colder temperatures in Nevada, explained that climate change just might be the cause.
 
-Secondly, looking at the table for Arizona, we find that this data tells the same story as previously stated for Nevada. That Location is the statically significant factor in average heating and cooling temperatures.
+Secondly, looking at the table for Arizona, we find that this data tells a slightly different story than Nevada. That is for heating degree, Location and Year are both statically significant while Location:Year isn’t due to it having a p-value of 0.054 compared to the 0 P-value Location and Year both have. Meanwhile for the cooling degree, all variables were statically significant.
 
-Lastly, from California’s data we learn that again for heat degree’s location was the statically significant contributor but for cool degrees Year instead is statically significant. We are thinking this is the case because our California data set (from 1998 to 2022) does not cover the same amount of time as the Nevada dataset (1972 to 2022) and Arizona dataset (1980 to 2022). Leading to slightly different results.
+Lastly, from California’s data we learn that again for heat degrees, Location and Year are both statically significant while Location:Year did not having a P-value of 0.65. All variables for cooling degree were significant.
 
 
 ```{r Nevada Kable}
@@ -748,114 +748,8 @@ California_anova_df_cool <- as.data.frame(California_anova_table_cool)
 kable(California_anova_df_cool, caption = "ANOVA Summary Table for California Cool_Degrees")
 ```
 
-We then extracted the f-values from those datasets and created bar charts to visualize the stark difference between statically significant variables compared to the other variables.
 
-```{r Creating Bar plot of F-values, Nevada data}
-
-# extracted F-values
-Nevada_f_values_heat <- c(803.9, 88.6, 36.4)  
-Nevada_f_values_cool <- c(1228.7, 153.4, 36.4)  
-
-# Combine the F-values into a matrix
-Nevada_f_values_matrix <- matrix(c(Nevada_f_values_heat, Nevada_f_values_cool), nrow = 3, byrow = TRUE)
-
-# Names for the bars (change or customize as needed)
-bar_names <- c("Heat Values", "Cool Values")
-
-# Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(Nevada_f_values_heat)), rep("blue", length(Nevada_f_values_cool)))
-
-
-# Check the number of names and columns in the matrix
-if (length(bar_names) != ncol(Nevada_f_values_matrix)) {
-  stop("Incorrect number of names for the columns in the matrix.")
-} else {
-  # Create a bar plot with specific colors for each bar
-  barplot(Nevada_f_values_matrix, beside = TRUE,
-          col = colors,
-          names.arg = bar_names,
-          main = "Nevada ANOVA F-values for Heat_Degrees and Cool_Degrees",
-          ylab = "F-value")
-
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(1.5, 1.5, 2.5), par("usr")[4] + 1, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
-
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.25, 2), par("usr")[4] + 9, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
-}
-
-```
-
-```{r Creating Bar plot of F-values, Arizona data}
-# extracted F-values
-Arizona_f_values_heat <- c(236.3, 44.5, 3.7)  
-Arizona_f_values_cool <- c(238.2, 25.2, 6.8)  
-
-# Combine the F-values into a matrix
-Arizona_f_values_matrix <- matrix(c(Arizona_f_values_heat, Arizona_f_values_cool), nrow = 3, byrow = TRUE)
-
-# Names for the bars (change or customize as needed)
-bar_names <- c("Heat Values", "Cool Values")
-
-# Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(Arizona_f_values_heat)), rep("blue", length(Arizona_f_values_cool)))
-
-
-# Check the number of names and columns in the matrix
-if (length(bar_names) != ncol(Arizona_f_values_matrix)) {
-  stop("Incorrect number of names for the columns in the matrix.")
-} else {
-  # Create a bar plot with specific colors for each bar
-  barplot(Arizona_f_values_matrix, beside = TRUE,
-          col = colors,
-          names.arg = bar_names,
-          main = "Arizona ANOVA F-values for Heat_Degrees and Cool_Degrees",
-          ylab = "F-value")
-
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(1.5, 1.5, 2.75), par("usr")[4] + 60, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
-
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] + 5, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
-}
-```
-
-```{r Creating Bar plot of F-values, California data}
-# extracted F-values
-California_f_values_heat <- c(1870.4, 114.2, 0.2)  
-California_f_values_cool <- c(18.9, 237.4, 7.3)  
-
-# Combine the F-values into a matrix
-California_f_values_matrix <- matrix(c(California_f_values_heat, California_f_values_cool), nrow = 3, byrow = TRUE)
-
-# Names for the bars (change or customize as needed)
-bar_names <- c("Heat Values", "Cool Values")
-
-# Assign colors to bars corresponding to each factor
-colors <- c(rep("red", length(California_f_values_heat)), rep("blue", length(California_f_values_cool)))
-
-
-# Check the number of names and columns in the matrix
-if (length(bar_names) != ncol(California_f_values_matrix)) {
-  stop("Incorrect number of names for the columns in the matrix.")
-} else {
-  # Create a bar plot with specific colors for each bar
-  barplot(California_f_values_matrix, beside = TRUE,
-          col = colors,
-          names.arg = bar_names,
-          main = "California ANOVA F-values for Heat_Degrees and Cool_Degrees",
-          ylab = "F-value")
-
-# Adding custom labels above the bars for Heat Values with different distances
-text(1:3 + 0.25 * c(2.2, 2, 3), par("usr")[4] + 420, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 2), xpd = TRUE)
-
-# Adding custom labels above the bars for Cool Values
-text((1:3) + 4.5 + 0.25 * c(0, 0.2, 2), par("usr")[4] - 900, c("Location", "Year", "Location: Year"), srt = 0, adj = c(0.5, 0), xpd = TRUE)
-}
-
-```
-
-In summary, with anova testing we learned that biggest contributor to average heat and cooling temperatures for each can be attributed to solely location. Requiring us to do further analysis this time instead with time-series.
+In summary, with anova testing we learned that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. 
 
 ## Question 3: How have minimum and maximum temperatures changed over time?
 To address the question of whether minimum and maximum temperatures have changed over time, we conducted a time series analysis on every city. We first created univariate time series objects for each measure for each site. We then decomposed each time series to review the trends and seasonality present.
@@ -1124,7 +1018,7 @@ The graphs above show the trends increasing or slightly decreasing in the case o
 
 # 6. Summary and Conclusions
 
-(Question 1)... ANOVA testing allowed us to ascertain that Location played the biggest role in determining average means of Heating and Cooling Degrees. This is true for Nevada, Arizona, and California minus California’s Cooling degree mean. Which we believe was different due to data set being smaller compared to the other data sets from Nevada and Arizona which have a couple of more decades worth of data. We didn't want to stop here though and decided that further analysis was needed, this time testing the data with time series analysis... (Question 3)
+(Question 1)... ANOVA testing allowed us to ascertain that Location, Year and Location:Year play were the biggest contributor to average heat and cooling degrees for each state. Excluding the Location:Year variable for heating degree in Arizona and California which weren’t statically significant. It is worthy to note though that when filtering the datasets, Arizona and California had few decades less of data coverage compared to Nevada... (Question 3)
 
 \newpage
 
